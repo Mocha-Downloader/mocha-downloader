@@ -1,0 +1,40 @@
+{
+	"editor.formatOnSave": true,
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
+
+	"javascript.validate.enable": false,
+	"javascript.format.enable": false,
+	"typescript.format.enable": false,
+
+	"[md,json]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"[ignore]": {
+		"editor.defaultFormatter": "foxundermoon.shell-format"
+	},
+	"files.associations": {
+		".eslintrc": "jsonc",
+		".prettierrc": "jsonc",
+		".eslintignore": "ignore"
+	},
+
+	"cSpell.words": [
+		"daum",
+		"imgs",
+		"kakao",
+		"naver",
+		"toon",
+		"webtoon",
+		"webtoons"
+	],
+	"search.exclude": {
+		".git": true,
+		".eslintcache": true,
+		".erb/dll": true,
+		"release/{build,app/dist}": true,
+		"node_modules": true,
+		"npm-debug.log.*": true,
+		"package-lock.json": true,
+		"*.{css,sass,scss}.d.ts": true
+	}
+}
