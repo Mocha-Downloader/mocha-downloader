@@ -1,6 +1,9 @@
 # [mocha-downloader](https://github.com/Mocha-Downloader/mocha-downloader)
 
 [![License: MIT](https://img.shields.io/badge/license-mit-blue.svg?style=for-the-badge)](./LICENSE)
+[![Discord](https://img.shields.io/badge/discord-5865F2.svg?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/aQqamSCUcS)
+
+**currently in alpha**
 
 - [한국어 문서 (Korean Documentation)](./README_KR.md)
 

@@ -1,6 +1,9 @@
 # [모카-다운로더](https://github.com/Mocha-Downloader/mocha-downloader)
 
 [![라이선스: MIT](https://img.shields.io/badge/라이선스-mit-blue.svg?style=for-the-badge)](./LICENSE)
+[![디스코드](https://img.shields.io/badge/디스코드-5865F2.svg?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/aQqamSCUcS)
+
+**현재 개발중**
 
 - [English Documentation (영어 문서)](./README.md)
 
