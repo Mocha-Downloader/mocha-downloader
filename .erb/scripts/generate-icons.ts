@@ -11,17 +11,19 @@ async function main() {
 
 	const sizes = [16, 24, 32, 48, 64, 96, 128, 256, 512, 1024]
 	const imageFiles: Buffer[] = []
-	sizes.map((size) => {
-		const fileName = `assets/icons/${size}x${size}.png`
-		original
-			.resize(size, size)
-			.toFile(fileName)
-			.then(() => {
-				imageFiles.push(fs.readFileSync(fileName))
-			})
-	})
 
-	toIco(imageFiles, { sizes: sizes, resize: true }).then((result) => {
+	await Promise.all(
+		sizes.map(async (size) => {
+			const resizedImage = original.resize(size, size)
+			const fileName = `assets/icons/${size}x${size}.png`
+
+			await resizedImage.toFile(fileName)
+			if ([16, 24, 32, 48, 64, 128, 256].includes(size))
+				imageFiles.push(fs.readFileSync(fileName))
+		})
+	)
+
+	toIco(imageFiles).then((result) => {
 		fs.writeFileSync("assets/icon.ico", result)
 	})
 
