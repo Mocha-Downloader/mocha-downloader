@@ -18,8 +18,18 @@ async function main() {
 			const fileName = `assets/icons/${size}x${size}.png`
 
 			await resizedImage.toFile(fileName)
-			if ([16, 24, 32, 48, 64, 128, 256].includes(size))
-				imageFiles.push(fs.readFileSync(fileName))
+
+			if ([16, 24, 32, 48, 64, 128, 256].includes(size)) {
+				const imageData = fs.readFileSync(fileName)
+				imageFiles.push(imageData)
+
+				if (size === 16)
+					toIco(imageData, { sizes: [16], resize: false }).then(
+						(result) => {
+							fs.writeFileSync("assets/favicon.ico", result)
+						}
+					)
+			}
 		})
 	)
 
