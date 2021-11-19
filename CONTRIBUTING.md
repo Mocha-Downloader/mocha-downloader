@@ -48,6 +48,41 @@ yarn start
 yarn package
 ```
 
+## [documentation and blog](https://github.com/Mocha-Downloader/mocha-downloader.github.io)
+
+The documentation and blog website is built with [docusaurus](https://docusaurus.io).
+
+### Setting up
+
+#### 1. Clone the repository
+
+```
+git clone https://github.com/Mocha-Downloader/mocha-downloader.github.io.git
+```
+
+#### 2. Install dependencies
+
+```
+yarn install
+```
+
+#### 3. Test locally
+
+```
+yarn start
+```
+
+Test different locale:
+
+```
+yarn start --locale <code>
+```
+
+available locale:
+
+- en
+- ko
+
 ## Editors & IDEs
 
 vscode users can install the [recommended extensions](./.vscode/extensions.json).
