@@ -7,7 +7,7 @@
 
 - [한국어 문서 (Korean Documentation)](./README_KR.md)
 
-A GUI tool for searching, parsing, and downloading contents from the web.
+An all-in-one tool for downloading content from the web.
 
 Feel free to [open a issue](https://github.com/Mocha-Downloader/mocha-downloader/issues) for suggestions, bug reports, or questions.
 

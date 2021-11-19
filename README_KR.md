@@ -7,7 +7,7 @@
 
 - [English Documentation (영어 문서)](./README.md)
 
-웹 컨텐츠의 검색, 분석, 및 다운로드를 위한 GUI 툴.
+웹 컨텐츠 다운로드 툴.
 
 에러 제보, 제안 사항, 또는 질문은 [이슈 페이지](https://github.com/Mocha-Downloader/mocha-downloader/issues)를 통해 보내주시면 감사하겠습니다.
 
