@@ -1,7 +1,8 @@
 import { getHTMLFromWindow, getImageBuffer, parseSite } from "../util"
-import cheerio from "cheerio"
 import sharp, { OverlayOptions } from "sharp"
 import sizeOf from "image-size"
+import cheerio from "cheerio"
+import axios from "axios"
 
 async function downloadEpisode(url: string) {
 	const [userAgent, $] = await parseSite<[string, cheerio.Root]>(
@@ -67,11 +68,39 @@ async function downloadEpisodes(url: string, selected: number[]) {
 }
 
 async function getList(url: string): Promise<{ title: string; url: string }[]> {
-	return [
-		{ title: "Original", url: url },
-		{ title: "Google", url: "https://google.com" },
-		{ title: "YouTube", url: "https://youtube.com" },
-	]
+	const parsedURL = new URL(url)
+	const titleID = parsedURL.searchParams.get("titleId")
+
+	// use url without page and other nonsense
+	const $ = cheerio.load(
+		(
+			await axios.get(
+				parsedURL.origin + parsedURL.pathname + "?titleId=" + titleID
+			)
+		).data
+	)
+
+	let latestEpisodeNumber = 0
+	$("#content > table > tbody > tr > td.title > a").each((_, e) => {
+		const numberToTest = Number(
+			new URL(parsedURL.origin + $(e).attr("href")).searchParams.get("no")
+		)
+		latestEpisodeNumber =
+			latestEpisodeNumber >= numberToTest
+				? latestEpisodeNumber
+				: numberToTest
+	})
+
+	const result = []
+
+	for (let i = latestEpisodeNumber; i >= 1; i--) {
+		result.push({
+			title: `episode ${i}`,
+			url: `https://comic.naver.com/webtoon/detail?titleId=${titleID}&no=${i}`,
+		})
+	}
+
+	return result
 }
 
 export default {
