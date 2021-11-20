@@ -7,8 +7,9 @@ import GlobalStyle from "./globalStyle"
 import AnimatedLogo from "./components/AnimatedLogo"
 import TopBar from "./components/TopBar"
 import BottomBar from "./components/BottomBar"
+import { SelectOptions } from "./components/SelectOptions"
 
-import "./ipc"
+import { GlobalStore } from "./ipc"
 
 import "semantic-ui-css/semantic.min.css"
 
@@ -29,7 +30,7 @@ const StyledInstructions = styled.div`
 `
 
 render(
-	<>
+	<GlobalStore>
 		<GlobalStyle />
 		<TopBar />
 		<StyledDownloadListContainer text>
@@ -45,8 +46,10 @@ render(
 					<Header.Subheader>Press F1 to learn more</Header.Subheader>
 				</Header>
 			</StyledInstructions>
+
+			<SelectOptions />
 		</StyledDownloadListContainer>
 		<BottomBar />
-	</>,
+	</GlobalStore>,
 	document.getElementById("root")
 )
