@@ -4,7 +4,11 @@ All development-related documents are written in English only.
 
 모든 개발 관련 문서는 오직 영어로만 작성되었습니다.
 
+## Conventions
+
 - The project adheres to [semantic versioning](https://semver.org).
+- use yarn instead of npm.
+- use function components instead of class components in react.
 
 ## Required skill
 
