@@ -4,110 +4,69 @@
  */
 
 import { useContext } from "react"
-import { Button, Checkbox, Icon, List, Modal } from "semantic-ui-react"
+import { Button, Checkbox, Icon, Modal, Table } from "semantic-ui-react"
 
 import { globalContext, ActionsEnum } from "../ipc"
 
 function SelectOptions() {
 	const { globalState, dispatch } = useContext(globalContext)
 
+	const hide = () => {
+		dispatch({ type: ActionsEnum.HIDE_SELECT_OPTIONS })
+	}
+
 	return (
 		<Modal
 			dimmer="blurring"
-			open={globalState.openSelectOptions}
-			onClose={() =>
-				dispatch({
-					type: ActionsEnum.HIDE_SELECT_OPTIONS,
-				})
-			}
+			open={globalState.selectOptions.isVisible}
+			onClose={() => hide()}
 		>
-			<Modal.Header>Select episodes to download</Modal.Header>
+			<Modal.Header>Select items to download</Modal.Header>
 
 			<Modal.Content scrolling>
-				Placeholder checkboxes:
-				<List>
-					<List.Item>
-						<Checkbox label="1" />
-					</List.Item>
-					<List.Item>
-						<Checkbox label="2" />
-					</List.Item>
-					<List.Item>
-						<Checkbox label="3" />
-					</List.Item>
-					<List.Item>
-						<Checkbox label="4" />
-					</List.Item>
-					<List.Item>
-						<Checkbox label="5" />
-					</List.Item>
-					<List.Item>
-						<Checkbox label="6" />
-					</List.Item>
-					<List.Item>
-						<Checkbox label="7" />
-					</List.Item>
-					<List.Item>
-						<Checkbox label="8" />
-					</List.Item>
-					<List.Item>
-						<Checkbox label="9" />
-					</List.Item>
-					<List.Item>
-						<Checkbox label="10" />
-					</List.Item>
-					<List.Item>
-						<Checkbox label="11" />
-					</List.Item>
-					<List.Item>
-						<Checkbox label="12" />
-					</List.Item>
-					<List.Item>
-						<Checkbox label="13" />
-					</List.Item>
-					<List.Item>
-						<Checkbox label="14" />
-					</List.Item>
-					<List.Item>
-						<Checkbox label="15" />
-					</List.Item>
-					<List.Item>
-						<Checkbox label="16" />
-					</List.Item>
-					<List.Item>
-						<Checkbox label="17" />
-					</List.Item>
-					<List.Item>
-						<Checkbox label="18" />
-					</List.Item>
-					<List.Item>
-						<Checkbox label="19" />
-					</List.Item>
-					<List.Item>
-						<Checkbox label="20" />
-					</List.Item>
-				</List>
+				<Table striped>
+					<Table.Body>
+						{globalState.selectOptions.availableChoices?.map(
+							(val) => (
+								<Table.Row key={val.url}>
+									<Table.Cell>
+										<Checkbox
+											defaultChecked
+											// onChange={(_, data) => {
+											// 	setSelectedChoices(index, data.checked)
+											// }}
+											label={val.title}
+										/>
+									</Table.Cell>
+									<Table.Cell>
+										<a href={val.url} target="_">
+											<Button compact floated="right">
+												visit
+											</Button>
+										</a>
+									</Table.Cell>
+								</Table.Row>
+							)
+						)}
+					</Table.Body>
+				</Table>
 			</Modal.Content>
 
 			<Modal.Actions>
-				<Button
-					onClick={() =>
-						dispatch({
-							type: ActionsEnum.HIDE_SELECT_OPTIONS,
-						})
-					}
-				>
-					Cancel
-				</Button>
+				<Button onClick={() => hide()}>Cancel</Button>
 				<Button
 					primary
 					icon
 					labelPosition="right"
-					onClick={() =>
-						dispatch({
-							type: ActionsEnum.HIDE_SELECT_OPTIONS,
-						})
-					}
+					onClick={() => {
+						hide()
+
+						window.electron.ipcRenderer.send(
+							"download",
+							globalState.selectOptions.url,
+							globalState.selectOptions.selectedChoices
+						)
+					}}
 				>
 					Download
 					<Icon name="arrow right" />

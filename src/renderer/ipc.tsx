@@ -14,10 +14,21 @@ import {
 export enum ActionsEnum {
 	SHOW_SELECT_OPTIONS = "SHOW_SELECT_OPTIONS",
 	HIDE_SELECT_OPTIONS = "HIDE_SELECT_OPTIONS",
+	SET_SELECT_OPTIONS = "SET_SELECT_OPTIONS",
+}
+
+interface ISelectOptionsEntry {
+	title: string
+	url: string
 }
 
 interface IGlobalState {
-	openSelectOptions: boolean
+	selectOptions: {
+		isVisible: boolean
+		url: string
+		availableChoices: ISelectOptionsEntry[]
+		selectedChoices: boolean[]
+	}
 }
 
 interface IGlobalAction {
@@ -31,16 +42,49 @@ interface IContext {
 }
 
 const defaultState: IGlobalState = {
-	openSelectOptions: false,
+	selectOptions: {
+		isVisible: false,
+		url: "",
+		availableChoices: [],
+		selectedChoices: [],
+	},
 }
 
-function reducer(state = defaultState, action: IGlobalAction) {
+function reducer(state = defaultState, action: IGlobalAction): IGlobalState {
 	switch (action.type) {
 		case ActionsEnum.SHOW_SELECT_OPTIONS:
-			return { ...state, openSelectOptions: true }
+			return {
+				...state,
+				selectOptions: {
+					...state.selectOptions,
+
+					isVisible: true,
+					url: action.payload.url || state.selectOptions.url,
+					availableChoices:
+						action.payload.availableChoices ||
+						state.selectOptions.availableChoices,
+				},
+			}
 
 		case ActionsEnum.HIDE_SELECT_OPTIONS:
-			return { ...state, openSelectOptions: false }
+			return {
+				...state,
+				selectOptions: {
+					...state.selectOptions,
+
+					isVisible: false,
+				},
+			}
+
+		case ActionsEnum.SET_SELECT_OPTIONS:
+			return {
+				...state,
+				selectOptions: {
+					...state.selectOptions,
+
+					selectedChoices: action.payload.selectedChoices,
+				},
+			}
 
 		default:
 			return state
@@ -54,11 +98,11 @@ export const GlobalStore = (props: { children: ReactNode }): ReactElement => {
 
 	const showSelectOptions = async (
 		url: string,
-		choices: { title: string; url: string }
+		availableChoices: ISelectOptionsEntry[]
 	) => {
 		dispatch({
 			type: ActionsEnum.SHOW_SELECT_OPTIONS,
-			payload: { url, choices },
+			payload: { url, availableChoices },
 		})
 	}
 
