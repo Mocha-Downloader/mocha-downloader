@@ -8,6 +8,8 @@ All development-related documents are written in English only.
 
 - The project adheres to [semantic versioning](https://semver.org).
 - use yarn instead of npm.
+- Due to issues like [this](https://github.com/nodejs/node-gyp/issues/2534) all contributors are expected to use node v16
+  - [nvm](https://github.com/nvm-sh/nvm) is a good tool for this.
 - use function components instead of class components in react.
 
 ## Required skill
