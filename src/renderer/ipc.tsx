@@ -15,6 +15,7 @@ export enum ActionsEnum {
 	SHOW_SELECT_OPTIONS = "SHOW_SELECT_OPTIONS",
 	HIDE_SELECT_OPTIONS = "HIDE_SELECT_OPTIONS",
 	SET_SELECT_OPTIONS = "SET_SELECT_OPTIONS",
+	UPDATE_SELECT_OPTIONS = "UPDATE_SELECT_OPTIONS",
 }
 
 interface ISelectOptionsEntry {
@@ -82,7 +83,20 @@ function reducer(state = defaultState, action: IGlobalAction): IGlobalState {
 				selectOptions: {
 					...state.selectOptions,
 
-					selectedChoices: action.payload.selectedChoices,
+					selectedChoices: action.payload || [],
+				},
+			}
+
+		case ActionsEnum.UPDATE_SELECT_OPTIONS:
+			const selectedChoices = state.selectOptions.selectedChoices
+			selectedChoices[action.payload.index] = action.payload.value
+
+			return {
+				...state,
+				selectOptions: {
+					...state.selectOptions,
+
+					selectedChoices: selectedChoices,
 				},
 			}
 
@@ -100,6 +114,12 @@ export const GlobalStore = (props: { children: ReactNode }): ReactElement => {
 		url: string,
 		availableChoices: ISelectOptionsEntry[]
 	) => {
+		// select all choices
+		dispatch({
+			type: ActionsEnum.SET_SELECT_OPTIONS,
+			payload: Array(availableChoices.length).fill(true),
+		})
+
 		dispatch({
 			type: ActionsEnum.SHOW_SELECT_OPTIONS,
 			payload: { url, availableChoices },
