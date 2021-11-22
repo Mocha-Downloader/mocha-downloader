@@ -56,7 +56,7 @@ For a component-specific documentation, open the [components](./src/renderer/com
 
 ### First impression
 
-<img alt="first impression" src="./.erb/img/first-impression.png" width="800" height="500" />
+<img alt="first impression" src="./.erb/img/first-impression.png" width="500" height="300" />
 
-- Default window size: 800x500 (very close to golden ratio)
+- Default window size: 1000x600 (close to golden ratio)
 - ideal reading pattern: Headers (Paste link to... & Press F1...) first then Z pattern.
