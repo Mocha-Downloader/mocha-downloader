@@ -1,45 +1,30 @@
-import { Menu, Container, Icon, Progress } from "semantic-ui-react"
-import styled from "styled-components"
+import { Menu, Container, Icon } from "semantic-ui-react"
 import ReactTooltip from "react-tooltip"
-
-const StyledBottomBarContainer = styled(Container)`
-	display: flex;
-	justify-content: space-between;
-`
-
-const StyledProgressContainer = styled(Menu.Item)`
-	width: 100%;
-	flex-direction: column;
-	gap: 0.5rem;
-
-	.progress {
-		width: 100%;
-	}
-`
-
-const StyledProgressDataContainer = styled.div`
-	display: flex;
-`
 
 const BottomBar = () => {
 	return (
 		<Menu fixed="bottom" inverted>
-			<StyledBottomBarContainer>
-				<StyledProgressContainer>
-					<StyledProgressDataContainer>
-						Downloading: ASDF
-					</StyledProgressDataContainer>
-					<Progress percent={100} size="tiny" />
-				</StyledProgressContainer>
+			<Container>
+				<Menu.Item data-tip="Settings">
+					<Icon link size="large" name="settings" />
+					<ReactTooltip effect="solid" />
+				</Menu.Item>
+				<Menu.Item data-tip="Help">
+					<Icon link size="large" name="question circle" />
+					<ReactTooltip effect="solid" />
+				</Menu.Item>
 
-				<Menu.Item>
+				{/* Separate links that opens a new tab in the browser */}
+				<Menu.Menu position="right">
 					<a
 						href="https://mocha-downloader.github.io"
 						target="_"
 						data-tip="Documentation"
 					>
-						<Icon link size="large" name="book" />
-						<ReactTooltip effect="solid" />
+						<Menu.Item>
+							<Icon link size="large" name="book" />
+							<ReactTooltip effect="solid" />
+						</Menu.Item>
 					</a>
 
 					<a
@@ -47,8 +32,10 @@ const BottomBar = () => {
 						target="_"
 						data-tip="Discord"
 					>
-						<Icon link size="large" name="discord" />
-						<ReactTooltip effect="solid" />
+						<Menu.Item>
+							<Icon link size="large" name="discord" />
+							<ReactTooltip effect="solid" />
+						</Menu.Item>
 					</a>
 
 					<a
@@ -56,11 +43,13 @@ const BottomBar = () => {
 						target="_"
 						data-tip="Source Code"
 					>
-						<Icon link size="large" name="github square" />
-						<ReactTooltip effect="solid" />
+						<Menu.Item>
+							<Icon link size="large" name="github square" />
+							<ReactTooltip effect="solid" />
+						</Menu.Item>
 					</a>
-				</Menu.Item>
-			</StyledBottomBarContainer>
+				</Menu.Menu>
+			</Container>
 		</Menu>
 	)
 }
