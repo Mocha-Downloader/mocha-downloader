@@ -13,6 +13,9 @@ function SelectOptions() {
 	let isEverythingSelected = globalState.selectOptions.selectedChoices.every(
 		(val) => val
 	)
+	// count the number of selected choices
+	let selectedChoicesCount =
+		globalState.selectOptions.selectedChoices.filter(Boolean).length
 	const hide = () => {
 		dispatch({ type: ActionsEnum.HIDE_SELECT_OPTIONS })
 	}
@@ -21,6 +24,9 @@ function SelectOptions() {
 		isEverythingSelected = globalState.selectOptions.selectedChoices.every(
 			(val) => val
 		)
+
+		selectedChoicesCount =
+			globalState.selectOptions.selectedChoices.filter(Boolean).length
 	}, [globalState.selectOptions.selectedChoices])
 
 	return (
@@ -92,6 +98,7 @@ function SelectOptions() {
 					primary
 					icon
 					labelPosition="right"
+					disabled={!selectedChoicesCount}
 					onClick={() => {
 						hide()
 
@@ -102,7 +109,7 @@ function SelectOptions() {
 						)
 					}}
 				>
-					Download
+					Download ({selectedChoicesCount})
 					<Icon name="arrow right" />
 				</Button>
 			</Modal.Actions>
