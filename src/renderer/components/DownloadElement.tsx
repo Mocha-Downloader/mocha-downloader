@@ -1,8 +1,16 @@
 import { useEffect, useState } from "react"
 import { Card, Image, Button, Progress, Icon } from "semantic-ui-react"
 
-const DownloadElement = (props: { totalAmount: number; unit: string }) => {
-	const { totalAmount, unit } = props
+interface IDownloadElementProps {
+	title: string
+	thumbnail: string | Buffer
+
+	totalAmount: number
+	unit: string
+}
+
+const DownloadElement = (props: IDownloadElementProps) => {
+	const { title, thumbnail, totalAmount, unit } = props
 
 	const [isDownloading, setIsDownloading] = useState(true)
 	const [amountComplete, setAmountComplete] = useState(69)
@@ -15,21 +23,19 @@ const DownloadElement = (props: { totalAmount: number; unit: string }) => {
 	return (
 		<Card fluid>
 			<Card.Content>
-				<Image
-					floated="left"
-					size="small"
-					src="https://react.semantic-ui.com/images/wireframe/square-image.png"
-				/>
+				<Image floated="left" size="small" src={thumbnail} />
 
-				<Card.Header>Content title</Card.Header>
+				<Card.Header>{title}</Card.Header>
 
 				<Card.Meta>
 					<Icon color="red" name="youtube" />
 					<strong>YouTube</strong> <strong>mp4</strong>
 				</Card.Meta>
 
-				<Card.Description>
+				{/* find a more non-hacky way to put download related stuff on the bottom*/}
+				<div style={{ marginTop: "6rem" }}>
 					<div
+						style={{ paddingTop: "0.8rem", marginBottom: "-1rem" }}
 						onClick={() => {
 							setAmountComplete((prev) => prev + 5)
 						}}
@@ -59,11 +65,11 @@ const DownloadElement = (props: { totalAmount: number; unit: string }) => {
 					<br />
 
 					<Progress
-						percent={100}
+						percent={completePercentage}
 						size="tiny"
 						style={{ marginBottom: "0rem" }}
 					/>
-				</Card.Description>
+				</div>
 			</Card.Content>
 		</Card>
 	)

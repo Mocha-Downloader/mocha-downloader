@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react"
 import { Container, Card, Header } from "semantic-ui-react"
 import styled from "styled-components"
 
@@ -11,7 +12,6 @@ import { GlobalStore } from "./ipc"
 
 import GlobalStyle from "./globalStyle"
 import "semantic-ui-css/semantic.min.css"
-import { useEffect, useState } from "react"
 
 const StyledDownloadListContainer = styled(Container)`
 	display: flex;
@@ -45,8 +45,18 @@ const App = () => {
 					{/* where the downloading contents will be listed */}
 					{!isDownloadListEmpty && (
 						<>
-							<DownloadElement totalAmount={420} unit="MB" />
-							<DownloadElement totalAmount={420} unit="MB" />
+							<DownloadElement
+								title="Awesome title"
+								thumbnail="https://react.semantic-ui.com/images/wireframe/square-image.png"
+								totalAmount={420}
+								unit="MB"
+							/>
+							<DownloadElement
+								title="Awesome title"
+								thumbnail="https://react.semantic-ui.com/images/wireframe/square-image.png"
+								totalAmount={420}
+								unit="MB"
+							/>
 						</>
 					)}
 				</Card.Group>
