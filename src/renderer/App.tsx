@@ -1,4 +1,4 @@
-import { Container, Item, Header } from "semantic-ui-react"
+import { Container, Card, Header } from "semantic-ui-react"
 import styled from "styled-components"
 
 import { SelectOptions } from "./components/SelectOptions"
@@ -41,10 +41,17 @@ const App = () => {
 			<GlobalStyle />
 			<TopBar />
 			<StyledDownloadListContainer>
-				<Item.Group divided>
+				<Card.Group divided>
 					{/* where the downloading contents will be listed */}
-					{!isDownloadListEmpty && <DownloadElement />}
-				</Item.Group>
+					{!isDownloadListEmpty && (
+						<>
+							<DownloadElement totalAmount={420} unit="MB" />
+							<DownloadElement totalAmount={420} unit="MB" />
+						</>
+					)}
+				</Card.Group>
+
+				<br />
 
 				{isDownloadListEmpty ? (
 					<StyledInstructions>

@@ -1,62 +1,71 @@
-// todo: think of a better name
-import { Button, Grid, Icon, Item, Progress } from "semantic-ui-react"
-import styled from "styled-components"
+import { useEffect, useState } from "react"
+import { Card, Image, Button, Progress, Icon } from "semantic-ui-react"
 
-import icon from "../../../assets/icon.png"
+const DownloadElement = (props: { totalAmount: number; unit: string }) => {
+	const { totalAmount, unit } = props
 
-const StyledGrid = styled(Grid)`
-	width: 100%;
-	height: 100%;
+	const [isDownloading, setIsDownloading] = useState(true)
+	const [amountComplete, setAmountComplete] = useState(69)
+	const [completePercentage, setCompletePercentage] = useState(0)
 
-	/* progress bar */
-	.progress {
-		width: 100%;
-	}
-`
+	useEffect(() => {
+		setCompletePercentage(100 * (amountComplete / totalAmount))
+	}, [amountComplete])
 
-const StyledExtraTop = styled(Grid.Row)`
-	display: flex;
-	justify-content: space-between;
-	align-items: center !important;
-`
-
-const StyledExtraTopInfoContainer = styled.div`
-	display: flex;
-	align-items: center;
-	gap: 1rem;
-`
-
-const DownloadElement = () => {
 	return (
-		<Item>
-			<Item.Image size="tiny" src={icon} />
+		<Card fluid>
+			<Card.Content>
+				<Image
+					floated="left"
+					size="small"
+					src="https://react.semantic-ui.com/images/wireframe/square-image.png"
+				/>
 
-			<Item.Content>
-				<Item.Header>Title</Item.Header>
+				<Card.Header>Content title</Card.Header>
 
-				<Item.Meta>
-					<Icon color="red" name="youtube" /> YouTube
-				</Item.Meta>
+				<Card.Meta>
+					<Icon color="red" name="youtube" />
+					<strong>YouTube</strong> <strong>mp4</strong>
+				</Card.Meta>
 
-				<Item.Description>What do I put here</Item.Description>
+				<Card.Description>
+					<div
+						onClick={() => {
+							setAmountComplete((prev) => prev + 5)
+						}}
+					>
+						{amountComplete}
+						{unit} / {totalAmount}
+						{unit} <strong>{completePercentage.toFixed(1)}%</strong>
+					</div>
 
-				<Item.Extra>
-					<StyledGrid>
-						<StyledExtraTop>
-							<div>mp4</div>
-							<StyledExtraTopInfoContainer>
-								<div>69MB / 420MB (6.9MBps)</div>
-								<Button>Pause</Button>
-							</StyledExtraTopInfoContainer>
-						</StyledExtraTop>
+					<Button.Group
+						floated="right"
+						style={{ marginTop: "-2rem" }}
+					>
+						<Button
+							icon
+							onClick={() => {
+								setIsDownloading((prev) => !prev)
+							}}
+						>
+							<Icon name={isDownloading ? "pause" : "play"} />
+						</Button>
+						<Button icon>
+							<Icon name="stop" />
+						</Button>
+					</Button.Group>
 
-						<Grid.Row>
-							<Progress percent={100} size="tiny" />
-						</Grid.Row>
-					</StyledGrid>
-				</Item.Extra>
-			</Item.Content>
-		</Item>
+					<br />
+
+					<Progress
+						percent={100}
+						size="tiny"
+						style={{ marginBottom: "0rem" }}
+					/>
+				</Card.Description>
+			</Card.Content>
+		</Card>
 	)
 }
 
