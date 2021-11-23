@@ -1,4 +1,5 @@
 import { app, BrowserWindow, dialog, clipboard } from "electron"
+import isDev from "electron-is-dev"
 import { URL } from "url"
 import axios from "axios"
 import path from "path"
@@ -8,7 +9,7 @@ import os from "os"
 
 export let resolveHtmlPath: (htmlFileName: string) => string
 
-if (process.env.NODE_ENV === "development") {
+if (isDev) {
 	const port = process.env.PORT || 1212
 	resolveHtmlPath = (htmlFileName: string) => {
 		const url = new URL(`http://localhost:${port}`)
