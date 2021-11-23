@@ -48,7 +48,7 @@ const App = () => {
 
 				{isDownloadListEmpty ? (
 					<StyledInstructions>
-						<Header as="h2" icon>
+						<Header size="huge" icon>
 							{/* https://en.wikipedia.org/wiki/Caffeine */}
 							<AnimatedLogo size={100} />
 							Paste link to start downloading
