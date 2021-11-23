@@ -9,18 +9,21 @@ ipcMain.on("r2m", async (event, ...args) => {
 	if (isDev) {
 		console.log("r2m:", args)
 
-		if (args[1] === "1") {
-			// 신도림 개꿀잼
-			Download(
-				event,
-				"https://comic.naver.com/webtoon/detail?titleId=683496&no=1"
-			)
-		} else if (args[1] == "2") {
-			// 죽마도 약꿀잼
-			Download(
-				event,
-				"https://comic.naver.com/webtoon/list?titleId=409629"
-			)
+		switch (args[1]) {
+			case "1":
+				// 신도림 개꿀잼
+				Download(
+					event,
+					"https://comic.naver.com/webtoon/detail?titleId=683496&no=1"
+				)
+				break
+			case "2":
+				// 죽마도 약꿀잼
+				Download(
+					event,
+					"https://comic.naver.com/webtoon/list?titleId=409629"
+				)
+				break
 		}
 
 		return

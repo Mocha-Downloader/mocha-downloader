@@ -53,6 +53,8 @@ const defaultState: IGlobalState = {
 
 function reducer(state = defaultState, action: IGlobalAction): IGlobalState {
 	switch (action.type) {
+		// SelectOptions related
+
 		case ActionsEnum.SHOW_SELECT_OPTIONS:
 			return {
 				...state,
@@ -66,7 +68,6 @@ function reducer(state = defaultState, action: IGlobalAction): IGlobalState {
 						state.selectOptions.availableChoices,
 				},
 			}
-
 		case ActionsEnum.HIDE_SELECT_OPTIONS:
 			return {
 				...state,
@@ -76,7 +77,6 @@ function reducer(state = defaultState, action: IGlobalAction): IGlobalState {
 					isVisible: false,
 				},
 			}
-
 		case ActionsEnum.SET_SELECT_OPTIONS:
 			return {
 				...state,
@@ -86,7 +86,6 @@ function reducer(state = defaultState, action: IGlobalAction): IGlobalState {
 					selectedChoices: action.payload || [],
 				},
 			}
-
 		case ActionsEnum.UPDATE_SELECT_OPTIONS:
 			const selectedChoices = state.selectOptions.selectedChoices
 			selectedChoices[action.payload.index] = action.payload.value
@@ -131,7 +130,15 @@ export const GlobalStore = (props: { children: ReactNode }): ReactElement => {
 		window.electron.ipcRenderer.on((...args) => {
 			if (window.electron.isDev) console.log("m2r:", args)
 
-			if (args[0] === "select") showSelectOptions(args[1], args[2])
+			switch (args[0]) {
+				case "select":
+					showSelectOptions(args[1], args[2])
+					break
+
+				case "download":
+					console.log("adding DownloadElement")
+					break
+			}
 		})
 	}, [])
 
