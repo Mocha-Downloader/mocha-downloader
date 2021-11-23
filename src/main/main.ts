@@ -23,13 +23,14 @@ class AppUpdater {
 	}
 }
 
-let mainWindow: BrowserWindow | null = null
+export let mainWindow: BrowserWindow | null = null
 let tray: Tray | null = null
 
-if (process.env.NODE_ENV === "production")
+if (isDev) {
+	require("electron-debug")()
+} else {
 	require("source-map-support").install()
-
-if (isDev) require("electron-debug")()
+}
 
 const installExtensions = async () => {
 	const installer = require("electron-devtools-installer")
