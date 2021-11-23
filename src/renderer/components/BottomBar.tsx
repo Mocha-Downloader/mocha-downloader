@@ -44,7 +44,7 @@ const BottomBar = () => {
 						data-tip="Source Code"
 					>
 						<Menu.Item>
-							<Icon link size="large" name="github square" />
+							<Icon link size="large" name="github" />
 							<ReactTooltip effect="solid" />
 						</Menu.Item>
 					</a>
