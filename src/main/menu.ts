@@ -8,10 +8,6 @@ import {
 import isDev from "electron-is-dev"
 
 import { showAbout } from "./util"
-import { start } from "pretty-error"
-
-// apply pretty error print to all errors
-start()
 
 interface DarwinMenuItemConstructorOptions extends MenuItemConstructorOptions {
 	selector?: string

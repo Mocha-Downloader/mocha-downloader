@@ -3,12 +3,17 @@ import "regenerator-runtime/runtime"
 
 import { app, BrowserWindow, shell, Tray, Menu } from "electron"
 import { autoUpdater } from "electron-updater"
+import { start } from "pretty-error"
 import isDev from "electron-is-dev"
 import log from "electron-log"
 import path from "path"
+
 import "./ipc"
 import MenuBuilder from "./menu"
 import { getAssetPath, resolveHtmlPath, showAbout } from "./util"
+
+// apply pretty error print to all errors
+start()
 
 class AppUpdater {
 	constructor() {
