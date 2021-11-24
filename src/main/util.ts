@@ -41,7 +41,7 @@ export function showAbout() {
 Version: ${app.getVersion()}
 OS: ${os.platform()} ${os.arch()} ${os.release()}
 
-Logo inspired by icons8 animated icons
+License: https://mocha-downloader.github.io/docs/licenses
 `
 
 	const choice = dialog.showMessageBoxSync({
