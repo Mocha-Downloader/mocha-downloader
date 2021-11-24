@@ -12,6 +12,8 @@ All development-related documents are written in English only.
   - [nvm](https://github.com/nvm-sh/nvm) is a good tool for this.
 - use function components instead of class components in react.
 
+### Variabe naming
+
 ## Required skill
 
 The following skills are absolutely necessary to start contributing code to Mocha Downloader.
@@ -53,6 +55,13 @@ yarn start
 ```
 yarn package
 ```
+
+## Adding new platform
+
+- Make a file in the [`src/main/platforms`](./src/main/platforms) directory.
+- export it in [`src/main/platforms/index.ts`](./src/main/platforms/index.ts)
+- add logic to [`src/main/ipc.ts`](./src/main/ipc.ts)
+- add a 32x32px sized png icon to [`./assets`](./assets)
 
 ## [documentation and blog](https://github.com/Mocha-Downloader/mocha-downloader.github.io)
 
