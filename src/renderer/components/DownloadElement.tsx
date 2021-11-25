@@ -23,7 +23,7 @@ const DownloadElement = (props: IDownloadElementProps) => {
 	return (
 		<Card fluid>
 			<Card.Content>
-				<Image floated="left" size="small" src={thumbnail} />
+				<Image floated="left" size="tiny" src={thumbnail} />
 
 				<Card.Header>{title}</Card.Header>
 
@@ -32,8 +32,8 @@ const DownloadElement = (props: IDownloadElementProps) => {
 					<strong>YouTube</strong> <strong>mp4</strong>
 				</Card.Meta>
 
-				{/* find a more non-hacky way to put download related stuff on the bottom*/}
-				<div style={{ marginTop: "6rem" }}>
+				{/* todo: find a more non-hacky way to put download related stuff on the bottom*/}
+				<div style={{ marginTop: "3.05rem" }}>
 					<div
 						style={{ paddingTop: "0.8rem", marginBottom: "-1rem" }}
 						onClick={() => {
