@@ -8,7 +8,7 @@ import { Button, Checkbox, Icon, Modal, Table } from "semantic-ui-react"
 
 import { globalContext, ActionsEnum } from "../ipc"
 
-function SelectOptions() {
+const SelectOptions = () => {
 	const { globalState, dispatch } = useContext(globalContext)
 	let isEverythingSelected = globalState.selectOptions.selectedChoices.every(
 		(val) => val
@@ -54,7 +54,8 @@ function SelectOptions() {
 													type: ActionsEnum.UPDATE_SELECT_OPTIONS,
 													payload: {
 														index: index,
-														value: !!data.checked,
+														isSelected:
+															!!data.checked,
 													},
 												})
 											}}

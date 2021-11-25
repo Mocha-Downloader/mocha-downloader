@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { Container, Card, Header } from "semantic-ui-react"
 import styled from "styled-components"
 
@@ -8,7 +8,7 @@ import BottomBar from "./components/BottomBar"
 import DownloadElement from "./components/DownloadElement"
 import TopBar from "./components/TopBar"
 
-import { GlobalStore } from "./ipc"
+import { globalContext } from "./ipc"
 
 import GlobalStyle from "./globalStyle"
 import "semantic-ui-css/semantic.min.css"
@@ -30,34 +30,34 @@ const StyledInstructions = styled.div`
 `
 
 const App = () => {
+	const { globalState } = useContext(globalContext)
 	const [isDownloadListEmpty, setDownloadListEmpty] = useState(true)
 
 	useEffect(() => {
-		setDownloadListEmpty(true) // prevent build error. Will be removed later when a proper logic is implemented.
-	}, [])
+		setDownloadListEmpty(
+			Object.keys(globalState.downloadElements).length == 0
+		)
+	}, [globalState])
 
 	return (
-		<GlobalStore>
+		<>
 			<GlobalStyle />
 			<TopBar />
 			<StyledDownloadListContainer>
-				<Card.Group divided>
-					{/* where the downloading contents will be listed */}
-					{!isDownloadListEmpty && (
-						<>
-							<DownloadElement
-								title="Awesome title"
-								thumbnail="https://react.semantic-ui.com/images/wireframe/square-image.png"
-								totalAmount={420}
-								unit="MB"
-							/>
-							<DownloadElement
-								title="Awesome title"
-								thumbnail="https://react.semantic-ui.com/images/wireframe/square-image.png"
-								totalAmount={420}
-								unit="MB"
-							/>
-						</>
+				<Card.Group>
+					{Object.entries(globalState.downloadElements).map(
+						([key, { title, thumbnail, totalAmount, unit }]) => {
+							return (
+								<DownloadElement
+									key={key}
+									keyValue={key}
+									title={title}
+									thumbnail={thumbnail}
+									totalAmount={totalAmount}
+									unit={unit}
+								/>
+							)
+						}
 					)}
 				</Card.Group>
 
@@ -81,7 +81,7 @@ const App = () => {
 				<SelectOptions />
 			</StyledDownloadListContainer>
 			<BottomBar />
-		</GlobalStore>
+		</>
 	)
 }
 

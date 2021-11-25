@@ -1,4 +1,12 @@
 import { render } from "react-dom"
+
+import { GlobalStore } from "./ipc"
+
 import App from "./App"
 
-render(<App />, document.getElementById("root"))
+render(
+	<GlobalStore>
+		<App />
+	</GlobalStore>,
+	document.getElementById("root")
+)

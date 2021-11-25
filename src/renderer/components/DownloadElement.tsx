@@ -1,7 +1,11 @@
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { Card, Image, Button, Progress, Icon } from "semantic-ui-react"
 
-interface IDownloadElementProps {
+import { globalContext, ActionsEnum } from "../ipc"
+
+export interface IDownloadElementProps {
+	keyValue: string // key value that can be access programmatically
+
 	title: string
 	thumbnail: string | Buffer
 
@@ -10,8 +14,9 @@ interface IDownloadElementProps {
 }
 
 const DownloadElement = (props: IDownloadElementProps) => {
-	const { title, thumbnail, totalAmount, unit } = props
+	const { keyValue, title, thumbnail, totalAmount, unit } = props
 
+	const { dispatch } = useContext(globalContext)
 	const [isDownloading, setIsDownloading] = useState(true)
 	const [amountComplete, setAmountComplete] = useState(69)
 	const [completePercentage, setCompletePercentage] = useState(0)
@@ -23,6 +28,19 @@ const DownloadElement = (props: IDownloadElementProps) => {
 	return (
 		<Card fluid>
 			<Card.Content>
+				<Button
+					icon
+					floated="right"
+					onClick={() => {
+						dispatch({
+							type: ActionsEnum.REMOVE_DOWNLOAD_ELEMENTS,
+							payload: [keyValue],
+						})
+					}}
+				>
+					<Icon name="close" />
+				</Button>
+
 				<Image floated="left" size="tiny" src={thumbnail} />
 
 				<Card.Header>{title}</Card.Header>

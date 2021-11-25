@@ -11,11 +11,20 @@ import {
 	useReducer,
 } from "react"
 
+import { IDownloadElementProps } from "./components/DownloadElement"
+
 export enum ActionsEnum {
 	SHOW_SELECT_OPTIONS = "SHOW_SELECT_OPTIONS",
 	HIDE_SELECT_OPTIONS = "HIDE_SELECT_OPTIONS",
 	SET_SELECT_OPTIONS = "SET_SELECT_OPTIONS",
 	UPDATE_SELECT_OPTIONS = "UPDATE_SELECT_OPTIONS",
+
+	ADD_DOWNLOAD_ELEMENTS = "ADD_DOWNLOAD_ELEMENTS",
+	REMOVE_DOWNLOAD_ELEMENTS = "REMOVE_DOWNLOAD_ELEMENTS",
+}
+
+interface Dict<T> {
+	[key: string]: T
 }
 
 interface ISelectOptionsEntry {
@@ -24,6 +33,7 @@ interface ISelectOptionsEntry {
 }
 
 interface IGlobalState {
+	downloadElements: Dict<IDownloadElementProps>
 	selectOptions: {
 		isVisible: boolean
 		url: string
@@ -43,6 +53,7 @@ interface IContext {
 }
 
 const defaultState: IGlobalState = {
+	downloadElements: {},
 	selectOptions: {
 		isVisible: false,
 		url: "",
@@ -51,11 +62,13 @@ const defaultState: IGlobalState = {
 	},
 }
 
-function reducer(state = defaultState, action: IGlobalAction): IGlobalState {
+const reducer = (state = defaultState, action: IGlobalAction): IGlobalState => {
 	switch (action.type) {
 		// SelectOptions related
 
 		case ActionsEnum.SHOW_SELECT_OPTIONS:
+			// action.payload: { url: string, availableChoices: ISelectOptionsEntry[] }
+
 			return {
 				...state,
 				selectOptions: {
@@ -69,6 +82,8 @@ function reducer(state = defaultState, action: IGlobalAction): IGlobalState {
 				},
 			}
 		case ActionsEnum.HIDE_SELECT_OPTIONS:
+			// action.payload: none
+
 			return {
 				...state,
 				selectOptions: {
@@ -78,6 +93,8 @@ function reducer(state = defaultState, action: IGlobalAction): IGlobalState {
 				},
 			}
 		case ActionsEnum.SET_SELECT_OPTIONS:
+			// action.payload: boolean[]
+
 			return {
 				...state,
 				selectOptions: {
@@ -87,8 +104,10 @@ function reducer(state = defaultState, action: IGlobalAction): IGlobalState {
 				},
 			}
 		case ActionsEnum.UPDATE_SELECT_OPTIONS:
+			// action.payload: { index: number, isSelected: boolean }
+
 			const selectedChoices = state.selectOptions.selectedChoices
-			selectedChoices[action.payload.index] = action.payload.value
+			selectedChoices[action.payload.index] = action.payload.isSelected
 
 			return {
 				...state,
@@ -98,6 +117,41 @@ function reducer(state = defaultState, action: IGlobalAction): IGlobalState {
 					selectedChoices: selectedChoices,
 				},
 			}
+
+		// downloadElement related
+		// brackets are added to create a new lexical scope and prevent variable name collision
+
+		case ActionsEnum.ADD_DOWNLOAD_ELEMENTS: {
+			// action.payload: Dict<IDownloadElementProps>
+
+			const downloadElements = state.downloadElements
+
+			for (const [key, value] of Object.entries(
+				action.payload as Dict<IDownloadElementProps>
+			)) {
+				downloadElements[key] = value
+			}
+
+			return {
+				...state,
+				downloadElements: downloadElements,
+			}
+		}
+
+		case ActionsEnum.REMOVE_DOWNLOAD_ELEMENTS: {
+			// action.payload: string[]
+
+			const downloadElements = state.downloadElements
+
+			;(action.payload as string[]).map((key) => {
+				delete downloadElements[key]
+			})
+
+			return {
+				...state,
+				downloadElements: downloadElements,
+			}
+		}
 
 		default:
 			return state
@@ -136,7 +190,25 @@ export const GlobalStore = (props: { children: ReactNode }): ReactElement => {
 					break
 
 				case "download":
-					console.log("adding DownloadElement")
+					dispatch({
+						type: ActionsEnum.ADD_DOWNLOAD_ELEMENTS,
+						payload: {
+							a: {
+								title: "title",
+								thumbnail:
+									"https://react.semantic-ui.com/images/wireframe/square-image.png",
+								totalAmount: 420,
+								unit: "MB",
+							},
+							b: {
+								title: "title",
+								thumbnail:
+									"https://react.semantic-ui.com/images/wireframe/square-image.png",
+								totalAmount: 420,
+								unit: "MB",
+							},
+						},
+					})
 					break
 			}
 		})
