@@ -9,24 +9,37 @@ import platformImage from "../../../assets/platforms/comic.naver.com.png"
 export interface IDownloadCardProps {
 	keyValue: string // key value that can be access programmatically
 
-	platform: platformID
+	platform: platformID // the source of the downlaoding content
 	title: string
 	thumbnail: string | Buffer
 
+	status: string // what the downloader currently doing
 	totalAmount: number
-	unit: string
+	amountComplete: number
+	isDownloadComplete: boolean // is everything completely done
 }
 
 const DownloadCard = (props: IDownloadCardProps) => {
-	const { keyValue, platform, title, thumbnail, totalAmount, unit } = props
+	const {
+		keyValue,
+
+		platform,
+		title,
+		thumbnail,
+
+		status,
+		totalAmount,
+		amountComplete,
+		isDownloadComplete,
+	} = props
 
 	const { dispatch } = useContext(globalContext)
 	const [isDownloading, setIsDownloading] = useState(true)
-	const [amountComplete, setAmountComplete] = useState(0)
 	const [completePercentage, setCompletePercentage] = useState(0)
 
 	useEffect(() => {
-		setCompletePercentage(100 * (amountComplete / totalAmount))
+		const percentageValue = 100 * (amountComplete / totalAmount)
+		if (!isNaN(percentageValue)) setCompletePercentage(percentageValue)
 	}, [amountComplete])
 
 	return (
@@ -45,54 +58,36 @@ const DownloadCard = (props: IDownloadCardProps) => {
 				>
 					<Icon name="close" />
 				</Button>
-
 				<Image floated="left" size="tiny" src={thumbnail} />
-
 				<Card.Header>{title}</Card.Header>
-
 				<Card.Meta>
 					<Image src={platformImage} />
 					<strong>{platformID2NameMap[platform]}</strong>
 				</Card.Meta>
 
-				{/* todo: find a more non-hacky way to put download related stuff on the bottom*/}
-				<div style={{ marginTop: "3.05rem" }}>
-					<div
-						style={{ paddingTop: "0.8rem", marginBottom: "-1rem" }}
+				<div style={{ paddingTop: "1.3rem", marginBottom: "-0.8rem" }}>
+					{amountComplete} / {totalAmount}&nbsp;&nbsp;(
+					<strong>{completePercentage.toFixed(1)}%</strong>)
+				</div>
+				<Progress
+					percent={completePercentage}
+					size="tiny"
+					style={{ marginBottom: "0" }}
+				/>
+				{isDownloadComplete ? <strong>done!</strong> : status}
+				<Button.Group floated="right" style={{ marginTop: "0.5rem" }}>
+					<Button
+						icon
 						onClick={() => {
-							setAmountComplete((prev) => prev + 5)
+							setIsDownloading((prev) => !prev)
 						}}
 					>
-						<strong>{completePercentage.toFixed(1)}%</strong>
-						&nbsp;&nbsp;&nbsp;
-						{amountComplete} / {totalAmount} {unit}
-					</div>
-
-					<Button.Group
-						floated="right"
-						style={{ marginTop: "-2rem" }}
-					>
-						<Button
-							icon
-							onClick={() => {
-								setIsDownloading((prev) => !prev)
-							}}
-						>
-							<Icon name={isDownloading ? "pause" : "play"} />
-						</Button>
-						<Button icon>
-							<Icon name="stop" />
-						</Button>
-					</Button.Group>
-
-					<br />
-
-					<Progress
-						percent={completePercentage}
-						size="tiny"
-						style={{ marginBottom: "0rem" }}
-					/>
-				</div>
+						<Icon name={isDownloading ? "pause" : "play"} />
+					</Button>
+					<Button icon>
+						<Icon name="stop" />
+					</Button>
+				</Button.Group>
 			</Card.Content>
 		</Card>
 	)

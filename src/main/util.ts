@@ -4,6 +4,7 @@ import { URL } from "url"
 import axios from "axios"
 import path from "path"
 import os from "os"
+import { mainWindow } from "./main"
 
 // -----
 
@@ -89,4 +90,11 @@ export async function getImageBuffer(
 			headers: { "User-Agent": userAgent },
 		})
 		.then((response) => Buffer.from(response.data, "binary"))
+}
+
+/**
+ *  Send data from main to renderer
+ */
+export async function m2r(...args: any[]) {
+	mainWindow?.webContents.send("m2r", ...args)
 }

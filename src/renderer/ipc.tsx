@@ -20,6 +20,7 @@ export enum ActionsEnum {
 	UPDATE_SELECT_OPTIONS = "UPDATE_SELECT_OPTIONS",
 
 	ADD_DOWNLOAD_CARDS = "ADD_DOWNLOAD_CARDS",
+	UPDATE_DOWNLOAD_CARD = "UPDATE_DOWNLOAD_CARD",
 	REMOVE_DOWNLOAD_CARDS = "REMOVE_DOWNLOAD_CARDS",
 }
 
@@ -67,7 +68,10 @@ const reducer = (state = defaultState, action: IGlobalAction): IGlobalState => {
 		// SelectOptions related
 
 		case ActionsEnum.SHOW_SELECT_OPTIONS:
-			// action.payload: { url: string, availableChoices: ISelectOptionsEntry[] }
+			const payload: {
+				url: string
+				availableChoices: ISelectOptionsEntry[]
+			} = action.payload
 
 			return {
 				...state,
@@ -75,15 +79,13 @@ const reducer = (state = defaultState, action: IGlobalAction): IGlobalState => {
 					...state.selectOptions,
 
 					isVisible: true,
-					url: action.payload.url || state.selectOptions.url,
+					url: payload.url || state.selectOptions.url,
 					availableChoices:
-						action.payload.availableChoices ||
+						payload.availableChoices ||
 						state.selectOptions.availableChoices,
 				},
 			}
-		case ActionsEnum.HIDE_SELECT_OPTIONS:
-			// action.payload: none
-
+		case ActionsEnum.HIDE_SELECT_OPTIONS: {
 			return {
 				...state,
 				selectOptions: {
@@ -92,22 +94,25 @@ const reducer = (state = defaultState, action: IGlobalAction): IGlobalState => {
 					isVisible: false,
 				},
 			}
-		case ActionsEnum.SET_SELECT_OPTIONS:
-			// action.payload: boolean[]
+		}
+		case ActionsEnum.SET_SELECT_OPTIONS: {
+			const payload: boolean[] = action.payload
 
 			return {
 				...state,
 				selectOptions: {
 					...state.selectOptions,
 
-					selectedChoices: action.payload || [],
+					selectedChoices: payload || [],
 				},
 			}
-		case ActionsEnum.UPDATE_SELECT_OPTIONS:
-			// action.payload: { index: number, isSelected: boolean }
+		}
+		case ActionsEnum.UPDATE_SELECT_OPTIONS: {
+			const payload: { index: number; isSelected: boolean } =
+				action.payload
 
 			const selectedChoices = state.selectOptions.selectedChoices
-			selectedChoices[action.payload.index] = action.payload.isSelected
+			selectedChoices[payload.index] = payload.isSelected
 
 			return {
 				...state,
@@ -117,17 +122,18 @@ const reducer = (state = defaultState, action: IGlobalAction): IGlobalState => {
 					selectedChoices: selectedChoices,
 				},
 			}
+		}
 
 		// downloadCard related
 		// brackets are added to create a new lexical scope and prevent variable name collision
 
 		case ActionsEnum.ADD_DOWNLOAD_CARDS: {
-			// action.payload: Dict<IDownloadCardProps>
+			const payload: Dict<IDownloadCardProps> = action.payload
 
 			const downloadCards = state.downloadCards
 
 			for (const [key, value] of Object.entries(
-				action.payload as Dict<IDownloadCardProps>
+				payload as Dict<IDownloadCardProps>
 			)) {
 				downloadCards[key] = value
 			}
@@ -137,13 +143,28 @@ const reducer = (state = defaultState, action: IGlobalAction): IGlobalState => {
 				downloadCards: downloadCards,
 			}
 		}
+		case ActionsEnum.UPDATE_DOWNLOAD_CARD: {
+			const payload: { cardID: string; key: string; value: any } =
+				action.payload
+
+			const DownloadCards = state.downloadCards
+
+			if (DownloadCards[payload.cardID].hasOwnProperty(payload.key))
+				// @ts-ignore
+				DownloadCards[payload.cardID][payload.key] = payload.value
+
+			return {
+				...state,
+				downloadCards: DownloadCards,
+			}
+		}
 
 		case ActionsEnum.REMOVE_DOWNLOAD_CARDS: {
-			// action.payload: string[]
+			const payload: string[] = action.payload
 
 			const downloadCards = state.downloadCards
 
-			;(action.payload as string[]).map((key) => {
+			;(payload as string[]).map((key) => {
 				delete downloadCards[key]
 			})
 
@@ -193,13 +214,27 @@ export const GlobalStore = (props: { children: ReactNode }): ReactElement => {
 					break
 
 				case "download":
-					// args1: Dict<IDownloadCardProps>
+					switch (args[1]) {
+						case "new":
+							// args1: Dict<IDownloadCardProps>
 
-					dispatch({
-						type: ActionsEnum.ADD_DOWNLOAD_CARDS,
-						payload: args[1],
-					})
-					break
+							dispatch({
+								type: ActionsEnum.ADD_DOWNLOAD_CARDS,
+								payload: args[2],
+							})
+							break
+
+						case "update":
+							dispatch({
+								type: ActionsEnum.UPDATE_DOWNLOAD_CARD,
+								payload: {
+									cardID: args[2],
+									key: args[3],
+									value: args[4],
+								},
+							})
+							break
+					}
 			}
 		})
 	}, [])

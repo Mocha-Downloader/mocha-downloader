@@ -4,14 +4,29 @@ import sizeOf from "image-size"
 import cheerio from "cheerio"
 import axios from "axios"
 
-import { getHTMLFromWindow, getImageBuffer, parseSite } from "../util"
-import { mainWindow } from "../main"
+import { getHTMLFromWindow, getImageBuffer, parseSite, m2r } from "../util"
 
 import { DownloadFlags, Platform } from "../constants"
 
 // todo: add referrer and headers to requests
 
 async function downloadEpisode(url: string, flags?: DownloadFlags) {
+	const downloadID = randomUUID()
+
+	const downloadCardData: { [key: string]: any } = {}
+	downloadCardData[downloadID] = {
+		platform: "comic.naver.com",
+		title: "title",
+		thumbnail: "https://react.semantic-ui.com/images/wireframe/image.png", // placeholder image
+
+		status: "loading page",
+		totalAmount: 0,
+		amountComplete: 0,
+
+		isDownloadComplete: false,
+	}
+	m2r("download", "new", downloadCardData)
+
 	const [userAgent, $] = await parseSite<[string, cheerio.Root]>(
 		url,
 		async (window) => {
@@ -21,35 +36,43 @@ async function downloadEpisode(url: string, flags?: DownloadFlags) {
 			]
 		}
 	)
+	m2r(
+		"download",
+		"update",
+		downloadID,
+		"thumbnail",
+		$("#sectionContWide > div.comicinfo > div.thumb > a > img").attr("src")
+	)
 
 	const title = $("meta[property='og:description']").attr("content")
+	m2r("download", "update", downloadID, "title", title)
 
 	const imgLinks: string[] = []
 	$("#comic_view_area > div.wt_viewer > img").each((i, elem) => {
 		//@ts-ignore
 		imgLinks[i] = String(elem.attribs.src)
 	})
-
-	const downloadCardData: { [key: string]: any } = {}
-	downloadCardData[randomUUID()] = {
-		title: title,
-		platform: "comic.naver.com",
-		thumbnail: $(
-			"#sectionContWide > div.comicinfo > div.thumb > a > img"
-		).attr("src"),
-		totalAmount: imgLinks.length,
-		unit: "images",
-	}
-	mainWindow?.webContents.send("m2r", "download", downloadCardData)
+	m2r("download", "update", downloadID, "totalAmount", imgLinks.length + 2) // +1 for image stitching and 1 for saving
 
 	if (flags?.dryRun) return
 
 	const imgs: Buffer[] = []
+	let amountComplete = 0 // number of images done downloading
 	await Promise.all(
 		imgLinks.map(async (imgLink, i) => {
 			imgs[i] = await getImageBuffer(imgLink, userAgent)
+			amountComplete += 1
+			m2r(
+				"download",
+				"update",
+				downloadID,
+				"amountComplete",
+				amountComplete
+			)
 		})
 	)
+
+	m2r("download", "update", downloadID, "status", "parsing images")
 
 	const imgsToStitch: OverlayOptions[] = []
 	let heightCount = 0
@@ -68,6 +91,10 @@ async function downloadEpisode(url: string, flags?: DownloadFlags) {
 		})
 		heightCount += dimensions.height
 	}
+	amountComplete += 1
+
+	m2r("download", "update", downloadID, "amountComplete", amountComplete)
+	m2r("downlaod", "update", downloadID, "status", "stitching images")
 
 	await sharp({
 		create: {
@@ -80,8 +107,10 @@ async function downloadEpisode(url: string, flags?: DownloadFlags) {
 		.composite(imgsToStitch)
 		.png({ quality: 100 })
 		.toFile(`${title}.png`)
+	amountComplete += 1
 
-	console.log(`Download complete! ${url}`)
+	m2r("download", "update", downloadID, "amountComplete", amountComplete)
+	m2r("download", "update", downloadID, "isDownloadComplete", "true")
 }
 
 async function downloadEpisodes(
@@ -137,7 +166,7 @@ async function logic(url: string, parsedURL: URL, selected?: number[]) {
 	if (parsedURL.pathname == "/webtoon/list") {
 		if (!selected || selected.length <= 0) {
 			const selectable = await getList(url)
-			mainWindow?.webContents.send("m2r", "select", url, selectable)
+			m2r("select", url, selectable)
 			return
 		}
 

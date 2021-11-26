@@ -46,7 +46,15 @@ const App = () => {
 					{Object.entries(globalState.downloadCards).map(
 						([
 							key,
-							{ title, platform, thumbnail, totalAmount, unit },
+							{
+								platform,
+								title,
+								thumbnail,
+								status,
+								totalAmount,
+								amountComplete,
+								isDownloadComplete,
+							},
 						]) => {
 							return (
 								<DownloadCard
@@ -55,8 +63,10 @@ const App = () => {
 									platform={platform}
 									title={title}
 									thumbnail={thumbnail}
+									status={status}
 									totalAmount={totalAmount}
-									unit={unit}
+									amountComplete={amountComplete}
+									isDownloadComplete={isDownloadComplete}
 								/>
 							)
 						}
