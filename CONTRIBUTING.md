@@ -12,7 +12,7 @@ All development-related documents are written in English only.
   - [nvm](https://github.com/nvm-sh/nvm) is a good tool for this.
 - use function components instead of class components in react.
 
-### Variabe naming
+### Variable naming
 
 ## Required skill
 
@@ -49,6 +49,8 @@ yarn install
 ```
 yarn start
 ```
+
+- TIP: use development testing shortcuts (check `test` functions in platform files for more detail)
 
 ### 5. Build for production
 

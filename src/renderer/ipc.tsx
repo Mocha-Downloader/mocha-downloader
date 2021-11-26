@@ -125,7 +125,6 @@ const reducer = (state = defaultState, action: IGlobalAction): IGlobalState => {
 		}
 
 		// downloadCard related
-		// brackets are added to create a new lexical scope and prevent variable name collision
 
 		case ActionsEnum.ADD_DOWNLOAD_CARDS: {
 			const payload: Dict<IDownloadCardProps> = action.payload

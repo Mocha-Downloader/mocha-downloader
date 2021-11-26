@@ -83,6 +83,8 @@ export async function getImageBuffer(
 	imageURL: string,
 	userAgent: string
 ): Promise<Buffer> {
+	// todo: handle timeout exceed error
+
 	return axios
 		.get(imageURL, {
 			timeout: 1000,

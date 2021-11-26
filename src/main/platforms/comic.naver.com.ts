@@ -94,7 +94,7 @@ async function downloadEpisode(url: string, flags?: DownloadFlags) {
 	amountComplete += 1
 
 	m2r("download", "update", downloadID, "amountComplete", amountComplete)
-	m2r("downlaod", "update", downloadID, "status", "stitching images")
+	m2r("download", "update", downloadID, "status", "stitching images")
 
 	await sharp({
 		create: {
@@ -113,16 +113,24 @@ async function downloadEpisode(url: string, flags?: DownloadFlags) {
 	m2r("download", "update", downloadID, "isDownloadComplete", "true")
 }
 
+/**
+ * Download multiple episodes
+ * @param {string} url - URL of episode list
+ * @param {number[]} selected - indices of episodes to download starting from 0
+ * @param {DownloadFlags} [flags] - Download behavior tweaks
+ */
 async function downloadEpisodes(
 	url: string,
 	selected: number[],
 	flags?: DownloadFlags
 ) {
 	console.log(url, selected, flags)
+	if (flags?.dryRun) return
 }
 
-async function getList(url: string): Promise<{ title: string; url: string }[]> {
-	const parsedURL = new URL(url)
+async function getList(
+	parsedURL: URL
+): Promise<{ title: string; url: string }[]> {
 	const titleID = parsedURL.searchParams.get("titleId")
 
 	// use url without page and other nonsense
@@ -157,28 +165,109 @@ async function getList(url: string): Promise<{ title: string; url: string }[]> {
 	return result
 }
 
-async function logic(url: string, parsedURL: URL, selected?: number[]) {
+async function logic(parsedURL: URL, selected?: number[]) {
 	if (parsedURL.pathname == "/webtoon/detail") {
-		downloadEpisode(url)
+		downloadEpisode(parsedURL.href)
 		return
 	}
 
 	if (parsedURL.pathname == "/webtoon/list") {
 		if (!selected || selected.length <= 0) {
-			const selectable = await getList(url)
-			m2r("select", url, selectable)
+			const selectable = await getList(parsedURL)
+			m2r("select", parsedURL.href, selectable)
 			return
 		}
 
-		downloadEpisodes(url, selected)
+		downloadEpisodes(parsedURL.href, selected)
 		return
+	}
+}
+
+function test(...args: any[]) {
+	// w: webtoon (웹툰)
+	// b: best challenge (베스트 도전)
+	// c: challenge (도전)
+	const comicType: "w" | "b" | "c" = args[0]
+
+	// e: episode
+	// l: list (first 3 only by default)
+	const downloadType: "e" | "l" = args[1]
+
+	const flag: DownloadFlags = { dryRun: false }
+	const otherTokens = args.slice(2)
+
+	if (otherTokens.includes("d")) flag.dryRun = true
+
+	console.log(comicType, downloadType, flag)
+
+	switch (comicType) {
+		case "w":
+			switch (downloadType) {
+				case "e":
+					// 신도림 episode 1
+					downloadEpisode(
+						"https://comic.naver.com/webtoon/detail?titleId=683496&no=1",
+						flag
+					)
+					break
+				case "l":
+					// 신도림 episode 1~3
+					downloadEpisodes(
+						"https://comic.naver.com/webtoon/list?titleId=683496",
+						[0, 1, 2],
+						flag
+					)
+			}
+			break
+
+		case "b":
+			switch (downloadType) {
+				case "e":
+					// 괜찮아, 고3이야 episode 92 (remake prologue)
+					downloadEpisode(
+						"https://comic.naver.com/bestChallenge/detail?titleId=643799&no=92",
+						flag
+					)
+					break
+				case "l":
+					// 신도림 episode 1~3
+					downloadEpisodes(
+						"https://comic.naver.com/bestChallenge/list?titleId=643799",
+						[92, 93, 94],
+						flag
+					)
+					break
+			}
+			break
+
+		case "c":
+			switch (downloadType) {
+				case "e":
+					// test comic episode 1
+					downloadEpisode(
+						"https://comic.naver.com/challenge/detail?titleId=785847&no=1",
+						flag
+					)
+					break
+				case "l":
+					// test comic episode 1~3
+					downloadEpisodes(
+						"https://comic.naver.com/challenge/list?titleId=785847",
+						[0, 1, 2],
+						flag
+					)
+					break
+			}
+			break
 	}
 }
 
 export default {
 	meta: {
 		id: "comic.naver.com",
+		code: "nv",
 	},
+	test,
 	logic,
 	downloadEpisode,
 	downloadEpisodes,

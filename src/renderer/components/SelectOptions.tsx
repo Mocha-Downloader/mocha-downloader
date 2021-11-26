@@ -106,7 +106,10 @@ const SelectOptions = () => {
 						window.electron.ipcRenderer.send(
 							"download",
 							globalState.selectOptions.url,
+							// indeces of selected values
 							globalState.selectOptions.selectedChoices
+								.map((value, index) => (value ? index : ""))
+								.filter(String)
 						)
 					}}
 				>
