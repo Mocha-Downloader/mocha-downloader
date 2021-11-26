@@ -5,7 +5,7 @@ import styled from "styled-components"
 import { SelectOptions } from "./components/SelectOptions"
 import AnimatedLogo from "./components/AnimatedLogo"
 import BottomBar from "./components/BottomBar"
-import DownloadElement from "./components/DownloadCard"
+import DownloadCard from "./components/DownloadCard"
 import TopBar from "./components/TopBar"
 
 import { globalContext } from "./ipc"
@@ -34,9 +34,7 @@ const App = () => {
 	const [isDownloadListEmpty, setDownloadListEmpty] = useState(true)
 
 	useEffect(() => {
-		setDownloadListEmpty(
-			Object.keys(globalState.downloadElements).length == 0
-		)
+		setDownloadListEmpty(Object.keys(globalState.downloadCards).length == 0)
 	}, [globalState])
 
 	return (
@@ -45,13 +43,13 @@ const App = () => {
 			<TopBar />
 			<StyledDownloadListContainer>
 				<Card.Group>
-					{Object.entries(globalState.downloadElements).map(
+					{Object.entries(globalState.downloadCards).map(
 						([
 							key,
 							{ title, platform, thumbnail, totalAmount, unit },
 						]) => {
 							return (
-								<DownloadElement
+								<DownloadCard
 									key={key}
 									keyValue={key}
 									platform={platform}

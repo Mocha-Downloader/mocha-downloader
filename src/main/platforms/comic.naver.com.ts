@@ -27,8 +27,8 @@ async function downloadEpisode(url: string, flags?: downloadFlags) {
 		imgLinks[i] = String(elem.attribs.src)
 	})
 
-	const downloadElementData: { [key: string]: any } = {}
-	downloadElementData[randomUUID()] = {
+	const downloadCardData: { [key: string]: any } = {}
+	downloadCardData[randomUUID()] = {
 		title: title,
 		platform: "comic.naver.com",
 		thumbnail: $(
@@ -37,7 +37,7 @@ async function downloadEpisode(url: string, flags?: downloadFlags) {
 		totalAmount: imgLinks.length,
 		unit: "images",
 	}
-	mainWindow?.webContents.send("m2r", "download", downloadElementData)
+	mainWindow?.webContents.send("m2r", "download", downloadCardData)
 
 	if (flags?.dryRun) return
 

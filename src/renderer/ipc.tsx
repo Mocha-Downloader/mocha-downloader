@@ -11,7 +11,7 @@ import {
 	useReducer,
 } from "react"
 
-import { IDownloadElementProps } from "./components/DownloadCard"
+import { IDownloadCardProps } from "./components/DownloadCard"
 
 export enum ActionsEnum {
 	SHOW_SELECT_OPTIONS = "SHOW_SELECT_OPTIONS",
@@ -19,8 +19,8 @@ export enum ActionsEnum {
 	SET_SELECT_OPTIONS = "SET_SELECT_OPTIONS",
 	UPDATE_SELECT_OPTIONS = "UPDATE_SELECT_OPTIONS",
 
-	ADD_DOWNLOAD_ELEMENTS = "ADD_DOWNLOAD_ELEMENTS",
-	REMOVE_DOWNLOAD_ELEMENTS = "REMOVE_DOWNLOAD_ELEMENTS",
+	ADD_DOWNLOAD_CARDS = "ADD_DOWNLOAD_CARDS",
+	REMOVE_DOWNLOAD_CARDS = "REMOVE_DOWNLOAD_CARDS",
 }
 
 interface Dict<T> {
@@ -33,7 +33,7 @@ interface ISelectOptionsEntry {
 }
 
 interface IGlobalState {
-	downloadElements: Dict<IDownloadElementProps>
+	downloadCards: Dict<IDownloadCardProps>
 	selectOptions: {
 		isVisible: boolean
 		url: string
@@ -53,7 +53,7 @@ interface IContext {
 }
 
 const defaultState: IGlobalState = {
-	downloadElements: {},
+	downloadCards: {},
 	selectOptions: {
 		isVisible: false,
 		url: "",
@@ -118,38 +118,38 @@ const reducer = (state = defaultState, action: IGlobalAction): IGlobalState => {
 				},
 			}
 
-		// downloadElement related
+		// downloadCard related
 		// brackets are added to create a new lexical scope and prevent variable name collision
 
-		case ActionsEnum.ADD_DOWNLOAD_ELEMENTS: {
-			// action.payload: Dict<IDownloadElementProps>
+		case ActionsEnum.ADD_DOWNLOAD_CARDS: {
+			// action.payload: Dict<IDownloadCardProps>
 
-			const downloadElements = state.downloadElements
+			const downloadCards = state.downloadCards
 
 			for (const [key, value] of Object.entries(
-				action.payload as Dict<IDownloadElementProps>
+				action.payload as Dict<IDownloadCardProps>
 			)) {
-				downloadElements[key] = value
+				downloadCards[key] = value
 			}
 
 			return {
 				...state,
-				downloadElements: downloadElements,
+				downloadCards: downloadCards,
 			}
 		}
 
-		case ActionsEnum.REMOVE_DOWNLOAD_ELEMENTS: {
+		case ActionsEnum.REMOVE_DOWNLOAD_CARDS: {
 			// action.payload: string[]
 
-			const downloadElements = state.downloadElements
+			const downloadCards = state.downloadCards
 
 			;(action.payload as string[]).map((key) => {
-				delete downloadElements[key]
+				delete downloadCards[key]
 			})
 
 			return {
 				...state,
-				downloadElements: downloadElements,
+				downloadCards: downloadCards,
 			}
 		}
 
@@ -193,10 +193,10 @@ export const GlobalStore = (props: { children: ReactNode }): ReactElement => {
 					break
 
 				case "download":
-					// args1: Dict<IDownloadElementProps>
+					// args1: Dict<IDownloadCardProps>
 
 					dispatch({
-						type: ActionsEnum.ADD_DOWNLOAD_ELEMENTS,
+						type: ActionsEnum.ADD_DOWNLOAD_CARDS,
 						payload: args[1],
 					})
 					break

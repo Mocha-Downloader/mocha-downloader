@@ -6,7 +6,7 @@ import { globalContext, ActionsEnum } from "../ipc"
 
 import platformImage from "../../../assets/platforms/comic.naver.com.png"
 
-export interface IDownloadElementProps {
+export interface IDownloadCardProps {
 	keyValue: string // key value that can be access programmatically
 
 	platform: platformID
@@ -17,7 +17,7 @@ export interface IDownloadElementProps {
 	unit: string
 }
 
-const DownloadElement = (props: IDownloadElementProps) => {
+const DownloadCard = (props: IDownloadCardProps) => {
 	const { keyValue, platform, title, thumbnail, totalAmount, unit } = props
 
 	const { dispatch } = useContext(globalContext)
@@ -38,7 +38,7 @@ const DownloadElement = (props: IDownloadElementProps) => {
 					style={{ backgroundColor: "transparent" }}
 					onClick={() => {
 						dispatch({
-							type: ActionsEnum.REMOVE_DOWNLOAD_ELEMENTS,
+							type: ActionsEnum.REMOVE_DOWNLOAD_CARDS,
 							payload: [keyValue],
 						})
 					}}
@@ -98,4 +98,4 @@ const DownloadElement = (props: IDownloadElementProps) => {
 	)
 }
 
-export default DownloadElement
+export default DownloadCard
