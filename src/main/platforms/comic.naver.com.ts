@@ -1,5 +1,4 @@
 import sharp, { OverlayOptions } from "sharp"
-import { IpcMainEvent } from "electron"
 import { randomUUID } from "crypto"
 import sizeOf from "image-size"
 import cheerio from "cheerio"
@@ -9,6 +8,8 @@ import { getHTMLFromWindow, getImageBuffer, parseSite } from "../util"
 import { mainWindow } from "../main"
 
 import { DownloadFlags, Platform } from "../constants"
+
+// todo: add referrer and headers to requests
 
 async function downloadEpisode(url: string, flags?: DownloadFlags) {
 	const [userAgent, $] = await parseSite<[string, cheerio.Root]>(
@@ -127,12 +128,7 @@ async function getList(url: string): Promise<{ title: string; url: string }[]> {
 	return result
 }
 
-async function logic(
-	event: IpcMainEvent,
-	url: string,
-	parsedURL: URL,
-	selected?: number[]
-) {
+async function logic(url: string, parsedURL: URL, selected?: number[]) {
 	if (parsedURL.pathname == "/webtoon/detail") {
 		downloadEpisode(url)
 		return
@@ -141,7 +137,7 @@ async function logic(
 	if (parsedURL.pathname == "/webtoon/list") {
 		if (!selected || selected.length <= 0) {
 			const selectable = await getList(url)
-			event.reply("m2r", "select", url, selectable)
+			mainWindow?.webContents.send("m2r", "select", url, selectable)
 			return
 		}
 
