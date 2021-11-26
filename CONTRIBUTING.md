@@ -61,7 +61,7 @@ yarn package
 - Make a file in the [`src/main/platforms`](./src/main/platforms) directory.
 - export it in [`src/main/platforms/index.ts`](./src/main/platforms/index.ts)
 - add logic to [`src/main/ipc.ts`](./src/main/ipc.ts)
-- add a 32x32px sized png icon to [`./assets`](./assets)
+- add a 16x16px sized png icon to [`./assets`](./assets)
 
 ## [documentation and blog](https://github.com/Mocha-Downloader/mocha-downloader.github.io)
 
