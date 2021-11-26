@@ -11,7 +11,7 @@ import {
 	useReducer,
 } from "react"
 
-import { IDownloadElementProps } from "./components/DownloadElement"
+import { IDownloadElementProps } from "./components/DownloadCard"
 
 export enum ActionsEnum {
 	SHOW_SELECT_OPTIONS = "SHOW_SELECT_OPTIONS",

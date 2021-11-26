@@ -5,7 +5,7 @@ import styled from "styled-components"
 import { SelectOptions } from "./components/SelectOptions"
 import AnimatedLogo from "./components/AnimatedLogo"
 import BottomBar from "./components/BottomBar"
-import DownloadElement from "./components/DownloadElement"
+import DownloadElement from "./components/DownloadCard"
 import TopBar from "./components/TopBar"
 
 import { globalContext } from "./ipc"
