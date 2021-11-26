@@ -44,7 +44,7 @@ async function Download(url: string, selected?: number[]): Promise<void> {
 		if (platform.meta.id === parsedURL.hostname) {
 			platform.logic(url, parsedURL, selected)
 
-			break
+			return
 		}
 	}
 
