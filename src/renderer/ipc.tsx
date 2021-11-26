@@ -186,28 +186,18 @@ export const GlobalStore = (props: { children: ReactNode }): ReactElement => {
 
 			switch (args[0]) {
 				case "select":
+					// args1: string
+					// args2: ISelectOptionsEntry[]
+
 					showSelectOptions(args[1], args[2])
 					break
 
 				case "download":
+					// args1: Dict<IDownloadElementProps>
+
 					dispatch({
 						type: ActionsEnum.ADD_DOWNLOAD_ELEMENTS,
-						payload: {
-							a: {
-								title: "title",
-								thumbnail:
-									"https://react.semantic-ui.com/images/wireframe/square-image.png",
-								totalAmount: 420,
-								unit: "MB",
-							},
-							b: {
-								title: "title",
-								thumbnail:
-									"https://react.semantic-ui.com/images/wireframe/square-image.png",
-								totalAmount: 420,
-								unit: "MB",
-							},
-						},
+						payload: args[1],
 					})
 					break
 			}

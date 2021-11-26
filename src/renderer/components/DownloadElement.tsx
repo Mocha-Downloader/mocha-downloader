@@ -1,11 +1,15 @@
 import { useContext, useEffect, useState } from "react"
 import { Card, Image, Button, Progress, Icon } from "semantic-ui-react"
 
+import { platformID, platformID2NameMap } from "../constants"
 import { globalContext, ActionsEnum } from "../ipc"
+
+import platformImage from "../../../assets/platforms/comic.naver.com.png"
 
 export interface IDownloadElementProps {
 	keyValue: string // key value that can be access programmatically
 
+	platform: platformID
 	title: string
 	thumbnail: string | Buffer
 
@@ -14,11 +18,11 @@ export interface IDownloadElementProps {
 }
 
 const DownloadElement = (props: IDownloadElementProps) => {
-	const { keyValue, title, thumbnail, totalAmount, unit } = props
+	const { keyValue, platform, title, thumbnail, totalAmount, unit } = props
 
 	const { dispatch } = useContext(globalContext)
 	const [isDownloading, setIsDownloading] = useState(true)
-	const [amountComplete, setAmountComplete] = useState(69)
+	const [amountComplete, setAmountComplete] = useState(0)
 	const [completePercentage, setCompletePercentage] = useState(0)
 
 	useEffect(() => {
@@ -31,6 +35,7 @@ const DownloadElement = (props: IDownloadElementProps) => {
 				<Button
 					icon
 					floated="right"
+					style={{ backgroundColor: "transparent" }}
 					onClick={() => {
 						dispatch({
 							type: ActionsEnum.REMOVE_DOWNLOAD_ELEMENTS,
@@ -46,8 +51,8 @@ const DownloadElement = (props: IDownloadElementProps) => {
 				<Card.Header>{title}</Card.Header>
 
 				<Card.Meta>
-					<Icon color="red" name="youtube" />
-					<strong>YouTube</strong> <strong>mp4</strong>
+					<Image src={platformImage} />
+					<strong>{platformID2NameMap[platform]}</strong>
 				</Card.Meta>
 
 				{/* todo: find a more non-hacky way to put download related stuff on the bottom*/}
@@ -58,9 +63,9 @@ const DownloadElement = (props: IDownloadElementProps) => {
 							setAmountComplete((prev) => prev + 5)
 						}}
 					>
-						{amountComplete}
-						{unit} / {totalAmount}
-						{unit} <strong>{completePercentage.toFixed(1)}%</strong>
+						<strong>{completePercentage.toFixed(1)}%</strong>
+						&nbsp;&nbsp;&nbsp;
+						{amountComplete} / {totalAmount} {unit}
 					</div>
 
 					<Button.Group

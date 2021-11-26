@@ -46,11 +46,15 @@ const App = () => {
 			<StyledDownloadListContainer>
 				<Card.Group>
 					{Object.entries(globalState.downloadElements).map(
-						([key, { title, thumbnail, totalAmount, unit }]) => {
+						([
+							key,
+							{ title, platform, thumbnail, totalAmount, unit },
+						]) => {
 							return (
 								<DownloadElement
 									key={key}
 									keyValue={key}
+									platform={platform}
 									title={title}
 									thumbnail={thumbnail}
 									totalAmount={totalAmount}

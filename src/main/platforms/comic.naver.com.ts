@@ -1,10 +1,14 @@
-import { getHTMLFromWindow, getImageBuffer, parseSite } from "../util"
 import sharp, { OverlayOptions } from "sharp"
+import { randomUUID } from "crypto"
 import sizeOf from "image-size"
 import cheerio from "cheerio"
 import axios from "axios"
 
-async function downloadEpisode(url: string) {
+import { getHTMLFromWindow, getImageBuffer, parseSite } from "../util"
+import { downloadFlags } from "../constants"
+import { mainWindow } from "../main"
+
+async function downloadEpisode(url: string, flags?: downloadFlags) {
 	const [userAgent, $] = await parseSite<[string, cheerio.Root]>(
 		url,
 		async (window) => {
@@ -22,6 +26,20 @@ async function downloadEpisode(url: string) {
 		//@ts-ignore
 		imgLinks[i] = String(elem.attribs.src)
 	})
+
+	const downloadElementData: { [key: string]: any } = {}
+	downloadElementData[randomUUID()] = {
+		title: title,
+		platform: "comic.naver.com",
+		thumbnail: $(
+			"#sectionContWide > div.comicinfo > div.thumb > a > img"
+		).attr("src"),
+		totalAmount: imgLinks.length,
+		unit: "images",
+	}
+	mainWindow?.webContents.send("m2r", "download", downloadElementData)
+
+	if (flags?.dryRun) return
 
 	const imgs: Buffer[] = []
 	await Promise.all(
@@ -63,8 +81,12 @@ async function downloadEpisode(url: string) {
 	console.log(`Download complete! ${url}`)
 }
 
-async function downloadEpisodes(url: string, selected: number[]) {
-	console.log(url, selected)
+async function downloadEpisodes(
+	url: string,
+	selected: number[],
+	flags?: downloadFlags
+) {
+	console.log(url, selected, flags)
 }
 
 async function getList(url: string): Promise<{ title: string; url: string }[]> {
@@ -104,6 +126,9 @@ async function getList(url: string): Promise<{ title: string; url: string }[]> {
 }
 
 export default {
+	meta: {
+		id: "comic.naver.com",
+	},
 	downloadEpisode,
 	downloadEpisodes,
 	getList,

@@ -2,7 +2,6 @@ import { ipcMain, IpcMainEvent } from "electron"
 import isDev from "electron-is-dev"
 import { URL } from "url"
 
-import { mainWindow } from "./main"
 import platforms from "./platforms"
 
 ipcMain.on("r2m", async (event, ...args) => {
@@ -41,8 +40,6 @@ async function Download(
 	selected?: number[]
 ): Promise<void> {
 	const parsedURL = new URL(url)
-
-	mainWindow?.webContents.send("m2r", "download")
 
 	if (parsedURL.hostname == "comic.naver.com") {
 		if (parsedURL.pathname == "/webtoon/detail") {
