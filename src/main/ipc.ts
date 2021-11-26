@@ -4,6 +4,10 @@ import { URL } from "url"
 
 import platforms from "./platforms"
 
+import { Platform } from "./constants"
+
+// todo: add support for .torrent and .json files and magnet link
+
 ipcMain.on("r2m", async (event, ...args) => {
 	// For testing purpose
 	if (isDev) {
@@ -41,21 +45,14 @@ async function Download(
 ): Promise<void> {
 	const parsedURL = new URL(url)
 
-	if (parsedURL.hostname == "comic.naver.com") {
-		if (parsedURL.pathname == "/webtoon/detail") {
-			platforms.comicNaverCom.downloadEpisode(url)
-			return
-		}
+	for (const key in platforms) {
+		// @ts-ignore
+		const platform: Platform = platforms[key]
 
-		if (parsedURL.pathname == "/webtoon/list") {
-			if (!selected || selected.length <= 0) {
-				const selectable = await platforms.comicNaverCom.getList(url)
-				event.reply("m2r", "select", url, selectable)
-				return
-			}
+		if (platform.meta.id === parsedURL.hostname) {
+			platform.logic(event, url, parsedURL, selected)
 
-			platforms.comicNaverCom.downloadEpisodes(url, selected)
-			return
+			break
 		}
 	}
 

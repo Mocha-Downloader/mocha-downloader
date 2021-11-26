@@ -1,14 +1,16 @@
 import sharp, { OverlayOptions } from "sharp"
+import { IpcMainEvent } from "electron"
 import { randomUUID } from "crypto"
 import sizeOf from "image-size"
 import cheerio from "cheerio"
 import axios from "axios"
 
 import { getHTMLFromWindow, getImageBuffer, parseSite } from "../util"
-import { downloadFlags } from "../constants"
 import { mainWindow } from "../main"
 
-async function downloadEpisode(url: string, flags?: downloadFlags) {
+import { DownloadFlags, Platform } from "../constants"
+
+async function downloadEpisode(url: string, flags?: DownloadFlags) {
 	const [userAgent, $] = await parseSite<[string, cheerio.Root]>(
 		url,
 		async (window) => {
@@ -84,7 +86,7 @@ async function downloadEpisode(url: string, flags?: downloadFlags) {
 async function downloadEpisodes(
 	url: string,
 	selected: number[],
-	flags?: downloadFlags
+	flags?: DownloadFlags
 ) {
 	console.log(url, selected, flags)
 }
@@ -125,11 +127,35 @@ async function getList(url: string): Promise<{ title: string; url: string }[]> {
 	return result
 }
 
+async function logic(
+	event: IpcMainEvent,
+	url: string,
+	parsedURL: URL,
+	selected?: number[]
+) {
+	if (parsedURL.pathname == "/webtoon/detail") {
+		downloadEpisode(url)
+		return
+	}
+
+	if (parsedURL.pathname == "/webtoon/list") {
+		if (!selected || selected.length <= 0) {
+			const selectable = await getList(url)
+			event.reply("m2r", "select", url, selectable)
+			return
+		}
+
+		downloadEpisodes(url, selected)
+		return
+	}
+}
+
 export default {
 	meta: {
 		id: "comic.naver.com",
 	},
+	logic,
 	downloadEpisode,
 	downloadEpisodes,
 	getList,
-}
+} as Platform
