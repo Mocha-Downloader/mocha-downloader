@@ -269,7 +269,4 @@ export default {
 	},
 	test,
 	logic,
-	downloadEpisode,
-	downloadEpisodes,
-	getList,
 } as Platform
