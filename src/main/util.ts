@@ -57,6 +57,13 @@ License: https://mocha-downloader.github.io/docs/licenses
 	if (choice === 0) clipboard.writeText(aboutContent)
 }
 
+/**
+ * Loads a page in a headless browser window
+ *
+ * @param {string} url - url to load
+ * @param {function(BrowserWindow): Promise<T>} func - code to run with the browser window
+ * @returns {Promise<T>}
+ */
 export async function parseSite<T>(
 	url: string,
 	func: (window: BrowserWindow) => Promise<T>
@@ -71,6 +78,12 @@ export async function parseSite<T>(
 	return result
 }
 
+/**
+ * Get html content from an electron window and returns it as a string
+ *
+ * @param {BrowserWindow} window - an electron window
+ * @returns {Promise<string>}
+ */
 export async function getHTMLFromWindow(
 	window: BrowserWindow
 ): Promise<string> {
@@ -83,11 +96,8 @@ export async function getImageBuffer(
 	imageURL: string,
 	userAgent: string
 ): Promise<Buffer> {
-	// todo: handle timeout exceed error
-
 	return axios
 		.get(imageURL, {
-			timeout: 1000,
 			responseType: "arraybuffer",
 			headers: { "User-Agent": userAgent },
 		})
@@ -96,7 +106,33 @@ export async function getImageBuffer(
 
 /**
  *  Send data from main to renderer
+ *
+ * 	@param {...any} args - things to send to the renderer process
+ *  @returns {void}
  */
-export async function m2r(...args: any[]) {
+export function m2r(...args: any[]): void {
 	mainWindow?.webContents.send("m2r", ...args)
+}
+
+type DownloadCardKey =
+	| "platform"
+	| "title"
+	| "thumbnail"
+	| "status"
+	| "totalAmount"
+	| "amountComplete"
+	| "isDownloadComplete"
+
+/**
+ * Creates a function that updates a specific download card in the renderer process.
+ *
+ * @param {string} downloadCardID - download card identifier
+ * @returns {(DownloadCardKey, any) => void}
+ */
+export function makeUpdateDownloadCard(
+	downloadCardID: string
+): (key: DownloadCardKey, value: any) => void {
+	return (key: DownloadCardKey, value: any) => {
+		m2r("download", "update", downloadCardID, key, value)
+	}
 }

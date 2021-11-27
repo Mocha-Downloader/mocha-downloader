@@ -4,19 +4,38 @@ import sizeOf from "image-size"
 import cheerio from "cheerio"
 import axios from "axios"
 
-import { getHTMLFromWindow, getImageBuffer, parseSite, m2r } from "../util"
+import {
+	getHTMLFromWindow,
+	getImageBuffer,
+	m2r,
+	makeUpdateDownloadCard,
+	parseSite,
+} from "../util"
 
 import { DownloadFlags, Platform } from "../constants"
 
 // todo: add referrer and headers to requests
 
-async function downloadEpisode(url: string, flags?: DownloadFlags) {
-	const downloadID = randomUUID()
+/**
+ * Downloads a episode of naver comic.
+ *
+ * @param {string} url - URL of the episode
+ * @param {DownloadFlags} flags - Download behavior tweaks
+ * @returns {Promise<void>}
+ */
+async function downloadEpisode(
+	url: string,
+	flags?: DownloadFlags
+): Promise<void> {
+	const downloadCardID = randomUUID()
+	const updateDownloadCard = makeUpdateDownloadCard(downloadCardID)
 
+	// todo: find a way to not create unnecessary variable
+	// create a new download card
 	const downloadCardData: { [key: string]: any } = {}
-	downloadCardData[downloadID] = {
+	downloadCardData[downloadCardID] = {
 		platform: "comic.naver.com",
-		title: "title",
+		title: "",
 		thumbnail: "https://react.semantic-ui.com/images/wireframe/image.png", // placeholder image
 
 		status: "loading page",
@@ -27,34 +46,49 @@ async function downloadEpisode(url: string, flags?: DownloadFlags) {
 	}
 	m2r("download", "new", downloadCardData)
 
-	const [userAgent, $] = await parseSite<[string, cheerio.Root]>(
-		url,
-		async (window) => {
-			return [
-				window.webContents.session.getUserAgent(),
-				cheerio.load(await getHTMLFromWindow(window)),
-			]
-		}
-	)
-	m2r(
-		"download",
-		"update",
-		downloadID,
+	// load HTML content
+	const [userAgent, $] = await parseSite(url, async (window) => {
+		return [
+			window.webContents.session.getUserAgent(),
+			cheerio.load(await getHTMLFromWindow(window)),
+		]
+	})
+
+	// set download card thumbnail
+	updateDownloadCard(
 		"thumbnail",
 		$("#sectionContWide > div.comicinfo > div.thumb > a > img").attr("src")
 	)
 
+	// get title
 	const title = $("meta[property='og:description']").attr("content")
-	m2r("download", "update", downloadID, "title", title)
 
+	// set download card title
+	updateDownloadCard("title", title)
+
+	// fetch image links
 	const imgLinks: string[] = []
 	$("#comic_view_area > div.wt_viewer > img").each((i, elem) => {
 		//@ts-ignore
 		imgLinks[i] = String(elem.attribs.src)
 	})
-	m2r("download", "update", downloadID, "totalAmount", imgLinks.length + 2) // +1 for image stitching and 1 for saving
 
-	if (flags?.dryRun) return
+	// stop if no image was found
+	if (imgLinks.length <= 0) {
+		updateDownloadCard("status", "ERROR: couldn't fetch images")
+		return
+	}
+
+	// set total download steps
+	// +2 for image stitching and saving
+	updateDownloadCard("totalAmount", imgLinks.length + 2)
+
+	// don't fetch image data if it's a dry run
+	if (flags?.dryRun) {
+		updateDownloadCard("amountComplete", imgLinks.length + 2)
+		updateDownloadCard("isDownloadComplete", "true")
+		return
+	}
 
 	const imgs: Buffer[] = []
 	let amountComplete = 0 // number of images done downloading
@@ -62,17 +96,11 @@ async function downloadEpisode(url: string, flags?: DownloadFlags) {
 		imgLinks.map(async (imgLink, i) => {
 			imgs[i] = await getImageBuffer(imgLink, userAgent)
 			amountComplete += 1
-			m2r(
-				"download",
-				"update",
-				downloadID,
-				"amountComplete",
-				amountComplete
-			)
+			updateDownloadCard("amountComplete", amountComplete)
 		})
 	)
 
-	m2r("download", "update", downloadID, "status", "parsing images")
+	updateDownloadCard("status", "parsing images")
 
 	const imgsToStitch: OverlayOptions[] = []
 	let heightCount = 0
@@ -93,41 +121,56 @@ async function downloadEpisode(url: string, flags?: DownloadFlags) {
 	}
 	amountComplete += 1
 
-	m2r("download", "update", downloadID, "amountComplete", amountComplete)
-	m2r("download", "update", downloadID, "status", "stitching images")
+	updateDownloadCard("amountComplete", amountComplete)
+	updateDownloadCard("status", "stitching images")
 
 	await sharp({
 		create: {
 			width: maxWidth,
 			height: heightCount,
 			channels: 3,
-			background: "#ffffff",
+			background: "#ffffff", // todo: get background image from comic image container
 		},
 	})
 		.composite(imgsToStitch)
-		.png({ quality: 100 })
+		.png({ quality: 100 }) // todo: expose this in the settings
 		.toFile(`${title}.png`)
 	amountComplete += 1
 
-	m2r("download", "update", downloadID, "amountComplete", amountComplete)
-	m2r("download", "update", downloadID, "isDownloadComplete", "true")
+	updateDownloadCard("amountComplete", amountComplete)
+	updateDownloadCard("isDownloadComplete", "true")
 }
 
 /**
  * Download multiple episodes
+ *
  * @param {string} url - URL of episode list
  * @param {number[]} selected - indices of episodes to download starting from 0
  * @param {DownloadFlags} [flags] - Download behavior tweaks
+ * @returns {Promise<void>}
  */
 async function downloadEpisodes(
 	url: string,
 	selected: number[],
 	flags?: DownloadFlags
-) {
-	console.log(url, selected, flags)
-	if (flags?.dryRun) return
+): Promise<void> {
+	const parsedURL = new URL(url)
+
+	const comicType = parsedURL.pathname.split("/").filter(String)[0]
+	const titleID = parsedURL.searchParams.get("titleId")
+	const baseURL = `${parsedURL.origin}/${comicType}/detail`
+
+	selected.map((episodeNum) => {
+		downloadEpisode(`${baseURL}?titleId=${titleID}&no=${episodeNum}`, flags)
+	})
 }
 
+/**
+ * Get a list of all episodes of a comic.
+ *
+ * @param {URL} parsedURL
+ * @returns {Promise<{ title: string; url: string }[]>}
+ */
 async function getList(
 	parsedURL: URL
 ): Promise<{ title: string; url: string }[]> {
@@ -198,8 +241,6 @@ function test(...args: any[]) {
 
 	if (otherTokens.includes("d")) flag.dryRun = true
 
-	console.log(comicType, downloadType, flag)
-
 	switch (comicType) {
 		case "w":
 			switch (downloadType) {
@@ -230,10 +271,10 @@ function test(...args: any[]) {
 					)
 					break
 				case "l":
-					// 신도림 episode 1~3
+					// 괜찮아, 고3이야 episode 92~93 (remake prologue ~ episode 2)
 					downloadEpisodes(
 						"https://comic.naver.com/bestChallenge/list?titleId=643799",
-						[92, 93, 94],
+						[91, 92, 93],
 						flag
 					)
 					break
