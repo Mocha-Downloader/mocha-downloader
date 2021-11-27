@@ -16,16 +16,16 @@
 		"url": "https://developomp.com"
 	},
 	"scripts": {
-		"postinstall": "ts-node .erb/scripts/fix-double-semicolon.ts && ts-node .erb/scripts/check-native-dep.js && electron-builder install-app-deps && cross-env NODE_ENV=development TS_NODE_TRANSPILE_ONLY=true webpack --config ./.erb/configs/webpack.config.renderer.dev.dll.ts",
+		"postinstall": "ts-node .erb/scripts/fix-double-semicolon.ts && ts-node .erb/scripts/check-native-dep.ts && electron-builder install-app-deps && cross-env NODE_ENV=development TS_NODE_TRANSPILE_ONLY=true webpack --config ./.erb/configs/webpack.config.renderer.dev.dll.ts",
 		"icons": "ts-node ./.erb/scripts/generate-icons.ts",
-		"start": "ts-node ./.erb/scripts/check-port-in-use.js && yarn start:renderer",
+		"start": "ts-node ./.erb/scripts/check-port-in-use.ts && yarn start:renderer",
 		"start:main": "cross-env NODE_ENV=development electron -r ts-node/register/transpile-only ./src/main/main.ts",
 		"start:renderer": "cross-env NODE_ENV=development TS_NODE_TRANSPILE_ONLY=true webpack serve --config ./.erb/configs/webpack.config.renderer.dev.ts",
 		"build": "concurrently 'yarn build:main' 'yarn build:renderer'",
 		"build:main": "cross-env NODE_ENV=production TS_NODE_TRANSPILE_ONLY=true webpack --config ./.erb/configs/webpack.config.main.prod.ts",
 		"build:renderer": "cross-env NODE_ENV=production TS_NODE_TRANSPILE_ONLY=true webpack --config ./.erb/configs/webpack.config.renderer.prod.ts",
 		"rebuild": "electron-rebuild --parallel --types prod,dev,optional --module-dir src",
-		"package": "ts-node ./.erb/scripts/clean.js dist && yarn build && electron-builder build --publish never",
+		"package": "ts-node ./.erb/scripts/clean.ts dist && yarn build && electron-builder build --publish never",
 		"lint": "cross-env NODE_ENV=development eslint . --cache --ext .js,.jsx,.ts,.tsx"
 	},
 	"dependencies": {
@@ -48,6 +48,7 @@
 	"devDependencies": {
 		"@pmmmwh/react-refresh-webpack-plugin": "^0.5.1",
 		"@teamsupercell/typings-for-css-modules-loader": "^2.5.1",
+		"@types/detect-port": "^1.3.1",
 		"@types/enzyme": "^3.10.10",
 		"@types/enzyme-adapter-react-16": "^1.0.6",
 		"@types/history": "^4.7.9",
@@ -57,6 +58,7 @@
 		"@types/react-dom": "^17.0.11",
 		"@types/react-router": "^5.1.17",
 		"@types/react-router-dom": "^5.3.2",
+		"@types/rimraf": "^3.0.2",
 		"@types/sharp": "^0.29.3",
 		"@types/styled-components": "^5.1.15",
 		"@types/terser-webpack-plugin": "^5.2.0",

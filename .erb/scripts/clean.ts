@@ -1,5 +1,5 @@
 import rimraf from "rimraf"
-import webpackPaths from "../configs/webpack.paths.ts"
+import webpackPaths from "../configs/webpack.paths"
 import process from "process"
 
 const args = process.argv.slice(2)
@@ -9,8 +9,10 @@ const commandMap = {
 	dll: webpackPaths.dllPath,
 }
 
-args.forEach((x) => {
-	const pathToRemove = commandMap[x]
+args.forEach((arg) => {
+	// assume arg is one of dist, release, or dll
+	// @ts-ignore
+	const pathToRemove = commandMap[arg]
 	if (pathToRemove !== undefined) {
 		rimraf.sync(pathToRemove)
 	}
