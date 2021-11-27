@@ -13,6 +13,15 @@ import {
 
 import { IDownloadCardProps } from "./components/DownloadCard"
 
+interface Dict<T> {
+	[key: string]: T
+}
+
+interface ISelectOptionsEntry {
+	title: string
+	url: string
+}
+
 export enum ActionsEnum {
 	SHOW_SELECT_OPTIONS = "SHOW_SELECT_OPTIONS",
 	HIDE_SELECT_OPTIONS = "HIDE_SELECT_OPTIONS",
@@ -24,14 +33,44 @@ export enum ActionsEnum {
 	REMOVE_DOWNLOAD_CARDS = "REMOVE_DOWNLOAD_CARDS",
 }
 
-interface Dict<T> {
-	[key: string]: T
-}
-
-interface ISelectOptionsEntry {
-	title: string
-	url: string
-}
+type IGlobalAction =
+	| {
+			type: ActionsEnum.SHOW_SELECT_OPTIONS
+			payload: {
+				url: string
+				availableChoices: ISelectOptionsEntry[]
+			}
+	  }
+	| {
+			type: ActionsEnum.HIDE_SELECT_OPTIONS
+	  }
+	| {
+			type: ActionsEnum.SET_SELECT_OPTIONS
+			payload: boolean[]
+	  }
+	| {
+			type: ActionsEnum.UPDATE_SELECT_OPTIONS
+			payload: {
+				index: number
+				isSelected: boolean
+			}
+	  }
+	| {
+			type: ActionsEnum.ADD_DOWNLOAD_CARDS
+			payload: Dict<IDownloadCardProps>
+	  }
+	| {
+			type: ActionsEnum.UPDATE_DOWNLOAD_CARD
+			payload: {
+				cardID: string
+				key: string
+				value: any
+			}
+	  }
+	| {
+			type: ActionsEnum.REMOVE_DOWNLOAD_CARDS
+			payload: string[]
+	  }
 
 interface IGlobalState {
 	downloadCards: Dict<IDownloadCardProps>
@@ -41,11 +80,6 @@ interface IGlobalState {
 		availableChoices: ISelectOptionsEntry[]
 		selectedChoices: boolean[]
 	}
-}
-
-interface IGlobalAction {
-	type: ActionsEnum
-	payload?: any
 }
 
 interface IContext {
@@ -68,20 +102,15 @@ const reducer = (state = defaultState, action: IGlobalAction): IGlobalState => {
 		// SelectOptions related
 
 		case ActionsEnum.SHOW_SELECT_OPTIONS:
-			const payload: {
-				url: string
-				availableChoices: ISelectOptionsEntry[]
-			} = action.payload
-
 			return {
 				...state,
 				selectOptions: {
 					...state.selectOptions,
 
 					isVisible: true,
-					url: payload.url || state.selectOptions.url,
+					url: action.payload.url || state.selectOptions.url,
 					availableChoices:
-						payload.availableChoices ||
+						action.payload.availableChoices ||
 						state.selectOptions.availableChoices,
 				},
 			}
@@ -96,23 +125,18 @@ const reducer = (state = defaultState, action: IGlobalAction): IGlobalState => {
 			}
 		}
 		case ActionsEnum.SET_SELECT_OPTIONS: {
-			const payload: boolean[] = action.payload
-
 			return {
 				...state,
 				selectOptions: {
 					...state.selectOptions,
 
-					selectedChoices: payload || [],
+					selectedChoices: action.payload || [],
 				},
 			}
 		}
 		case ActionsEnum.UPDATE_SELECT_OPTIONS: {
-			const payload: { index: number; isSelected: boolean } =
-				action.payload
-
 			const selectedChoices = state.selectOptions.selectedChoices
-			selectedChoices[payload.index] = payload.isSelected
+			selectedChoices[action.payload.index] = action.payload.isSelected
 
 			return {
 				...state,
@@ -127,13 +151,9 @@ const reducer = (state = defaultState, action: IGlobalAction): IGlobalState => {
 		// downloadCard related
 
 		case ActionsEnum.ADD_DOWNLOAD_CARDS: {
-			const payload: Dict<IDownloadCardProps> = action.payload
-
 			const downloadCards = state.downloadCards
 
-			for (const [key, value] of Object.entries(
-				payload as Dict<IDownloadCardProps>
-			)) {
+			for (const [key, value] of Object.entries(action.payload)) {
 				downloadCards[key] = value
 			}
 
@@ -143,14 +163,16 @@ const reducer = (state = defaultState, action: IGlobalAction): IGlobalState => {
 			}
 		}
 		case ActionsEnum.UPDATE_DOWNLOAD_CARD: {
-			const payload: { cardID: string; key: string; value: any } =
-				action.payload
-
 			const DownloadCards = state.downloadCards
 
-			if (DownloadCards[payload.cardID].hasOwnProperty(payload.key))
+			if (
+				DownloadCards[action.payload.cardID].hasOwnProperty(
+					action.payload.key
+				)
+			)
 				// @ts-ignore
-				DownloadCards[payload.cardID][payload.key] = payload.value
+				DownloadCards[action.payload.cardID][action.payload.key] =
+					action.payload.value
 
 			return {
 				...state,
@@ -159,11 +181,9 @@ const reducer = (state = defaultState, action: IGlobalAction): IGlobalState => {
 		}
 
 		case ActionsEnum.REMOVE_DOWNLOAD_CARDS: {
-			const payload: string[] = action.payload
-
 			const downloadCards = state.downloadCards
 
-			;(payload as string[]).map((key) => {
+			action.payload.map((key) => {
 				delete downloadCards[key]
 			})
 
