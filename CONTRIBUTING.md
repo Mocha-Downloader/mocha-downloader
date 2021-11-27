@@ -1,8 +1,7 @@
 # Contributing
 
-All development-related documents are written in English only.
-
-모든 개발 관련 문서는 오직 영어로만 작성되었습니다.
+- All development-related documents are written in English only.
+- 모든 개발 관련 문서는 오직 영어로만 작성되었습니다.
 
 ## Conventions
 
@@ -20,6 +19,8 @@ The following skills are absolutely necessary to start contributing code to Moch
 
 - English
 - [Google-fu](https://www.urbandictionary.com/define.php?term=google-fu)
+- electron ipc ([main](https://www.electronjs.org/docs/latest/api/ipc-main) | [renderer](https://www.electronjs.org/docs/latest/api/ipc-renderer))
+- [jsdoc](https://jsdoc.app)
 
 ## Getting Started
 
@@ -62,7 +63,7 @@ yarn package
 
 - Make a file in the [`src/main/platforms`](./src/main/platforms) directory.
   - must have a meta property and a logic function. Check [`src/main/constants.ts`](./src/main/constants.ts) for more info.
-- export it in [`src/main/platforms/index.ts`](./src/main/platforms/index.ts)
+  - export it in [`src/main/platforms/index.ts`](./src/main/platforms/index.ts)
 - add a 16x16px sized png icon to [`./assets`](./assets)
 
 ## [documentation and blog](https://github.com/Mocha-Downloader/mocha-downloader.github.io)
