@@ -28,13 +28,14 @@
 		"webtoons"
 	],
 	"search.exclude": {
-		".git": true,
-		".eslintcache": true,
 		".erb/dll": true,
-		"release/{build,app/dist}": true,
-		"node_modules": true,
-		"npm-debug.log.*": true,
-		"package-lock.json": true,
-		"*.{css,sass,scss}.d.ts": true
+		".eslintcache": true,
+		".git": true,
+		"*.{css,sass,scss}.d.ts": true,
+		"node_modules/**": true,
+		"release/{build,app/dist}/**": true,
+		"**/yarn-debug.log*": true,
+		"**/yarn-error.log*": true,
+		"**/yarn.lock": true
 	}
 }
