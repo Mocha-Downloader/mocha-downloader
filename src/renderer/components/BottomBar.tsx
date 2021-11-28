@@ -33,7 +33,7 @@ const BottomBar = () => {
 						trigger={
 							<a
 								href="https://mocha-downloader.github.io"
-								target="_"
+								target="_blank"
 							>
 								<Menu.Item>
 									<Icon link size="large" name="book" />
@@ -46,7 +46,10 @@ const BottomBar = () => {
 						inverted
 						content="Discord"
 						trigger={
-							<a href="https://discord.gg/aQqamSCUcS" target="_">
+							<a
+								href="https://discord.gg/aQqamSCUcS"
+								target="_blank"
+							>
 								<Menu.Item>
 									<Icon link size="large" name="discord" />
 								</Menu.Item>
@@ -60,7 +63,7 @@ const BottomBar = () => {
 						trigger={
 							<a
 								href="https://github.com/Mocha-Downloader/mocha-downloader"
-								target="_"
+								target="_blank"
 							>
 								<Menu.Item>
 									<Icon link size="large" name="github" />

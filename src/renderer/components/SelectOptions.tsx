@@ -63,7 +63,7 @@ const SelectOptions = () => {
 										/>
 									</Table.Cell>
 									<Table.Cell>
-										<a href={val.url} target="_">
+										<a href={val.url} target="_blank">
 											<Button compact floated="right">
 												visit
 											</Button>
