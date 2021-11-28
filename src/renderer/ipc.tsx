@@ -23,6 +23,9 @@ interface ISelectOptionsEntry {
 }
 
 export enum ActionsEnum {
+	SHOW_ABOUT_MODAL = "SHOW_ABOUT_MODAL",
+	HIDE_ABOUT_MODAL = "HIDE_ABOUT_MODAL",
+
 	SHOW_SELECT_OPTIONS = "SHOW_SELECT_OPTIONS",
 	HIDE_SELECT_OPTIONS = "HIDE_SELECT_OPTIONS",
 	SET_SELECT_OPTIONS = "SET_SELECT_OPTIONS",
@@ -34,6 +37,12 @@ export enum ActionsEnum {
 }
 
 type IGlobalAction =
+	| {
+			type: ActionsEnum.SHOW_ABOUT_MODAL
+	  }
+	| {
+			type: ActionsEnum.HIDE_ABOUT_MODAL
+	  }
 	| {
 			type: ActionsEnum.SHOW_SELECT_OPTIONS
 			payload: {
@@ -73,6 +82,7 @@ type IGlobalAction =
 	  }
 
 interface IGlobalState {
+	aboutModalVisibility: boolean
 	downloadCards: Dict<IDownloadCardProps>
 	selectOptions: {
 		isVisible: boolean
@@ -88,6 +98,7 @@ interface IContext {
 }
 
 const defaultState: IGlobalState = {
+	aboutModalVisibility: false,
 	downloadCards: {},
 	selectOptions: {
 		isVisible: false,
@@ -99,6 +110,19 @@ const defaultState: IGlobalState = {
 
 const reducer = (state = defaultState, action: IGlobalAction): IGlobalState => {
 	switch (action.type) {
+		// about modal related
+		case ActionsEnum.SHOW_ABOUT_MODAL:
+			return {
+				...state,
+				aboutModalVisibility: true,
+			}
+
+		case ActionsEnum.HIDE_ABOUT_MODAL:
+			return {
+				...state,
+				aboutModalVisibility: false,
+			}
+
 		// SelectOptions related
 
 		case ActionsEnum.SHOW_SELECT_OPTIONS:
@@ -225,6 +249,10 @@ export const GlobalStore = (props: { children: ReactNode }): ReactElement => {
 			if (window.electron.isDev) console.log("m2r:", args)
 
 			switch (args[0]) {
+				case "showAbout":
+					dispatch({ type: ActionsEnum.SHOW_ABOUT_MODAL })
+					break
+
 				case "select":
 					// args1: string
 					// args2: ISelectOptionsEntry[]

@@ -1,9 +1,9 @@
-import { app, BrowserWindow, dialog, clipboard } from "electron"
+import { app, BrowserWindow } from "electron"
 import isDev from "electron-is-dev"
 import { URL } from "url"
 import axios from "axios"
 import path from "path"
-import os from "os"
+
 import { mainWindow } from "./main"
 
 // -----
@@ -35,26 +35,7 @@ export function getAssetPath(...paths: string[]): string {
 }
 
 export function showAbout() {
-	// known bug: https://github.com/electron/electron/issues/7085
-
-	const aboutContent = `A GUI tool for searching, parsing, and downloading contents from the web.
-
-Version: ${app.getVersion()}
-OS: ${os.platform()} ${os.arch()} ${os.release()}
-
-License: https://mocha-downloader.github.io/docs/licenses
-`
-
-	const choice = dialog.showMessageBoxSync({
-		type: "info",
-		message: "About Mocha Downloader",
-		title: "About Mocha Downloader",
-		detail: aboutContent,
-		buttons: ["Copy", "Ok"],
-	})
-
-	// copy to clipboard
-	if (choice === 0) clipboard.writeText(aboutContent)
+	m2r("showAbout")
 }
 
 /**

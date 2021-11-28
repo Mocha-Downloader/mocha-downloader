@@ -3,6 +3,7 @@ import { Container, Card, Header } from "semantic-ui-react"
 import styled from "styled-components"
 
 import { SelectOptions } from "./components/SelectOptions"
+import AboutModal from "./components/AboutModal"
 import AnimatedLogo from "./components/AnimatedLogo"
 import BottomBar from "./components/BottomBar"
 import DownloadCard from "./components/DownloadCard"
@@ -91,6 +92,7 @@ const App = () => {
 				)}
 
 				<SelectOptions />
+				<AboutModal />
 			</StyledDownloadListContainer>
 			<BottomBar />
 		</>
