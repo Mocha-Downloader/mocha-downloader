@@ -3,6 +3,8 @@ import sizeOf from "image-size"
 import cheerio from "cheerio"
 import axios from "axios"
 
+import { DownloadFlags, Platform } from "common/constants"
+
 import {
 	getHTMLFromWindow,
 	getImageBuffer,
@@ -11,15 +13,13 @@ import {
 	createDownloadCard,
 } from "../util"
 
-import { DownloadFlags, Platform } from "common/constants"
-
 // todo: add referrer and headers to requests
 
 /**
  * Downloads a episode of naver comic.
  *
  * @param {string} url - URL of the episode
- * @param {DownloadFlags} [flags] - Download behavior tweaks
+ * @param {DownloadFlags} [flags]
  * @returns {Promise<void>}
  */
 async function downloadEpisode(
@@ -130,7 +130,7 @@ async function downloadEpisode(
  *
  * @param {string} url - URL of episode list
  * @param {number[]} selected - indices of episodes to download starting from 0
- * @param {DownloadFlags} [flags] - Download behavior tweaks
+ * @param {DownloadFlags} [flags]
  * @returns {Promise<void>}
  */
 async function downloadEpisodes(
@@ -192,7 +192,7 @@ async function getList(
 	return result
 }
 
-async function logic(parsedURL: URL, selected?: number[]) {
+async function logic(parsedURL: URL, selected?: number[]): Promise<void> {
 	if (parsedURL.pathname == "/webtoon/detail") {
 		downloadEpisode(parsedURL.href)
 		return
@@ -210,7 +210,7 @@ async function logic(parsedURL: URL, selected?: number[]) {
 	}
 }
 
-function parseFlags(...args: any[]) {
+function parseFlags(...args: any[]): DownloadFlags {
 	const flags: DownloadFlags = { dryRun: false }
 
 	if (args.includes("d")) flags.dryRun = true
@@ -227,11 +227,11 @@ type ComicType = "w" | "b" | "c"
 // l: list (first 3 only by default)
 type DownloadType = "e" | "l"
 
-function test(
+async function test(
 	comicType: ComicType,
 	downloadType: DownloadType,
 	...args: any[]
-) {
+): Promise<void> {
 	const flags = parseFlags(...args)
 
 	switch (comicType) {

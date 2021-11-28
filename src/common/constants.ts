@@ -1,7 +1,12 @@
 // main process
 
+/**
+ * Tweaks download behavior.
+ *
+ * @interface
+ */
 export interface DownloadFlags {
-	dryRun: boolean
+	dryRun: boolean // do not download the contents (still requires internet connection)
 }
 
 /**
@@ -14,14 +19,24 @@ export interface PlatformMeta {
 	code: string // a 2~3 letter code to be used instead of the id
 }
 
+/**
+ * Required exports of a platform file
+ *
+ * @interface
+ */
 export interface Platform {
 	meta: PlatformMeta
-	logic(...args: any): void
-	test(...args: any): void
+	logic(...args: any): Promise<void>
+	test(...args: any): Promise<void>
 }
 
 // renderer
 
+/**
+ * Download card arguments
+ *
+ * @interface
+ */
 export interface IDownloadCardProps {
 	keyValue: string // key value that can be access programmatically. react key values can not be accessed for some reason.
 

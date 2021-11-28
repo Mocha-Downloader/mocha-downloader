@@ -11,6 +11,7 @@ import {
 	useReducer,
 } from "react"
 import { Optional, Required } from "utility-types"
+
 import { IDownloadCardProps } from "common/constants"
 
 interface Dict<T> {

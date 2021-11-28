@@ -1,3 +1,7 @@
+/**
+ * @file The entry point of the application.
+ */
+
 import "core-js/stable"
 import "regenerator-runtime/runtime"
 

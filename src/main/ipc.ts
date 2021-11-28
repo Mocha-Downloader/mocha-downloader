@@ -1,10 +1,14 @@
+/**
+ * @file Manages communication between the main process and the renderer process
+ */
+
 import { ipcMain } from "electron"
 import isDev from "electron-is-dev"
 import { URL } from "url"
 
-import platforms from "./platforms"
-
 import { Platform } from "common/constants"
+
+import platforms from "./platforms"
 
 // todo: add support for .torrent and .json files and magnet link
 // todo: add name collision for platform id and code
