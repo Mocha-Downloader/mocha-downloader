@@ -1,5 +1,4 @@
 import sharp, { OverlayOptions } from "sharp"
-import { randomUUID } from "crypto"
 import sizeOf from "image-size"
 import cheerio from "cheerio"
 import axios from "axios"
@@ -8,11 +7,11 @@ import {
 	getHTMLFromWindow,
 	getImageBuffer,
 	m2r,
-	makeUpdateDownloadCard,
 	parseSite,
+	createDownloadCard,
 } from "../util"
 
-import { DownloadFlags, Platform } from "../constants"
+import { DownloadFlags, Platform } from "common/constants"
 
 // todo: add referrer and headers to requests
 
@@ -20,31 +19,16 @@ import { DownloadFlags, Platform } from "../constants"
  * Downloads a episode of naver comic.
  *
  * @param {string} url - URL of the episode
- * @param {DownloadFlags} flags - Download behavior tweaks
+ * @param {DownloadFlags} [flags] - Download behavior tweaks
  * @returns {Promise<void>}
  */
 async function downloadEpisode(
 	url: string,
 	flags?: DownloadFlags
 ): Promise<void> {
-	const downloadCardID = randomUUID()
-	const updateDownloadCard = makeUpdateDownloadCard(downloadCardID)
-
-	// todo: find a way to not create unnecessary variable
-	// create a new download card
-	const downloadCardData: { [key: string]: any } = {}
-	downloadCardData[downloadCardID] = {
+	const [updateDownloadCard] = createDownloadCard({
 		platform: "comic.naver.com",
-		title: "",
-		thumbnail: "https://react.semantic-ui.com/images/wireframe/image.png", // placeholder image
-
-		status: "loading page",
-		totalAmount: 0,
-		amountComplete: 0,
-
-		isDownloadComplete: false,
-	}
-	m2r("download", "new", downloadCardData)
+	})
 
 	// load HTML content
 	const [userAgent, $] = await parseSite(url, async (window) => {
@@ -226,20 +210,29 @@ async function logic(parsedURL: URL, selected?: number[]) {
 	}
 }
 
-function test(...args: any[]) {
-	// w: webtoon (웹툰)
-	// b: best challenge (베스트 도전)
-	// c: challenge (도전)
-	const comicType: "w" | "b" | "c" = args[0]
+function parseFlags(...args: any[]) {
+	const flags: DownloadFlags = { dryRun: false }
 
-	// e: episode
-	// l: list (first 3 only by default)
-	const downloadType: "e" | "l" = args[1]
+	if (args.includes("d")) flags.dryRun = true
 
-	const flag: DownloadFlags = { dryRun: false }
-	const otherTokens = args.slice(2)
+	return flags
+}
 
-	if (otherTokens.includes("d")) flag.dryRun = true
+// w: webtoon (웹툰)
+// b: best challenge (베스트 도전)
+// c: challenge (도전)
+type ComicType = "w" | "b" | "c"
+
+// e: episode
+// l: list (first 3 only by default)
+type DownloadType = "e" | "l"
+
+function test(
+	comicType: ComicType,
+	downloadType: DownloadType,
+	...args: any[]
+) {
+	const flags = parseFlags(...args)
 
 	switch (comicType) {
 		case "w":
@@ -248,7 +241,7 @@ function test(...args: any[]) {
 					// 신도림 episode 1
 					downloadEpisode(
 						"https://comic.naver.com/webtoon/detail?titleId=683496&no=1",
-						flag
+						flags
 					)
 					break
 				case "l":
@@ -256,7 +249,7 @@ function test(...args: any[]) {
 					downloadEpisodes(
 						"https://comic.naver.com/webtoon/list?titleId=683496",
 						[0, 1, 2],
-						flag
+						flags
 					)
 			}
 			break
@@ -267,7 +260,7 @@ function test(...args: any[]) {
 					// 괜찮아, 고3이야 episode 92 (remake prologue)
 					downloadEpisode(
 						"https://comic.naver.com/bestChallenge/detail?titleId=643799&no=92",
-						flag
+						flags
 					)
 					break
 				case "l":
@@ -275,7 +268,7 @@ function test(...args: any[]) {
 					downloadEpisodes(
 						"https://comic.naver.com/bestChallenge/list?titleId=643799",
 						[91, 92, 93],
-						flag
+						flags
 					)
 					break
 			}
@@ -287,7 +280,7 @@ function test(...args: any[]) {
 					// test comic episode 1
 					downloadEpisode(
 						"https://comic.naver.com/challenge/detail?titleId=785847&no=1",
-						flag
+						flags
 					)
 					break
 				case "l":
@@ -295,7 +288,7 @@ function test(...args: any[]) {
 					downloadEpisodes(
 						"https://comic.naver.com/challenge/list?titleId=785847",
 						[0, 1, 2],
-						flag
+						flags
 					)
 					break
 			}
@@ -308,6 +301,6 @@ export default {
 		id: "comic.naver.com",
 		code: "nv",
 	},
-	test,
 	logic,
+	test,
 } as Platform

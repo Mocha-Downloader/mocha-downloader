@@ -25,7 +25,8 @@
 		"naver",
 		"toon",
 		"webtoon",
-		"webtoons"
+		"webtoons",
+		"ytdl"
 	],
 	"search.exclude": {
 		".erb/dll": true,

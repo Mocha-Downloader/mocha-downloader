@@ -10,8 +10,8 @@ import {
 	useEffect,
 	useReducer,
 } from "react"
-
-import { IDownloadCardProps } from "./components/DownloadCard"
+import { Optional, Required } from "utility-types"
+import { IDownloadCardProps } from "common/constants"
 
 interface Dict<T> {
 	[key: string]: T
@@ -31,9 +31,9 @@ export enum ActionsEnum {
 	SET_SELECT_OPTIONS = "SET_SELECT_OPTIONS",
 	UPDATE_SELECT_OPTIONS = "UPDATE_SELECT_OPTIONS",
 
-	ADD_DOWNLOAD_CARDS = "ADD_DOWNLOAD_CARDS",
+	ADD_DOWNLOAD_CARD = "ADD_DOWNLOAD_CARD",
 	UPDATE_DOWNLOAD_CARD = "UPDATE_DOWNLOAD_CARD",
-	REMOVE_DOWNLOAD_CARDS = "REMOVE_DOWNLOAD_CARDS",
+	REMOVE_DOWNLOAD_CARD = "REMOVE_DOWNLOAD_CARD",
 }
 
 type IGlobalAction =
@@ -65,8 +65,11 @@ type IGlobalAction =
 			}
 	  }
 	| {
-			type: ActionsEnum.ADD_DOWNLOAD_CARDS
-			payload: Dict<IDownloadCardProps>
+			type: ActionsEnum.ADD_DOWNLOAD_CARD
+			payload: {
+				key: string
+				data: Required<Optional<IDownloadCardProps>, "platform">
+			}
 	  }
 	| {
 			type: ActionsEnum.UPDATE_DOWNLOAD_CARD
@@ -77,8 +80,8 @@ type IGlobalAction =
 			}
 	  }
 	| {
-			type: ActionsEnum.REMOVE_DOWNLOAD_CARDS
-			payload: string[]
+			type: ActionsEnum.REMOVE_DOWNLOAD_CARD
+			payload: string
 	  }
 
 interface IGlobalState {
@@ -174,11 +177,22 @@ const reducer = (state = defaultState, action: IGlobalAction): IGlobalState => {
 
 		// downloadCard related
 
-		case ActionsEnum.ADD_DOWNLOAD_CARDS: {
+		case ActionsEnum.ADD_DOWNLOAD_CARD: {
 			const downloadCards = state.downloadCards
 
-			for (const [key, value] of Object.entries(action.payload)) {
-				downloadCards[key] = value
+			downloadCards[action.payload.key] = {
+				title: "",
+				thumbnail:
+					"https://react.semantic-ui.com/images/wireframe/image.png", // placeholder image
+
+				status: "initializing",
+				totalAmount: 0,
+				amountComplete: 0,
+
+				isDownloadComplete: false,
+
+				// convert to any to prevent error ts(2783)
+				...(action.payload.data as any),
 			}
 
 			return {
@@ -204,12 +218,10 @@ const reducer = (state = defaultState, action: IGlobalAction): IGlobalState => {
 			}
 		}
 
-		case ActionsEnum.REMOVE_DOWNLOAD_CARDS: {
+		case ActionsEnum.REMOVE_DOWNLOAD_CARD: {
 			const downloadCards = state.downloadCards
 
-			action.payload.map((key) => {
-				delete downloadCards[key]
-			})
+			delete downloadCards[action.payload]
 
 			return {
 				...state,
@@ -263,11 +275,9 @@ export const GlobalStore = (props: { children: ReactNode }): ReactElement => {
 				case "download":
 					switch (args[1]) {
 						case "new":
-							// args1: Dict<IDownloadCardProps>
-
 							dispatch({
-								type: ActionsEnum.ADD_DOWNLOAD_CARDS,
-								payload: args[2],
+								type: ActionsEnum.ADD_DOWNLOAD_CARD,
+								payload: { key: args[2], data: args[3] },
 							})
 							break
 

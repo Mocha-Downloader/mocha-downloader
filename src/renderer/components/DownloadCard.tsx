@@ -1,23 +1,10 @@
 import { useContext, useEffect, useState } from "react"
 import { Card, Image, Button, Progress, Icon } from "semantic-ui-react"
 
-import { platformID, platformID2NameMap } from "../constants"
+import { platformID2NameMap, IDownloadCardProps } from "common/constants"
 import { globalContext, ActionsEnum } from "../ipc"
 
 import platformImage from "../../../assets/platforms/comic.naver.com.png"
-
-export interface IDownloadCardProps {
-	keyValue: string // key value that can be access programmatically
-
-	platform: platformID // the source of the downlaoding content
-	title: string
-	thumbnail: string | Buffer
-
-	status: string // what the downloader currently doing
-	totalAmount: number
-	amountComplete: number
-	isDownloadComplete: boolean // is everything completely done
-}
 
 const DownloadCard = (props: IDownloadCardProps) => {
 	const {
@@ -51,8 +38,8 @@ const DownloadCard = (props: IDownloadCardProps) => {
 					style={{ backgroundColor: "transparent" }}
 					onClick={() => {
 						dispatch({
-							type: ActionsEnum.REMOVE_DOWNLOAD_CARDS,
-							payload: [keyValue],
+							type: ActionsEnum.REMOVE_DOWNLOAD_CARD,
+							payload: keyValue,
 						})
 					}}
 				>

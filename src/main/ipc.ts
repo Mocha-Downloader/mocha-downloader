@@ -4,7 +4,7 @@ import { URL } from "url"
 
 import platforms from "./platforms"
 
-import { Platform } from "./constants"
+import { Platform } from "common/constants"
 
 // todo: add support for .torrent and .json files and magnet link
 // todo: add name collision for platform id and code

@@ -1,8 +1,12 @@
 import { app, BrowserWindow } from "electron"
+import { Required, Optional } from "utility-types"
+import { randomUUID } from "crypto"
 import isDev from "electron-is-dev"
 import { URL } from "url"
 import axios from "axios"
 import path from "path"
+
+import { IDownloadCardProps } from "common/constants"
 
 import { mainWindow } from "./main"
 
@@ -105,15 +109,22 @@ type DownloadCardKey =
 	| "isDownloadComplete"
 
 /**
- * Creates a function that updates a specific download card in the renderer process.
+ * Creates a download card and return the uuid of it and a function that updates the card.
  *
- * @param {string} downloadCardID - download card identifier
- * @returns {(DownloadCardKey, any) => void}
+ * @param {any} downloadCardData - download card data
+ * @returns {[(key: DownloadCardKey, value: any) => void, string]}
  */
-export function makeUpdateDownloadCard(
-	downloadCardID: string
-): (key: DownloadCardKey, value: any) => void {
-	return (key: DownloadCardKey, value: any) => {
-		m2r("download", "update", downloadCardID, key, value)
-	}
+export function createDownloadCard(
+	downloadCardData: Required<Optional<IDownloadCardProps>, "platform">
+): [(key: DownloadCardKey, value: any) => void, string] {
+	const downloadCardID = randomUUID()
+
+	m2r("download", "new", downloadCardID, downloadCardData)
+
+	return [
+		(key: DownloadCardKey, value: any) => {
+			m2r("download", "update", downloadCardID, key, value)
+		},
+		downloadCardID,
+	]
 }
