@@ -19,8 +19,12 @@ The following skills are absolutely necessary to start contributing code to Moch
 
 - English
 - [Google-fu](https://www.urbandictionary.com/define.php?term=google-fu)
-- electron ipc ([main](https://www.electronjs.org/docs/latest/api/ipc-main) | [renderer](https://www.electronjs.org/docs/latest/api/ipc-renderer))
 - [jsdoc](https://jsdoc.app)
+
+## Helpful resources
+
+- electron ipc ([main](https://www.electronjs.org/docs/latest/api/ipc-main) & [renderer](https://www.electronjs.org/docs/latest/api/ipc-renderer))
+- [electron-builder Two package.json Structure](https://www.electron.build/tutorials/two-package-structure.html)
 
 ## Getting Started
 
