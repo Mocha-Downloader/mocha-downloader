@@ -6,12 +6,10 @@
 ## Conventions
 
 - The project adheres to [semantic versioning](https://semver.org).
-- use yarn instead of npm.
-- Due to issues like [this](https://github.com/nodejs/node-gyp/issues/2534) all contributors are expected to use node v16
+- Use yarn instead of npm.
+- Due to issues like [this](https://github.com/nodejs/node-gyp/issues/2534), all contributors are expected to use the latest version of node v16.
   - [nvm](https://github.com/nvm-sh/nvm) is a good tool for this.
-- use function components instead of class components in react.
-
-### Variable naming
+- Use function components instead of class components in react.
 
 ## Required skill
 
@@ -30,7 +28,6 @@ The following skills are absolutely necessary to start contributing code to Moch
 
 ### 0. Install pre-requirements.
 
-- bash terminal (git bash, etc.)
 - git
 - Node.js & npm
 - yarn
@@ -41,7 +38,7 @@ The following skills are absolutely necessary to start contributing code to Moch
 git clone https://github.com/Mocha-Downloader/mocha-downloader
 ```
 
-### 2. Install dependencies.
+### 2. Install npm dependencies.
 
 ```
 yarn install
@@ -55,7 +52,8 @@ yarn install
 yarn start
 ```
 
-- TIP: use development testing shortcuts (check `test` functions in platform files for more detail)
+- TIP: use development testing shortcuts.
+  - Check `test` functions in [`platform`](./src/main/platforms) files for more detail.
 
 ### 5. Build for production
 
@@ -70,55 +68,14 @@ yarn package
   - export it in [`src/main/platforms/index.ts`](./src/main/platforms/index.ts)
 - add a 16x16px sized png icon to [`./assets`](./assets)
 
-## [documentation and blog](https://github.com/Mocha-Downloader/mocha-downloader.github.io)
-
-The documentation and blog website is built with [docusaurus](https://docusaurus.io).
-
-### Setting up
-
-#### 1. Clone the repository
-
-```
-git clone https://github.com/Mocha-Downloader/mocha-downloader.github.io.git
-```
-
-#### 2. Install dependencies
-
-```
-yarn install
-```
-
-#### 3. Test locally
-
-```
-yarn start
-```
-
-Test different locale:
-
-```
-yarn start --locale <code>
-```
-
-available locale:
-
-- en
-- ko
-
 ## Editors & IDEs
 
-vscode users can install the [recommended extensions](./.vscode/extensions.json).
+vscode/vscodium users can install the [recommended extensions](./.vscode/extensions.json).
 
 other IDE users must have the following feature:
 
 - [editorconfig](./.editorconfig) support
-- [prettier formatter](./.prettierrc)
-
-recommended alternative editors/IDEs:
-
-- vim
-- emacs
-- webstorm (paid)
+- [prettier formatter](./.prettierrc) support
 
 ## Troubleshooting
 
