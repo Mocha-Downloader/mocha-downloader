@@ -3,7 +3,7 @@ import sizeOf from "image-size"
 import cheerio from "cheerio"
 import axios from "axios"
 
-import { DownloadFlags, Platform } from "common/constants"
+import { DownloadFlags, Platform, ISelectOption } from "common/constants"
 
 import {
 	getHTMLFromWindow,
@@ -153,11 +153,9 @@ async function downloadEpisodes(
  * Get a list of all episodes of a comic.
  *
  * @param {URL} parsedURL
- * @returns {Promise<{ title: string; url: string }[]>}
+ * @returns {Promise<ISelectOption[]>}
  */
-async function getList(
-	parsedURL: URL
-): Promise<{ title: string; url: string }[]> {
+async function getList(parsedURL: URL): Promise<ISelectOption[]> {
 	const titleID = parsedURL.searchParams.get("titleId")
 
 	// use url without page and other nonsense
@@ -201,7 +199,10 @@ async function logic(parsedURL: URL, selected?: number[]): Promise<void> {
 	if (parsedURL.pathname == "/webtoon/list") {
 		if (!selected || selected.length <= 0) {
 			const selectable = await getList(parsedURL)
-			m2r("select", parsedURL.href, selectable)
+			m2r({
+				type: "select",
+				payload: { url: parsedURL.href, availableChoices: selectable },
+			})
 			return
 		}
 

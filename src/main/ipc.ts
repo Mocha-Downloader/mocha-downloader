@@ -7,6 +7,7 @@ import isDev from "electron-is-dev"
 import { URL } from "url"
 
 import { Platform } from "common/constants"
+import { R2MArgs } from "common/ipcTypes"
 
 import platforms from "./platforms"
 
@@ -44,31 +45,31 @@ if (isDev) {
 	}
 }
 
-ipcMain.on("r2m", async (_, ...args) => {
-	if (isDev) {
-		console.log("r2m:", args)
+ipcMain.on("r2m", async (_, r2mArgs: R2MArgs) => {
+	if (isDev) console.log("r2m:", r2mArgs)
 
-		const tokens = String(args[1]).split(" ")
+	switch (r2mArgs.type) {
+		case "download": {
+			if (isDev) {
+				const tokens = r2mArgs.payload.url.split(" ")
 
-		testInput(tokens[0], ...tokens.slice(1, tokens.length))
-		return
-	}
+				testInput(tokens[0], ...tokens.slice(1, tokens.length))
+				return
+			}
 
-	if (args[0] == "download") {
-		Download(args[1], args[2])
+			const parsedURL = new URL(r2mArgs.payload.url)
+
+			forEachPlatform((platform) => {
+				if (platform.meta.id === parsedURL.hostname) {
+					platform.logic(parsedURL, r2mArgs.payload.selected)
+					return true
+				}
+				return
+			})
+
+			// code should not reach this point if everything goes well
+			throw Error("Unsupported platform")
+			// todo: user feedback
+		}
 	}
 })
-
-async function Download(url: string, selected?: number[]): Promise<void> {
-	const parsedURL = new URL(url)
-
-	forEachPlatform((platform) => {
-		if (platform.meta.id === parsedURL.hostname) {
-			platform.logic(parsedURL, selected)
-			return true
-		}
-		return
-	})
-
-	throw Error("Unsupported platform")
-}

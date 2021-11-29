@@ -2,7 +2,8 @@ import { useContext, useEffect, useState } from "react"
 import { Card, Image, Button, Progress, Icon } from "semantic-ui-react"
 
 import { platformID2NameMap, IDownloadCardProps } from "common/constants"
-import { globalContext, ActionsEnum } from "../ipc"
+import { ActionsEnum } from "common/ipcTypes"
+import { globalContext } from "../ipc"
 
 import platformImage from "../../../assets/platforms/comic.naver.com.png"
 

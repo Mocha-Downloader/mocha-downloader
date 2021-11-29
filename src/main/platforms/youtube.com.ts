@@ -1,5 +1,4 @@
 import ytdl from "ytdl-core"
-import path from "path"
 import fs from "fs"
 
 import { DownloadFlags, Platform } from "common/constants"
@@ -50,7 +49,7 @@ async function downloadVideo(
 	if (flags?.dryRun) return
 
 	const video = ytdl(url)
-	const output = path.resolve(__dirname, "video.mp4")
+	const output = "video.mp4"
 
 	video.pipe(fs.createWriteStream(output))
 

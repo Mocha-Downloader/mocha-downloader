@@ -9,6 +9,7 @@ import path from "path"
 import { IDownloadCardProps } from "common/constants"
 
 import { mainWindow } from "./main"
+import { M2RArgs } from "common/ipcTypes"
 
 // -----
 
@@ -39,7 +40,7 @@ export function getAssetPath(...paths: string[]): string {
 }
 
 export function showAbout() {
-	m2r("showAbout")
+	m2r({ type: "showAbout" })
 }
 
 /**
@@ -95,8 +96,8 @@ export async function getImageBuffer(
  * 	@param {...any} args - things to send to the renderer process
  *  @returns {void}
  */
-export function m2r(...args: any[]): void {
-	mainWindow?.webContents.send("m2r", ...args)
+export function m2r(m2rArgs: M2RArgs): void {
+	mainWindow?.webContents.send("m2r", m2rArgs)
 }
 
 type DownloadCardKey =
@@ -119,11 +120,26 @@ export function createDownloadCard(
 ): [(key: DownloadCardKey, value: any) => void, string] {
 	const downloadCardID = randomUUID()
 
-	m2r("download", "new", downloadCardID, downloadCardData)
+	m2r({
+		type: "download",
+		payload: {
+			action: "new",
+			payload: {
+				downloadCardID: downloadCardID,
+				data: downloadCardData,
+			},
+		},
+	})
 
 	return [
 		(key: DownloadCardKey, value: any) => {
-			m2r("download", "update", downloadCardID, key, value)
+			m2r({
+				type: "download",
+				payload: {
+					action: "update",
+					payload: { downloadCardID: downloadCardID, key, value },
+				},
+			})
 		},
 		downloadCardID,
 	]

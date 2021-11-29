@@ -52,6 +52,15 @@ export interface IDownloadCardProps {
 
 // common
 
+export interface Dict<T> {
+	[key: string]: T
+}
+
+export interface ISelectOption {
+	title: string
+	url: string
+}
+
 export type platformID =
 	| "comic.naver.com"
 	| "youtube.com"

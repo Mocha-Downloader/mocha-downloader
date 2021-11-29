@@ -1,4 +1,10 @@
+/**
+ * @file typing for APIs exposed in the preload script,
+ */
+
 import { IpcRenderer } from "electron"
+
+import { M2RArgs, R2MArgs } from "common/ipcTypes"
 
 export {}
 
@@ -15,11 +21,8 @@ declare global {
 				}
 			}
 			ipcRenderer: {
-				// check src/main/preload.js for more info
-				on(listener: (...args: any[]) => void): IpcRenderer
-				once(listener: (...args: any[]) => void): IpcRenderer
-				send(...args: any[]): void
-				sendSync(...args: any[]): any
+				on(listener: (m2rArgs: M2RArgs) => void): IpcRenderer
+				send(r2mArgs: R2MArgs): void
 			}
 		}
 	}

@@ -1,7 +1,8 @@
 import { useContext } from "react"
 import { Button, Header, Modal } from "semantic-ui-react"
 
-import { globalContext, ActionsEnum } from "../ipc"
+import { ActionsEnum } from "common/ipcTypes"
+import { globalContext } from "../ipc"
 
 const AboutModal = () => {
 	// known bug: https://github.com/electron/electron/issues/7085

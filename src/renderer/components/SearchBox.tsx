@@ -17,7 +17,10 @@ const SearchBox = () => {
 		if (event.key === "Enter") {
 			setQuery("") // clear query
 
-			window.electron.ipcRenderer.send("download", query)
+			window.electron.ipcRenderer.send({
+				type: "download",
+				payload: { url: query },
+			})
 		}
 	}
 

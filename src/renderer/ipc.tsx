@@ -1,5 +1,5 @@
 /**
- *  Handles global state and electron ipc.
+ * @file Handles global state and electron ipc.
  */
 
 import {
@@ -10,80 +10,9 @@ import {
 	useEffect,
 	useReducer,
 } from "react"
-import { Optional, Required } from "utility-types"
 
-import { IDownloadCardProps } from "common/constants"
-
-interface Dict<T> {
-	[key: string]: T
-}
-
-interface ISelectOptionsEntry {
-	title: string
-	url: string
-}
-
-export enum ActionsEnum {
-	SHOW_ABOUT_MODAL = "SHOW_ABOUT_MODAL",
-	HIDE_ABOUT_MODAL = "HIDE_ABOUT_MODAL",
-
-	SHOW_SELECT_OPTIONS = "SHOW_SELECT_OPTIONS",
-	HIDE_SELECT_OPTIONS = "HIDE_SELECT_OPTIONS",
-	SET_SELECT_OPTIONS = "SET_SELECT_OPTIONS",
-	UPDATE_SELECT_OPTIONS = "UPDATE_SELECT_OPTIONS",
-
-	ADD_DOWNLOAD_CARD = "ADD_DOWNLOAD_CARD",
-	UPDATE_DOWNLOAD_CARD = "UPDATE_DOWNLOAD_CARD",
-	REMOVE_DOWNLOAD_CARD = "REMOVE_DOWNLOAD_CARD",
-}
-
-type IGlobalAction =
-	| {
-			type: ActionsEnum.SHOW_ABOUT_MODAL
-	  }
-	| {
-			type: ActionsEnum.HIDE_ABOUT_MODAL
-	  }
-	| {
-			type: ActionsEnum.SHOW_SELECT_OPTIONS
-			payload: {
-				url: string
-				availableChoices: ISelectOptionsEntry[]
-			}
-	  }
-	| {
-			type: ActionsEnum.HIDE_SELECT_OPTIONS
-	  }
-	| {
-			type: ActionsEnum.SET_SELECT_OPTIONS
-			payload: boolean[]
-	  }
-	| {
-			type: ActionsEnum.UPDATE_SELECT_OPTIONS
-			payload: {
-				index: number
-				isSelected: boolean
-			}
-	  }
-	| {
-			type: ActionsEnum.ADD_DOWNLOAD_CARD
-			payload: {
-				key: string
-				data: Required<Optional<IDownloadCardProps>, "platform">
-			}
-	  }
-	| {
-			type: ActionsEnum.UPDATE_DOWNLOAD_CARD
-			payload: {
-				cardID: string
-				key: string
-				value: any
-			}
-	  }
-	| {
-			type: ActionsEnum.REMOVE_DOWNLOAD_CARD
-			payload: string
-	  }
+import { Dict, IDownloadCardProps, ISelectOption } from "common/constants"
+import { ActionsEnum, GlobalAction } from "common/ipcTypes"
 
 interface IGlobalState {
 	aboutModalVisibility: boolean
@@ -91,14 +20,14 @@ interface IGlobalState {
 	selectOptions: {
 		isVisible: boolean
 		url: string
-		availableChoices: ISelectOptionsEntry[]
+		availableChoices: ISelectOption[]
 		selectedChoices: boolean[]
 	}
 }
 
 interface IContext {
 	globalState: IGlobalState
-	dispatch: Dispatch<IGlobalAction>
+	dispatch: Dispatch<GlobalAction>
 }
 
 const defaultState: IGlobalState = {
@@ -112,7 +41,7 @@ const defaultState: IGlobalState = {
 	},
 }
 
-const reducer = (state = defaultState, action: IGlobalAction): IGlobalState => {
+const reducer = (state = defaultState, action: GlobalAction): IGlobalState => {
 	switch (action.type) {
 		// about modal related
 		case ActionsEnum.SHOW_ABOUT_MODAL:
@@ -181,7 +110,7 @@ const reducer = (state = defaultState, action: IGlobalAction): IGlobalState => {
 		case ActionsEnum.ADD_DOWNLOAD_CARD: {
 			const downloadCards = state.downloadCards
 
-			downloadCards[action.payload.key] = {
+			downloadCards[action.payload.downloadCardID] = {
 				title: "",
 				thumbnail:
 					"https://react.semantic-ui.com/images/wireframe/image.png", // placeholder image
@@ -205,13 +134,14 @@ const reducer = (state = defaultState, action: IGlobalAction): IGlobalState => {
 			const DownloadCards = state.downloadCards
 
 			if (
-				DownloadCards[action.payload.cardID].hasOwnProperty(
+				DownloadCards[action.payload.downloadCardID].hasOwnProperty(
 					action.payload.key
 				)
 			)
 				// @ts-ignore
-				DownloadCards[action.payload.cardID][action.payload.key] =
-					action.payload.value
+				DownloadCards[action.payload.downloadCardID][
+					action.payload.key
+				] = action.payload.value
 
 			return {
 				...state,
@@ -242,7 +172,7 @@ export const GlobalStore = (props: { children: ReactNode }): ReactElement => {
 
 	const showSelectOptions = async (
 		url: string,
-		availableChoices: ISelectOptionsEntry[]
+		availableChoices: ISelectOption[]
 	) => {
 		// select all choices
 		dispatch({
@@ -258,38 +188,34 @@ export const GlobalStore = (props: { children: ReactNode }): ReactElement => {
 
 	// register listener only once
 	useEffect(() => {
-		window.electron.ipcRenderer.on((...args) => {
-			if (window.electron.isDev) console.log("m2r:", args)
+		window.electron.ipcRenderer.on((m2rArgs) => {
+			if (window.electron.isDev) console.log("m2r:", m2rArgs)
 
-			switch (args[0]) {
+			switch (m2rArgs.type) {
 				case "showAbout":
 					dispatch({ type: ActionsEnum.SHOW_ABOUT_MODAL })
 					break
 
 				case "select":
-					// args1: string
-					// args2: ISelectOptionsEntry[]
-
-					showSelectOptions(args[1], args[2])
+					showSelectOptions(
+						m2rArgs.payload.url,
+						m2rArgs.payload.availableChoices
+					)
 					break
 
 				case "download":
-					switch (args[1]) {
+					switch (m2rArgs.payload.action) {
 						case "new":
 							dispatch({
 								type: ActionsEnum.ADD_DOWNLOAD_CARD,
-								payload: { key: args[2], data: args[3] },
+								payload: m2rArgs.payload.payload,
 							})
 							break
 
 						case "update":
 							dispatch({
 								type: ActionsEnum.UPDATE_DOWNLOAD_CARD,
-								payload: {
-									cardID: args[2],
-									key: args[3],
-									value: args[4],
-								},
+								payload: m2rArgs.payload.payload,
 							})
 							break
 					}

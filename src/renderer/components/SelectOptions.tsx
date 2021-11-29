@@ -6,7 +6,8 @@
 import { useContext, useEffect } from "react"
 import { Button, Checkbox, Icon, Modal, Table } from "semantic-ui-react"
 
-import { globalContext, ActionsEnum } from "../ipc"
+import { ActionsEnum } from "common/ipcTypes"
+import { globalContext } from "../ipc"
 
 const SelectOptions = () => {
 	const { globalState, dispatch } = useContext(globalContext)
@@ -103,14 +104,21 @@ const SelectOptions = () => {
 					onClick={() => {
 						hide()
 
-						window.electron.ipcRenderer.send(
-							"download",
-							globalState.selectOptions.url,
-							// indeces of selected values
-							globalState.selectOptions.selectedChoices
-								.map((value, index) => (value ? index : ""))
-								.filter(String)
-						)
+						window.electron.ipcRenderer.send({
+							type: "download",
+							payload: {
+								url: globalState.selectOptions.url,
+								// https://stackoverflow.com/a/41271541/12979111
+								selected:
+									globalState.selectOptions.selectedChoices.reduce(
+										(prev, curr, i) => {
+											if (curr) prev.push(i)
+											return prev
+										},
+										[] as number[]
+									),
+							},
+						})
 					}}
 				>
 					Download ({selectedChoicesCount})
