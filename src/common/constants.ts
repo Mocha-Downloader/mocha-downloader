@@ -52,6 +52,11 @@ export interface IDownloadCardProps {
 
 // common
 
+/**
+ * @type available Locale
+ */
+export type Locale = "en" | "ko"
+
 export interface Dict<T> {
 	[key: string]: T
 }
@@ -66,10 +71,3 @@ export type platformID =
 	| "youtube.com"
 	| "bittorrent"
 	| "webtoon.kakao.com"
-
-export const platformID2NameMap: { [key in platformID]: string } = {
-	"comic.naver.com": "Naver Comics",
-	"youtube.com": "YouTube",
-	bittorrent: "Torrent",
-	"webtoon.kakao.com": "Kakao Webtoon",
-}

@@ -1,5 +1,6 @@
 import { Optional, Required } from "utility-types"
 
+import { TabEnum } from "renderer/components/Tabs"
 import { IDownloadCardProps, ISelectOption } from "./constants"
 
 export enum ActionsEnum {
@@ -14,6 +15,8 @@ export enum ActionsEnum {
 	ADD_DOWNLOAD_CARD = "ADD_DOWNLOAD_CARD",
 	UPDATE_DOWNLOAD_CARD = "UPDATE_DOWNLOAD_CARD",
 	REMOVE_DOWNLOAD_CARD = "REMOVE_DOWNLOAD_CARD",
+
+	SET_TAB_INDEX = "SET_TAB_INDEX",
 }
 
 export interface ShowSelectOptionsPayload {
@@ -70,6 +73,10 @@ export type GlobalAction =
 	| {
 			type: ActionsEnum.REMOVE_DOWNLOAD_CARD
 			payload: string
+	  }
+	| {
+			type: ActionsEnum.SET_TAB_INDEX
+			payload: TabEnum
 	  }
 
 export type M2RArgs =

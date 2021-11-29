@@ -129,4 +129,4 @@ const SelectOptions = () => {
 	)
 }
 
-export { SelectOptions }
+export default SelectOptions

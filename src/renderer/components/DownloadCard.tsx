@@ -1,7 +1,8 @@
+import { useTranslation } from "react-i18next"
 import { useContext, useEffect, useState } from "react"
 import { Card, Image, Button, Progress, Icon } from "semantic-ui-react"
 
-import { platformID2NameMap, IDownloadCardProps } from "common/constants"
+import { IDownloadCardProps } from "common/constants"
 import { ActionsEnum } from "common/ipcTypes"
 import { globalContext } from "../ipc"
 
@@ -24,6 +25,8 @@ const DownloadCard = (props: IDownloadCardProps) => {
 	const { dispatch } = useContext(globalContext)
 	const [isDownloading, setIsDownloading] = useState(true)
 	const [completePercentage, setCompletePercentage] = useState(0)
+
+	const { t } = useTranslation()
 
 	useEffect(() => {
 		const percentageValue = 100 * (amountComplete / totalAmount)
@@ -50,7 +53,7 @@ const DownloadCard = (props: IDownloadCardProps) => {
 				<Card.Header>{title}</Card.Header>
 				<Card.Meta>
 					<Image src={platformImage} />
-					<strong>{platformID2NameMap[platform]}</strong>
+					<strong>{t(`platform.${platform}`)}</strong>
 				</Card.Meta>
 
 				<div style={{ paddingTop: "1.3rem", marginBottom: "-0.8rem" }}>
