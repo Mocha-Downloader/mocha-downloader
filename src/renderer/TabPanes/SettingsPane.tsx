@@ -25,6 +25,7 @@ const SettingsPane = () => {
 				placeholder="Select Language"
 				search
 				selection
+				defaultValue="en"
 				options={LanguageOptions}
 				onChange={(_, { value }) => {
 					if (value) i18n.changeLanguage(value as Locale)
