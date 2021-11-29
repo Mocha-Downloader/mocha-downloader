@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next"
 import { Container, Menu } from "semantic-ui-react"
 import styled from "styled-components"
 
@@ -17,10 +18,12 @@ const StyledSearchBoxContainer = styled.div`
 `
 
 const TopBar = () => {
+	const { t } = useTranslation()
+
 	return (
 		<Menu fixed="top" inverted>
 			<StyledContainer>
-				<Menu.Item header>Mocha Downloader</Menu.Item>
+				<Menu.Item header>{t("appName")}</Menu.Item>
 				<StyledSearchBoxContainer>
 					<SearchBox />
 				</StyledSearchBoxContainer>

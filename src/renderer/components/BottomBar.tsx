@@ -1,14 +1,47 @@
+import { useContext } from "react"
 import { Menu, Container, Icon, Popup } from "semantic-ui-react"
+import { useTranslation } from "react-i18next"
+
+import { globalContext } from "../ipc"
+import { ActionsEnum } from "common/ipcTypes"
+import { TabEnum } from "./Tabs"
 
 const BottomBar = () => {
+	const { dispatch } = useContext(globalContext)
+	const { t } = useTranslation()
+
 	return (
 		<Menu fixed="bottom" inverted>
 			<Container>
 				<Popup
 					inverted
-					content="Settings"
+					content={t("bottomBarTooltips.download")}
 					trigger={
-						<Menu.Item>
+						<Menu.Item
+							onClick={() => {
+								dispatch({
+									type: ActionsEnum.SET_TAB_INDEX,
+									payload: TabEnum.DOWNLOAD,
+								})
+							}}
+						>
+							<Icon link size="large" name="download" />
+						</Menu.Item>
+					}
+				/>
+
+				<Popup
+					inverted
+					content={t("bottomBarTooltips.settings")}
+					trigger={
+						<Menu.Item
+							onClick={() => {
+								dispatch({
+									type: ActionsEnum.SET_TAB_INDEX,
+									payload: TabEnum.SETTINGS,
+								})
+							}}
+						>
 							<Icon link size="large" name="settings" />
 						</Menu.Item>
 					}
@@ -16,9 +49,16 @@ const BottomBar = () => {
 
 				<Popup
 					inverted
-					content="Help"
+					content={t("bottomBarTooltips.help")}
 					trigger={
-						<Menu.Item>
+						<Menu.Item
+							onClick={() => {
+								dispatch({
+									type: ActionsEnum.SET_TAB_INDEX,
+									payload: TabEnum.HELP,
+								})
+							}}
+						>
 							<Icon link size="large" name="question circle" />
 						</Menu.Item>
 					}
@@ -29,7 +69,7 @@ const BottomBar = () => {
 				<Menu.Menu position="right">
 					<Popup
 						inverted
-						content="Documentation"
+						content={t("bottomBarTooltips.documentation")}
 						trigger={
 							<a
 								href="https://mocha-downloader.github.io"
@@ -44,7 +84,7 @@ const BottomBar = () => {
 
 					<Popup
 						inverted
-						content="Discord"
+						content={t("bottomBarTooltips.discord")}
 						trigger={
 							<a
 								href="https://discord.gg/aQqamSCUcS"
@@ -59,7 +99,7 @@ const BottomBar = () => {
 
 					<Popup
 						inverted
-						content="Source Code"
+						content={t("bottomBarTooltips.sourceCode")}
 						trigger={
 							<a
 								href="https://github.com/Mocha-Downloader/mocha-downloader"

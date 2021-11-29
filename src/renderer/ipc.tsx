@@ -11,11 +11,19 @@ import {
 	useReducer,
 } from "react"
 
-import { Dict, IDownloadCardProps, ISelectOption } from "common/constants"
+import {
+	Dict,
+	IDownloadCardProps,
+	ISelectOption,
+	Locale,
+} from "common/constants"
 import { ActionsEnum, GlobalAction } from "common/ipcTypes"
+import { TabEnum } from "./components/Tabs"
 
 interface IGlobalState {
 	aboutModalVisibility: boolean
+	locale: Locale
+	tabIndex: TabEnum
 	downloadCards: Dict<IDownloadCardProps>
 	selectOptions: {
 		isVisible: boolean
@@ -32,6 +40,8 @@ interface IContext {
 
 const defaultState: IGlobalState = {
 	aboutModalVisibility: false,
+	locale: "en",
+	tabIndex: TabEnum.DOWNLOAD,
 	downloadCards: {},
 	selectOptions: {
 		isVisible: false,
@@ -160,6 +170,15 @@ const reducer = (state = defaultState, action: GlobalAction): IGlobalState => {
 			}
 		}
 
+		// tabs related
+
+		case ActionsEnum.SET_TAB_INDEX: {
+			return {
+				...state,
+				tabIndex: action.payload,
+			}
+		}
+
 		default:
 			return state
 	}
@@ -169,22 +188,6 @@ export const globalContext = createContext({} as IContext)
 
 export const GlobalStore = (props: { children: ReactNode }): ReactElement => {
 	const [globalState, dispatch] = useReducer(reducer, defaultState)
-
-	const showSelectOptions = async (
-		url: string,
-		availableChoices: ISelectOption[]
-	) => {
-		// select all choices
-		dispatch({
-			type: ActionsEnum.SET_SELECT_OPTIONS,
-			payload: Array(availableChoices.length).fill(true),
-		})
-
-		dispatch({
-			type: ActionsEnum.SHOW_SELECT_OPTIONS,
-			payload: { url, availableChoices },
-		})
-	}
 
 	// register listener only once
 	useEffect(() => {
@@ -197,10 +200,19 @@ export const GlobalStore = (props: { children: ReactNode }): ReactElement => {
 					break
 
 				case "select":
-					showSelectOptions(
-						m2rArgs.payload.url,
-						m2rArgs.payload.availableChoices
-					)
+					// select all choices
+					dispatch({
+						type: ActionsEnum.SET_SELECT_OPTIONS,
+						payload: Array(
+							m2rArgs.payload.availableChoices.length
+						).fill(true),
+					})
+
+					dispatch({
+						type: ActionsEnum.SHOW_SELECT_OPTIONS,
+						payload: m2rArgs.payload,
+					})
+
 					break
 
 				case "download":

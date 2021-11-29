@@ -1,25 +1,25 @@
 {
 	"appName": "모카 다운로더",
 	"topBar": {
-		"placeholder": "Paste link here",
-		"button": "download"
+		"placeholder": "링크 붙여넣기",
+		"button": "다운로드"
 	},
 	"instructions": {
-		"header": "Paste link to start downloading",
-		"subheader": "Press F1 to learn more"
+		"header": "링크를 붙여넣어 다운로드를 시작하세요",
+		"subheader": "자세한 내용을 보려면 F1 키를 누르십시오"
 	},
 	"bottomBarTooltips": {
-		"download": "Download",
-		"settings": "Settings",
-		"help": "Help",
-		"documentation": "Documentation",
-		"discord": "Discord",
-		"sourceCode": "Source Code"
+		"download": "다운로드",
+		"settings": "설정",
+		"help": "도움",
+		"documentation": "문서",
+		"discord": "디스코드",
+		"sourceCode": "소스 코드"
 	},
 	"platform": {
-		"comic.naver.com": "Naver Comics",
-		"youtube.com": "YouTube",
-		"bittorrent": "Torrent",
-		"webtoon.kakao.com": "Kakao Webtoon"
+		"comic.naver.com": "네이버 웹툰",
+		"youtube.com": "유튜브",
+		"bittorrent": "토렌트",
+		"webtoon.kakao.com": "카카오 웹툰"
 	}
 }
