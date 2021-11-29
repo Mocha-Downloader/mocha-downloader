@@ -18,9 +18,12 @@ The following skills are absolutely necessary to start contributing code to Moch
 - English
 - [Google-fu](https://www.urbandictionary.com/define.php?term=google-fu)
 - [jsdoc](https://jsdoc.app)
+- javascript and typescript
+- react
 
 ## Helpful resources
 
+- [semantic UI react docs](https://react.semantic-ui.com)
 - electron ipc ([main](https://www.electronjs.org/docs/latest/api/ipc-main) & [renderer](https://www.electronjs.org/docs/latest/api/ipc-renderer))
 - [electron-builder Two package.json Structure](https://www.electron.build/tutorials/two-package-structure.html)
 
@@ -67,6 +70,10 @@ yarn package
   - must have a meta property and a logic function. Check [`src/main/constants.ts`](./src/main/constants.ts) for more info.
   - export it in [`src/main/platforms/index.ts`](./src/main/platforms/index.ts)
 - add a 16x16px sized png icon to [`./assets`](./assets)
+
+## Translations
+
+Once we're applicable for [crowdin's open source project setup request](https://crowdin.com/page/open-source-project-setup-request), all translation related work are to be done in [crowdin](https://crowdin.com/project/mocha-downloader). Until then, contributors can make pull request directly in the `master` branch (not the `l10n_master` branch!).
 
 ## Editors & IDEs
 
