@@ -45,7 +45,8 @@
 		"styled-components": "^5.3.3",
 		"utility-types": "^3.10.0",
 		"webtorrent": "^1.5.8",
-		"ytdl-core": "^4.9.1"
+		"ytdl-core": "^4.9.1",
+		"ytpl": "^2.2.3"
 	},
 	"devDependencies": {
 		"@pmmmwh/react-refresh-webpack-plugin": "^0.5.2",
