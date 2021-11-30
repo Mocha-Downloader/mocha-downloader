@@ -36,8 +36,6 @@ async function main() {
 	toIco(imageFiles).then((result) => {
 		fs.writeFileSync("assets/icon.ico", result)
 	})
-
-	// todo: .icns file for apple
 }
 
 main()

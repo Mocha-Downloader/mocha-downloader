@@ -13,9 +13,6 @@ import platforms from "./platforms"
 import { buildTray } from "./main"
 import { getPlatformType } from "./util"
 
-// todo: add support for .torrent and .json files and magnet link
-// todo: add name collision for platform id and code
-
 /**
  * loops over each platform until the callback returns a truthy value.
  * WARNING: {@link https://developer.mozilla.org/en-US/docs/Glossary/Truthy truthy} and {@link https://developer.mozilla.org/en-US/docs/Glossary/Falsy falsy} values might not be as intuitive as you think. For example, an empty array is truthy in javascript.
@@ -76,7 +73,6 @@ ipcMain.on("r2m", async (_, r2mArgs: R2MArgs) => {
 			throw Error(
 				`Unsupported platform ${platformType} (${r2mArgs.payload.url})`
 			)
-			// todo: user feedback
 		}
 
 		case "changeLang": {

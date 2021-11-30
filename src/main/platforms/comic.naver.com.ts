@@ -19,8 +19,6 @@ const meta: PlatformMeta = {
 	code: "nv",
 }
 
-// todo: add referrer and headers to requests
-
 /**
  * Downloads a episode of naver comic.
  *
@@ -107,11 +105,11 @@ async function downloadEpisode(url: string): Promise<void> {
 			width: maxWidth,
 			height: heightCount,
 			channels: 3,
-			background: "#ffffff", // todo: get background image from comic image container
+			background: "#ffffff",
 		},
 	})
 		.composite(imgsToStitch)
-		.png({ quality: 100 }) // todo: expose this in the settings
+		.png({ quality: 100 })
 		.toFile(`${title}.png`)
 
 	updateDownloadCard("isDownloadComplete", "true")

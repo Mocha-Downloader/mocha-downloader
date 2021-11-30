@@ -6,7 +6,6 @@ import { IDownloadCardProps } from "common/constants"
 import { ActionsEnum } from "common/ipcTypes"
 import { globalContext } from "../ipc"
 
-// todo: change platform icon depending on the platformID
 import platformImage from "../../../assets/platforms/comic.naver.com.png"
 
 const DownloadCard = (props: IDownloadCardProps) => {
