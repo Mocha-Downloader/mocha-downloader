@@ -7,7 +7,6 @@ import "regenerator-runtime/runtime"
 
 import { app, BrowserWindow, Menu, shell, Tray } from "electron"
 import { autoUpdater } from "electron-updater"
-import { start } from "pretty-error"
 import isDev from "electron-is-dev"
 import log from "electron-log"
 import i18n, { t } from "i18next"
@@ -18,9 +17,6 @@ import locales, { defaultLang } from "../common/locales"
 import "./ipc"
 import MenuBuilder from "./menu"
 import { getAssetPath, resolveHtmlPath, m2r } from "./util"
-
-// apply pretty error print to all errors
-start()
 
 i18n.init({
 	resources: locales,
