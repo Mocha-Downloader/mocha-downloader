@@ -16,6 +16,10 @@
 		"discord": "Discord",
 		"sourceCode": "Source Code"
 	},
+	"tray": {
+		"about": "About",
+		"quit": "Quit"
+	},
 	"platform": {
 		"comic.naver.com": "Naver Comics",
 		"youtube.com": "YouTube",
