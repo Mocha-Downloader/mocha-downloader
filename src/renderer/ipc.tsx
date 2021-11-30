@@ -120,12 +120,14 @@ const reducer = (state = defaultState, action: GlobalAction): IGlobalState => {
 		case ActionsEnum.ADD_DOWNLOAD_CARD: {
 			const downloadCards = state.downloadCards
 
+			// default values
 			downloadCards[action.payload.downloadCardID] = {
 				title: "",
 				thumbnail:
 					"https://react.semantic-ui.com/images/wireframe/image.png", // placeholder image
 
 				status: "initializing",
+				unit: "",
 				totalAmount: 0,
 				amountComplete: 0,
 

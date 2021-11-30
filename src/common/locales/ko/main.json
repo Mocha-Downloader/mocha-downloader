@@ -17,8 +17,8 @@
 		"sourceCode": "소스 코드"
 	},
 	"tray": {
-		"about": "About",
-		"quit": "Quit"
+		"about": "정보",
+		"quit": "종료"
 	},
 	"platform": {
 		"comic.naver.com": "네이버 웹툰",

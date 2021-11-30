@@ -1,9 +1,15 @@
 import ytdl from "ytdl-core"
 import fs from "fs"
 
-import { DownloadFlags, Platform } from "common/constants"
+import { Platform, PlatformMeta } from "common/constants"
 
-import { createDownloadCard } from "../util"
+import { createDownloadCard, m2r } from "../util"
+import { DownloadPayload } from "common/ipcTypes"
+
+const meta: PlatformMeta = {
+	id: "youtube.com",
+	code: "yt",
+}
 
 // todo: download as mp3
 
@@ -13,13 +19,13 @@ import { createDownloadCard } from "../util"
 // 	POPULAR = "POPULAR",
 // }
 
-// enum PlaylistVideoSortEnum {
-// 	RECENT_ADDED = "RECENT_ADDED",
-// 	OLDEST_ADDED = "OLDEST_ADDED",
-// 	POPULAR = "POPULAR",
-// 	RECENT_PUBLISHED = "RECENT_PUBLISHED",
-// 	OLDEST_PUBLISHED = "OLDEST_PUBLISHED",
-// }
+enum PlaylistVideoSortEnum {
+	RECENT_ADDED = "RECENT_ADDED",
+	OLDEST_ADDED = "OLDEST_ADDED",
+	POPULAR = "POPULAR",
+	RECENT_PUBLISHED = "RECENT_PUBLISHED",
+	OLDEST_PUBLISHED = "OLDEST_PUBLISHED",
+}
 
 /**
  * Converts byte to megabyte.
@@ -38,56 +44,81 @@ function B2MB(num: number): number {
  * @param {DownloadFlags} [flags]
  * @returns {Promise<void>}
  */
-async function downloadVideo(
-	url: string,
-	flags?: DownloadFlags
-): Promise<void> {
+async function downloadVideo(url: string): Promise<void> {
 	const [updateDownloadCard] = createDownloadCard({
 		platform: "youtube.com",
 	})
-
-	if (flags?.dryRun) return
-
 	const video = ytdl(url)
-	const output = "video.mp4"
+	const filePath = "video.mp4"
 
-	video.pipe(fs.createWriteStream(output))
+	ytdl.getBasicInfo(url).then((videoInfo) => {
+		updateDownloadCard("title", videoInfo.videoDetails.title)
+		const thumbnail = videoInfo.videoDetails.thumbnail.thumbnails[0].url
+		updateDownloadCard("thumbnail", thumbnail)
+	})
 
+	// update progress
+	let _isTotalAmountDataSent = false
 	video.on("progress", (_, downloadedBytes: number, totalBytes: number) => {
-		updateDownloadCard("totalAmount", B2MB(totalBytes).toFixed(2))
+		// send total amount data only once
+		if (!_isTotalAmountDataSent) {
+			updateDownloadCard("totalAmount", B2MB(totalBytes).toFixed(2))
+			_isTotalAmountDataSent = true
+		}
+
 		updateDownloadCard("amountComplete", B2MB(downloadedBytes).toFixed(2))
 	})
 
 	video.on("end", () => {
 		updateDownloadCard("isDownloadComplete", true)
 	})
+
+	// save to file
+	video.pipe(fs.createWriteStream(filePath))
 }
 
-// async function getPlaylistVideos(parsedURL: URL, sort: PlaylistVideoSortEnum) {
-// 	console.log(parsedURL.href, sort)
-// 	return []
-// }
+async function downloadPlaylist(
+	url: string,
+	selected: number[]
+): Promise<void> {
+	console.log(url, selected)
+}
 
-async function logic(parsedURL: URL, selected?: number[]) {
-	console.log(parsedURL.href, selected)
+async function getPlaylistVideos(url: string, sort: PlaylistVideoSortEnum) {
+	console.log(url, sort)
+	return []
+}
 
-	// switch (parsedURL.pathname) {
-	// 	case "/watch":
-	// 		downloadVideo(parsedURL.href)
-	// 		return
-	// 	case "playlist":
-	// 		if (!selected || selected.length <= 0) {
-	// 			const selectable = await getPlaylistVideos(
-	// 				parsedURL,
-	// 				PlaylistVideoSortEnum.RECENT_ADDED
-	// 			)
-	// 			m2r("select", parsedURL.href, selectable)
-	// 			return
-	// 		}
+async function logic(downloadPayload: DownloadPayload) {
+	const parsedURL = new URL(downloadPayload.url)
 
-	// 		// downloadPlaylist(parsedURL.href, selected)
-	// 		return
-	// }
+	// todo: link type categorization
+	switch (parsedURL.pathname) {
+		case "/watch":
+			downloadVideo(downloadPayload.url)
+			return
+		case "playlist":
+			if (
+				!downloadPayload.selected ||
+				downloadPayload.selected.length <= 0
+			) {
+				const selectable = await getPlaylistVideos(
+					downloadPayload.url,
+					PlaylistVideoSortEnum.RECENT_ADDED
+				)
+				m2r({
+					type: "select",
+					payload: {
+						url: downloadPayload.url,
+						availableChoices: selectable,
+					},
+				})
+				return
+			}
+
+			downloadPlaylist(downloadPayload.url, downloadPayload.selected)
+			return
+	}
 }
 
 // v: video
@@ -95,20 +126,10 @@ async function logic(parsedURL: URL, selected?: number[]) {
 // c: channel
 type OperationType = "v" | "p" | "c"
 
-function parseFlags(...args: any[]) {
-	const flags: DownloadFlags = { dryRun: false }
-
-	if (args.includes("d")) flags.dryRun = true
-
-	return flags
-}
-
-async function test(operationType: OperationType, ...args: any[]) {
-	const flags = parseFlags(...args)
-
+async function test(operationType: OperationType) {
 	switch (operationType) {
 		case "v":
-			downloadVideo("https://www.youtube.com/watch?v=dQw4w9WgXcQ", flags)
+			downloadVideo("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
 			break
 
 		// case "p":
@@ -128,11 +149,4 @@ async function test(operationType: OperationType, ...args: any[]) {
 	}
 }
 
-export default {
-	meta: {
-		id: "youtube.com",
-		code: "yt",
-	},
-	logic,
-	test,
-} as Platform
+export default { meta, logic, test } as Platform

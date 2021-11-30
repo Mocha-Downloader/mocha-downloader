@@ -1,13 +1,6 @@
 // main process
 
-/**
- * Tweaks download behavior.
- *
- * @interface
- */
-export interface DownloadFlags {
-	dryRun: boolean // do not download the contents (still requires internet connection)
-}
+import { DownloadPayload } from "./ipcTypes"
 
 /**
  * Platform metadata.
@@ -15,8 +8,8 @@ export interface DownloadFlags {
  * @interface
  */
 export interface PlatformMeta {
-	id: string // unique identifier of the platform. domain name for sites.
-	code: string // a 2~3 letter code to be used instead of the id
+	id: platformID // unique identifier of the platform. domain name for sites.
+	code: platformCode // a 2~3 letter code to be used instead of the id
 }
 
 /**
@@ -26,8 +19,8 @@ export interface PlatformMeta {
  */
 export interface Platform {
 	meta: PlatformMeta
-	logic(...args: any): Promise<void>
-	test(...args: any): Promise<void>
+	logic(downloadPayload: DownloadPayload): Promise<void>
+	test(...args: string[]): Promise<void>
 }
 
 // renderer
@@ -45,6 +38,7 @@ export interface IDownloadCardProps {
 	thumbnail: string | Buffer
 
 	status: string // what the downloader currently doing
+	unit: string // unit of the amount values below
 	totalAmount: number
 	amountComplete: number
 	isDownloadComplete: boolean // is everything completely done
@@ -71,3 +65,5 @@ export type platformID =
 	| "youtube.com"
 	| "bittorrent"
 	| "webtoon.kakao.com"
+
+export type platformCode = "nv" | "yt" | "tr" | "kw"
