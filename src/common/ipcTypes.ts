@@ -103,13 +103,15 @@ export type M2RArgs =
 				  }
 	  }
 
+export type DownloadPayload = {
+	url: string
+	selected?: number[]
+}
+
 export type R2MArgs =
 	| {
 			type: "download"
-			payload: {
-				url: string
-				selected?: number[]
-			}
+			payload: DownloadPayload
 	  }
 	| {
 			type: "changeLang"

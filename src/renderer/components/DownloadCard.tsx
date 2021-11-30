@@ -17,6 +17,7 @@ const DownloadCard = (props: IDownloadCardProps) => {
 		thumbnail,
 
 		status,
+		unit,
 		totalAmount,
 		amountComplete,
 		isDownloadComplete,
@@ -57,7 +58,7 @@ const DownloadCard = (props: IDownloadCardProps) => {
 				</Card.Meta>
 
 				<div style={{ paddingTop: "1.3rem", marginBottom: "-0.8rem" }}>
-					{amountComplete} / {totalAmount}&nbsp;&nbsp;(
+					{amountComplete} / {totalAmount} {unit}&nbsp;&nbsp;(
 					<strong>{completePercentage.toFixed(1)}%</strong>)
 				</div>
 				<Progress

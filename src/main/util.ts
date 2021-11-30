@@ -1,17 +1,15 @@
 import { app, BrowserWindow } from "electron"
-import { Required, Optional } from "utility-types"
+import { Required, Optional, $Keys } from "utility-types"
 import { randomUUID } from "crypto"
 import isDev from "electron-is-dev"
 import { URL } from "url"
 import axios from "axios"
 import path from "path"
 
-import { IDownloadCardProps } from "common/constants"
+import { IDownloadCardProps, platformID } from "common/constants"
 
 import { mainWindow } from "./main"
-import { M2RArgs } from "common/ipcTypes"
-
-// -----
+import { DownloadPayload, M2RArgs } from "common/ipcTypes"
 
 export let resolveHtmlPath: (htmlFileName: string) => string
 
@@ -28,8 +26,6 @@ if (isDev) {
 	}
 }
 
-// -----
-
 export function getAssetPath(...paths: string[]): string {
 	return path.join(
 		app.isPackaged
@@ -37,10 +33,6 @@ export function getAssetPath(...paths: string[]): string {
 			: path.join(__dirname, "../../assets"),
 		...paths
 	)
-}
-
-export function showAbout() {
-	m2r({ type: "showAbout" })
 }
 
 /**
@@ -100,24 +92,15 @@ export function m2r(m2rArgs: M2RArgs): void {
 	mainWindow?.webContents.send("m2r", m2rArgs)
 }
 
-type DownloadCardKey =
-	| "platform"
-	| "title"
-	| "thumbnail"
-	| "status"
-	| "totalAmount"
-	| "amountComplete"
-	| "isDownloadComplete"
-
 /**
  * Creates a download card and return the uuid of it and a function that updates the card.
  *
  * @param {any} downloadCardData - download card data
- * @returns {[(key: DownloadCardKey, value: any) => void, string]}
+ * @returns {[(key: $Keys<IDownloadCardProps>, value: any) => void, string]}
  */
 export function createDownloadCard(
 	downloadCardData: Required<Optional<IDownloadCardProps>, "platform">
-): [(key: DownloadCardKey, value: any) => void, string] {
+): [(key: $Keys<IDownloadCardProps>, value: any) => void, string] {
 	const downloadCardID = randomUUID()
 
 	m2r({
@@ -132,7 +115,7 @@ export function createDownloadCard(
 	})
 
 	return [
-		(key: DownloadCardKey, value: any) => {
+		(key: $Keys<IDownloadCardProps>, value: any) => {
 			m2r({
 				type: "download",
 				payload: {
@@ -143,4 +126,8 @@ export function createDownloadCard(
 		},
 		downloadCardID,
 	]
+}
+
+export function getPlatformType(downloadPayload: DownloadPayload): platformID {
+	return new URL(downloadPayload.url).origin.replace("www.", "") as platformID
 }

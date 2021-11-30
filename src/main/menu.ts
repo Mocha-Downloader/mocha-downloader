@@ -7,7 +7,7 @@ import {
 } from "electron"
 import isDev from "electron-is-dev"
 
-import { showAbout } from "./util"
+import { m2r } from "./util"
 
 interface DarwinMenuItemConstructorOptions extends MenuItemConstructorOptions {
 	selector?: string
@@ -80,7 +80,7 @@ export default class MenuBuilder {
 					{
 						label: "About",
 						click: () => {
-							showAbout()
+							m2r({ type: "showAbout" })
 						},
 					},
 				],

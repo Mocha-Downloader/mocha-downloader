@@ -5,13 +5,13 @@
 import { ipcMain } from "electron"
 import isDev from "electron-is-dev"
 import { changeLanguage } from "i18next"
-import { URL } from "url"
 
 import { Platform } from "common/constants"
 import { R2MArgs } from "common/ipcTypes"
 
 import platforms from "./platforms"
 import { buildTray } from "./main"
+import { getPlatformType } from "./util"
 
 // todo: add support for .torrent and .json files and magnet link
 // todo: add name collision for platform id and code
@@ -31,19 +31,27 @@ function forEachPlatform<T>(f: (platform: Platform) => T | undefined): void {
  *  Quickly test features without having to paste link or drag & drop files.
  *
  * @argument {string} platform - A short string ideally 2-3 characters ideantifying which platform to test for
- * @argument {string[]} args - additional options for a more specific action
+ * @argument {string[]} args - Additional options for a more specific action
+ *
+ * @returns {boolean} - Returns true if input is a valid test code. Returns false otherwise.
  */
-let testInput: (platformCode: string, ...args: string[]) => void
+let testInput: (url: string) => boolean
 
 if (isDev) {
-	testInput = (platformCode: string, ...args: string[]) => {
+	testInput = (url) => {
+		let wasMatchFound = false
+		const [platformCode, ...strings] = url.split(" ")
+
 		forEachPlatform((platform) => {
 			if (platform.meta.code == platformCode) {
-				platform.test(...args)
+				wasMatchFound = true
+				platform.test(...strings)
 				return true
 			}
 			return
 		})
+
+		return wasMatchFound
 	}
 }
 
@@ -52,18 +60,11 @@ ipcMain.on("r2m", async (_, r2mArgs: R2MArgs) => {
 
 	switch (r2mArgs.type) {
 		case "download": {
-			if (isDev) {
-				const tokens = r2mArgs.payload.url.split(" ")
-
-				testInput(tokens[0], ...tokens.slice(1, tokens.length))
-				return
-			}
-
-			const parsedURL = new URL(r2mArgs.payload.url)
+			if (isDev && testInput(r2mArgs.payload.url)) return
 
 			forEachPlatform((platform) => {
-				if (platform.meta.id === parsedURL.hostname) {
-					platform.logic(parsedURL, r2mArgs.payload.selected)
+				if (platform.meta.id === getPlatformType(r2mArgs.payload)) {
+					platform.logic(r2mArgs.payload)
 					return true
 				}
 				return

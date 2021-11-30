@@ -17,7 +17,7 @@ import locales, { defaultLang } from "../common/locales"
 
 import "./ipc"
 import MenuBuilder from "./menu"
-import { getAssetPath, resolveHtmlPath, showAbout } from "./util"
+import { getAssetPath, resolveHtmlPath, m2r } from "./util"
 
 // apply pretty error print to all errors
 start()
@@ -53,7 +53,7 @@ export function buildTray() {
 			{
 				label: t("tray.about"),
 				click: () => {
-					showAbout()
+					m2r({ type: "showAbout" })
 				},
 			},
 			{

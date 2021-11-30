@@ -30,31 +30,8 @@ const DownloadPane = () => {
 		<StyledDownloadPaneContainer>
 			<Card.Group>
 				{Object.entries(globalState.downloadCards).map(
-					([
-						key,
-						{
-							platform,
-							title,
-							thumbnail,
-							status,
-							totalAmount,
-							amountComplete,
-							isDownloadComplete,
-						},
-					]) => {
-						return (
-							<DownloadCard
-								key={key}
-								keyValue={key}
-								platform={platform}
-								title={title}
-								thumbnail={thumbnail}
-								status={status}
-								totalAmount={totalAmount}
-								amountComplete={amountComplete}
-								isDownloadComplete={isDownloadComplete}
-							/>
-						)
+					([key, downloadCardProps]) => {
+						return <DownloadCard key={key} {...downloadCardProps} />
 					}
 				)}
 			</Card.Group>

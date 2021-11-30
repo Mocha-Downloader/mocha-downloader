@@ -3,7 +3,7 @@ import sizeOf from "image-size"
 import cheerio from "cheerio"
 import axios from "axios"
 
-import { Platform, ISelectOption } from "common/constants"
+import { Platform, ISelectOption, PlatformMeta } from "common/constants"
 
 import {
 	getHTMLFromWindow,
@@ -12,6 +12,12 @@ import {
 	parseSite,
 	createDownloadCard,
 } from "../util"
+import { DownloadPayload } from "common/ipcTypes"
+
+const meta: PlatformMeta = {
+	id: "comic.naver.com",
+	code: "nv",
+}
 
 // todo: add referrer and headers to requests
 
@@ -24,7 +30,8 @@ import {
  */
 async function downloadEpisode(url: string): Promise<void> {
 	const [updateDownloadCard] = createDownloadCard({
-		platform: "comic.naver.com",
+		platform: meta.id,
+		unit: "images",
 	})
 
 	// load HTML content
@@ -61,8 +68,7 @@ async function downloadEpisode(url: string): Promise<void> {
 	}
 
 	// set total download steps
-	// +2 for image stitching and saving
-	updateDownloadCard("totalAmount", imgLinks.length + 2)
+	updateDownloadCard("totalAmount", imgLinks.length)
 
 	const imgs: Buffer[] = []
 	let amountComplete = 0 // number of images done downloading
@@ -93,9 +99,7 @@ async function downloadEpisode(url: string): Promise<void> {
 		})
 		heightCount += dimensions.height
 	}
-	amountComplete += 1
 
-	updateDownloadCard("amountComplete", amountComplete)
 	updateDownloadCard("status", "stitching images")
 
 	await sharp({
@@ -109,9 +113,7 @@ async function downloadEpisode(url: string): Promise<void> {
 		.composite(imgsToStitch)
 		.png({ quality: 100 }) // todo: expose this in the settings
 		.toFile(`${title}.png`)
-	amountComplete += 1
 
-	updateDownloadCard("amountComplete", amountComplete)
 	updateDownloadCard("isDownloadComplete", "true")
 }
 
@@ -179,24 +181,32 @@ async function getList(parsedURL: URL): Promise<ISelectOption[]> {
 	return result
 }
 
-async function logic(parsedURL: URL, selected?: number[]): Promise<void> {
-	if (parsedURL.pathname == "/webtoon/detail") {
-		downloadEpisode(parsedURL.href)
-		return
-	}
+async function logic(downloadPayload: DownloadPayload): Promise<void> {
+	const parsedURL = new URL(downloadPayload.url)
 
-	if (parsedURL.pathname == "/webtoon/list") {
-		if (!selected || selected.length <= 0) {
-			const selectable = await getList(parsedURL)
-			m2r({
-				type: "select",
-				payload: { url: parsedURL.href, availableChoices: selectable },
-			})
-			return
-		}
+	switch (parsedURL.pathname) {
+		case "/webtoon/detail":
+			downloadEpisode(parsedURL.href)
+			break
 
-		downloadEpisodes(parsedURL.href, selected)
-		return
+		case "/webtoon/list":
+			if (
+				!downloadPayload.selected ||
+				downloadPayload.selected.length <= 0
+			) {
+				const selectable = await getList(parsedURL)
+				m2r({
+					type: "select",
+					payload: {
+						url: parsedURL.href,
+						availableChoices: selectable,
+					},
+				})
+				break
+			}
+
+			downloadEpisodes(parsedURL.href, downloadPayload.selected)
+			break
 	}
 }
 
@@ -269,11 +279,4 @@ async function test(
 	}
 }
 
-export default {
-	meta: {
-		id: "comic.naver.com",
-		code: "nv",
-	},
-	logic,
-	test,
-} as Platform
+export default { meta, logic, test } as Platform
