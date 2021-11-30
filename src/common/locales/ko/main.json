@@ -16,6 +16,10 @@
 		"discord": "디스코드",
 		"sourceCode": "소스 코드"
 	},
+	"tray": {
+		"about": "About",
+		"quit": "Quit"
+	},
 	"platform": {
 		"comic.naver.com": "네이버 웹툰",
 		"youtube.com": "유튜브",
