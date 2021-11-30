@@ -5,12 +5,15 @@
 import "core-js/stable"
 import "regenerator-runtime/runtime"
 
-import { app, BrowserWindow, shell, Tray, Menu } from "electron"
+import { app, BrowserWindow, Menu, shell, Tray } from "electron"
 import { autoUpdater } from "electron-updater"
 import { start } from "pretty-error"
 import isDev from "electron-is-dev"
 import log from "electron-log"
+import i18n, { t } from "i18next"
 import path from "path"
+
+import locales, { defaultLang } from "../common/locales"
 
 import "./ipc"
 import MenuBuilder from "./menu"
@@ -18,6 +21,12 @@ import { getAssetPath, resolveHtmlPath, showAbout } from "./util"
 
 // apply pretty error print to all errors
 start()
+
+i18n.init({
+	resources: locales,
+	lng: defaultLang,
+	fallbackLng: defaultLang,
+})
 
 class AppUpdater {
 	constructor() {
@@ -29,6 +38,33 @@ class AppUpdater {
 
 export let mainWindow: BrowserWindow | null = null
 let tray: Tray | null = null
+
+export function buildTray() {
+	tray?.destroy()
+
+	tray = new Tray(getAssetPath("icon.png"))
+
+	tray.setContextMenu(
+		Menu.buildFromTemplate([
+			{
+				label: t("appName"),
+				enabled: false,
+			},
+			{
+				label: t("tray.about"),
+				click: () => {
+					showAbout()
+				},
+			},
+			{
+				label: t("tray.quit"),
+				click: () => {
+					app.quit()
+				},
+			},
+		])
+	)
+}
 
 if (isDev) {
 	require("electron-debug")()
@@ -92,42 +128,16 @@ const createWindow = async () => {
  * Add event listeners
  */
 
-app.whenReady()
-	.then(() => {
-		createWindow()
+app.whenReady().then(() => {
+	buildTray()
+	createWindow()
 
-		// On macOS it's common to re-create a window in the app when the
-		// dock icon is clicked and there are no other windows open.
-		app.on("activate", () => {
-			if (mainWindow === null) createWindow()
-		})
-
-		/* tray */
-
-		tray = new Tray(getAssetPath("icon.png"))
-
-		tray.setContextMenu(
-			Menu.buildFromTemplate([
-				{
-					label: "Mocha Downloader",
-					enabled: false,
-				},
-				{
-					label: "About",
-					click: () => {
-						showAbout()
-					},
-				},
-				{
-					label: "Quit",
-					click: () => {
-						app.quit()
-					},
-				},
-			])
-		)
+	// On macOS it's common to re-create a window in the app when the
+	// dock icon is clicked and there are no other windows open.
+	app.on("activate", () => {
+		if (mainWindow === null) createWindow()
 	})
-	.catch(console.log)
+})
 
 app.on("window-all-closed", () => {
 	// Respect the OSX convention of having the application in memory even

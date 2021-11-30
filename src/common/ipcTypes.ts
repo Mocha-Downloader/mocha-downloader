@@ -1,7 +1,7 @@
 import { Optional, Required } from "utility-types"
 
 import { TabEnum } from "renderer/components/Tabs"
-import { IDownloadCardProps, ISelectOption } from "./constants"
+import { IDownloadCardProps, ISelectOption, Locale } from "./constants"
 
 export enum ActionsEnum {
 	SHOW_ABOUT_MODAL = "SHOW_ABOUT_MODAL",
@@ -103,10 +103,15 @@ export type M2RArgs =
 				  }
 	  }
 
-export type R2MArgs = {
-	type: "download"
-	payload: {
-		url: string
-		selected?: number[]
-	}
-}
+export type R2MArgs =
+	| {
+			type: "download"
+			payload: {
+				url: string
+				selected?: number[]
+			}
+	  }
+	| {
+			type: "changeLang"
+			payload: Locale
+	  }
