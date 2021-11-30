@@ -62,8 +62,10 @@ ipcMain.on("r2m", async (_, r2mArgs: R2MArgs) => {
 		case "download": {
 			if (isDev && testInput(r2mArgs.payload.url)) return
 
+			const platformType = getPlatformType(r2mArgs.payload)
+
 			forEachPlatform((platform) => {
-				if (platform.meta.id === getPlatformType(r2mArgs.payload)) {
+				if (platform.meta.id === platformType) {
 					platform.logic(r2mArgs.payload)
 					return true
 				}
@@ -71,7 +73,9 @@ ipcMain.on("r2m", async (_, r2mArgs: R2MArgs) => {
 			})
 
 			// code should not reach this point if everything goes well
-			throw Error("Unsupported platform")
+			throw Error(
+				`Unsupported platform ${platformType} (${r2mArgs.payload.url})`
+			)
 			// todo: user feedback
 		}
 
