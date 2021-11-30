@@ -1,7 +1,7 @@
 import ytdl from "ytdl-core"
 import fs from "fs"
 
-import { DownloadFlags, Platform } from "common/constants"
+import { Platform } from "common/constants"
 
 import { createDownloadCard } from "../util"
 
@@ -38,15 +38,10 @@ function B2MB(num: number): number {
  * @param {DownloadFlags} [flags]
  * @returns {Promise<void>}
  */
-async function downloadVideo(
-	url: string,
-	flags?: DownloadFlags
-): Promise<void> {
+async function downloadVideo(url: string): Promise<void> {
 	const [updateDownloadCard] = createDownloadCard({
 		platform: "youtube.com",
 	})
-
-	if (flags?.dryRun) return
 
 	const video = ytdl(url)
 	const output = "video.mp4"
@@ -95,20 +90,10 @@ async function logic(parsedURL: URL, selected?: number[]) {
 // c: channel
 type OperationType = "v" | "p" | "c"
 
-function parseFlags(...args: any[]) {
-	const flags: DownloadFlags = { dryRun: false }
-
-	if (args.includes("d")) flags.dryRun = true
-
-	return flags
-}
-
-async function test(operationType: OperationType, ...args: any[]) {
-	const flags = parseFlags(...args)
-
+async function test(operationType: OperationType) {
 	switch (operationType) {
 		case "v":
-			downloadVideo("https://www.youtube.com/watch?v=dQw4w9WgXcQ", flags)
+			downloadVideo("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
 			break
 
 		// case "p":

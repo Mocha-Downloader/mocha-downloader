@@ -1,15 +1,6 @@
 // main process
 
 /**
- * Tweaks download behavior.
- *
- * @interface
- */
-export interface DownloadFlags {
-	dryRun: boolean // do not download the contents (still requires internet connection)
-}
-
-/**
  * Platform metadata.
  *
  * @interface
@@ -26,8 +17,8 @@ export interface PlatformMeta {
  */
 export interface Platform {
 	meta: PlatformMeta
-	logic(...args: any): Promise<void>
-	test(...args: any): Promise<void>
+	logic(...args: any[]): Promise<void>
+	test(...args: any[]): Promise<void>
 }
 
 // renderer

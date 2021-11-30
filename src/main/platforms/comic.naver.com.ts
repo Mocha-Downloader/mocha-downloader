@@ -3,7 +3,7 @@ import sizeOf from "image-size"
 import cheerio from "cheerio"
 import axios from "axios"
 
-import { DownloadFlags, Platform, ISelectOption } from "common/constants"
+import { Platform, ISelectOption } from "common/constants"
 
 import {
 	getHTMLFromWindow,
@@ -22,10 +22,7 @@ import {
  * @param {DownloadFlags} [flags]
  * @returns {Promise<void>}
  */
-async function downloadEpisode(
-	url: string,
-	flags?: DownloadFlags
-): Promise<void> {
+async function downloadEpisode(url: string): Promise<void> {
 	const [updateDownloadCard] = createDownloadCard({
 		platform: "comic.naver.com",
 	})
@@ -66,13 +63,6 @@ async function downloadEpisode(
 	// set total download steps
 	// +2 for image stitching and saving
 	updateDownloadCard("totalAmount", imgLinks.length + 2)
-
-	// don't fetch image data if it's a dry run
-	if (flags?.dryRun) {
-		updateDownloadCard("amountComplete", imgLinks.length + 2)
-		updateDownloadCard("isDownloadComplete", "true")
-		return
-	}
 
 	const imgs: Buffer[] = []
 	let amountComplete = 0 // number of images done downloading
@@ -135,8 +125,7 @@ async function downloadEpisode(
  */
 async function downloadEpisodes(
 	url: string,
-	selected: number[],
-	flags?: DownloadFlags
+	selected: number[]
 ): Promise<void> {
 	const parsedURL = new URL(url)
 
@@ -145,7 +134,7 @@ async function downloadEpisodes(
 	const baseURL = `${parsedURL.origin}/${comicType}/detail`
 
 	selected.map((episodeNum) => {
-		downloadEpisode(`${baseURL}?titleId=${titleID}&no=${episodeNum}`, flags)
+		downloadEpisode(`${baseURL}?titleId=${titleID}&no=${episodeNum}`)
 	})
 }
 
@@ -211,14 +200,6 @@ async function logic(parsedURL: URL, selected?: number[]): Promise<void> {
 	}
 }
 
-function parseFlags(...args: any[]): DownloadFlags {
-	const flags: DownloadFlags = { dryRun: false }
-
-	if (args.includes("d")) flags.dryRun = true
-
-	return flags
-}
-
 // w: webtoon (웹툰)
 // b: best challenge (베스트 도전)
 // c: challenge (도전)
@@ -230,27 +211,22 @@ type DownloadType = "e" | "l"
 
 async function test(
 	comicType: ComicType,
-	downloadType: DownloadType,
-	...args: any[]
+	downloadType: DownloadType
 ): Promise<void> {
-	const flags = parseFlags(...args)
-
 	switch (comicType) {
 		case "w":
 			switch (downloadType) {
 				case "e":
 					// 신도림 episode 1
 					downloadEpisode(
-						"https://comic.naver.com/webtoon/detail?titleId=683496&no=1",
-						flags
+						"https://comic.naver.com/webtoon/detail?titleId=683496&no=1"
 					)
 					break
 				case "l":
 					// 신도림 episode 1~3
 					downloadEpisodes(
 						"https://comic.naver.com/webtoon/list?titleId=683496",
-						[0, 1, 2],
-						flags
+						[0, 1, 2]
 					)
 			}
 			break
@@ -260,16 +236,14 @@ async function test(
 				case "e":
 					// 괜찮아, 고3이야 episode 92 (remake prologue)
 					downloadEpisode(
-						"https://comic.naver.com/bestChallenge/detail?titleId=643799&no=92",
-						flags
+						"https://comic.naver.com/bestChallenge/detail?titleId=643799&no=92"
 					)
 					break
 				case "l":
 					// 괜찮아, 고3이야 episode 92~93 (remake prologue ~ episode 2)
 					downloadEpisodes(
 						"https://comic.naver.com/bestChallenge/list?titleId=643799",
-						[91, 92, 93],
-						flags
+						[91, 92, 93]
 					)
 					break
 			}
@@ -280,16 +254,14 @@ async function test(
 				case "e":
 					// test comic episode 1
 					downloadEpisode(
-						"https://comic.naver.com/challenge/detail?titleId=785847&no=1",
-						flags
+						"https://comic.naver.com/challenge/detail?titleId=785847&no=1"
 					)
 					break
 				case "l":
 					// test comic episode 1~3
 					downloadEpisodes(
 						"https://comic.naver.com/challenge/list?titleId=785847",
-						[0, 1, 2],
-						flags
+						[0, 1, 2]
 					)
 					break
 			}

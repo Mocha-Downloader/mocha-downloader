@@ -31,5 +31,3 @@ contextBridge.exposeInMainWorld("electron", {
 		},
 	},
 })
-
-console.log("preload.js loaded!")
