@@ -91,33 +91,38 @@ async function getPlaylistVideos(url: string, sort: PlaylistVideoSortEnum) {
 }
 
 async function logic(downloadPayload: DownloadPayload) {
-	const parsedURL = new URL(downloadPayload.url)
-
-	// todo: link type categorization
-	switch (parsedURL.pathname) {
-		case "/watch":
-			downloadVideo(downloadPayload.url)
-			return
-		case "playlist":
-			if (
-				!downloadPayload.selected ||
-				downloadPayload.selected.length <= 0
-			) {
-				const selectable = await getPlaylistVideos(
-					downloadPayload.url,
-					PlaylistVideoSortEnum.RECENT_ADDED
-				)
+	const playlistLogic = async () => {
+		if (!downloadPayload.selected || downloadPayload.selected.length <= 0) {
+			getPlaylistVideos(
+				downloadPayload.url,
+				PlaylistVideoSortEnum.RECENT_ADDED
+			).then((playlistData) => {
 				m2r({
 					type: "select",
 					payload: {
 						url: downloadPayload.url,
-						availableChoices: selectable,
+						availableChoices: playlistData,
 					},
 				})
+			})
+		} else {
+			downloadPlaylist(downloadPayload.url, downloadPayload.selected)
+		}
+	}
+
+	const parsedURL = new URL(downloadPayload.url)
+
+	switch (parsedURL.pathname) {
+		case "/watch":
+			if (parsedURL.searchParams.has("list")) {
+				playlistLogic()
 				return
 			}
 
-			downloadPlaylist(downloadPayload.url, downloadPayload.selected)
+			downloadVideo(downloadPayload.url)
+			return
+		case "/playlist":
+			playlistLogic()
 			return
 	}
 }
@@ -133,12 +138,12 @@ async function test(operationType: OperationType) {
 			downloadVideo("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
 			break
 
-		// case "p":
-		// 	downloadPlaylist(
-		// 		"https://www.youtube.com/playlist?list=PLzkuLC6Yvumv_Rd5apfPRWEcjf9b1JRnq",
-		// 		[0, 1]
-		// 	)
-		// 	break
+		case "p":
+			downloadPlaylist(
+				"https://www.youtube.com/playlist?list=PLzkuLC6Yvumv_Rd5apfPRWEcjf9b1JRnq",
+				[0, 1]
+			)
+			break
 
 		// case "c":
 		// 	downloadChannel(
