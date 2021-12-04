@@ -1,5 +1,11 @@
 import { useTranslation } from "react-i18next"
-import { Dropdown, FlagNameValues } from "semantic-ui-react"
+import {
+	Checkbox,
+	Dropdown,
+	FlagNameValues,
+	Header,
+	Input,
+} from "semantic-ui-react"
 
 import { Locale } from "common/constants"
 import { StyledDownloadPaneContainer } from "../components/Tabs"
@@ -21,6 +27,10 @@ const SettingsPane = () => {
 
 	return (
 		<StyledDownloadPaneContainer>
+			<Header size="huge" content="Settings" />
+			<Header size="medium" content="Appearance" dividing />
+			theme
+			<Header size="medium" content="Language" dividing />
 			<Dropdown
 				placeholder="Select Language"
 				search
@@ -39,6 +49,12 @@ const SettingsPane = () => {
 					})
 				}}
 			/>
+			<Header size="medium" content="Network" dividing />
+			<Checkbox label="use tor" />
+			<Header size="medium" content="proxy" />
+			<Input size="mini" />
+			<Header size="medium" content="Etc" dividing />
+			auto update
 		</StyledDownloadPaneContainer>
 	)
 }
