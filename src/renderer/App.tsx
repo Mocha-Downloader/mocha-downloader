@@ -25,11 +25,13 @@ const App = () => {
 	return (
 		<>
 			<GlobalStyle />
+
 			<TopBar />
 			<Tabs />
+			<BottomBar />
+
 			<SelectOptions />
 			<AboutModal />
-			<BottomBar />
 		</>
 	)
 }
