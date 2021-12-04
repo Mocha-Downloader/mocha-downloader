@@ -16,53 +16,27 @@ export enum TabEnum {
 
 export const StyledDownloadPaneContainer = styled(Container)`
 	display: flex;
-	width: 100%;
-	height: 100%;
-
-	padding-top: 4rem;
-	padding-bottom: 8rem;
 `
 
 const StyledTab = styled(Tab)`
-	height: 100%;
+	display: flex;
+	padding-top: 5rem;
 
 	.tabular {
 		display: none;
 	}
-
-	.tab {
-		height: 100%;
-	}
 `
 
 const panes = [
-	{
-		render: () => (
-			<Tab.Pane>
-				<DownloadPane />
-			</Tab.Pane>
-		),
-	},
-	{
-		render: () => (
-			<Tab.Pane>
-				<SettingsPane />
-			</Tab.Pane>
-		),
-	},
-	{
-		render: () => (
-			<Tab.Pane>
-				<HelpPane />
-			</Tab.Pane>
-		),
-	},
+	{ render: () => <DownloadPane /> },
+	{ render: () => <SettingsPane /> },
+	{ render: () => <HelpPane /> },
 ]
 
-const Settings = () => {
+const Tabs = () => {
 	const { globalState } = useContext(globalContext)
 
 	return <StyledTab panes={panes} activeIndex={globalState.tabIndex} />
 }
 
-export default Settings
+export default Tabs
