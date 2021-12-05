@@ -160,7 +160,6 @@ const reducer = (state = defaultState, action: GlobalAction): IGlobalState => {
 				downloadCards: DownloadCards,
 			}
 		}
-
 		case ActionsEnum.REMOVE_DOWNLOAD_CARD: {
 			const downloadCards = state.downloadCards
 
@@ -168,7 +167,7 @@ const reducer = (state = defaultState, action: GlobalAction): IGlobalState => {
 
 			return {
 				...state,
-				downloadCards: downloadCards,
+				downloadCards,
 			}
 		}
 

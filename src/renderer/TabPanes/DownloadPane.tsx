@@ -17,6 +17,7 @@ const StyledInstructions = styled.div`
 	width: 100%;
 	height: 100%;
 `
+
 const DownloadPane = () => {
 	const { globalState } = useContext(globalContext)
 	const [isDownloadListEmpty, setDownloadListEmpty] = useState(true)
