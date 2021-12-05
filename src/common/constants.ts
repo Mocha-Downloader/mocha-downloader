@@ -38,6 +38,7 @@ export interface IDownloadCardProps {
 	thumbnail: string | Buffer
 
 	status: string // what the downloader currently doing
+	errorMessage: string
 	unit: string // unit of the amount values below
 	totalAmount: number
 	amountComplete: number

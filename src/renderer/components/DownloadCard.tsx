@@ -1,12 +1,17 @@
-import { useTranslation } from "react-i18next"
 import { useContext, useEffect, useState } from "react"
 import { Card, Image, Button, Progress, Icon } from "semantic-ui-react"
+import styled from "styled-components"
+import { useTranslation } from "react-i18next"
 
 import { IDownloadCardProps } from "common/constants"
 import { ActionsEnum } from "common/ipcTypes"
 import { globalContext } from "../ipc"
 
 import platformImage from "../../../assets/platforms/comic.naver.com.png"
+
+const StyledError = styled.div`
+	color: red;
+`
 
 const DownloadCard = (props: IDownloadCardProps) => {
 	const {
@@ -17,6 +22,7 @@ const DownloadCard = (props: IDownloadCardProps) => {
 		thumbnail,
 
 		status,
+		errorMessage,
 		unit,
 		totalAmount,
 		amountComplete,
@@ -37,19 +43,26 @@ const DownloadCard = (props: IDownloadCardProps) => {
 	return (
 		<Card fluid>
 			<Card.Content>
-				<Button
-					icon
-					floated="right"
-					style={{ backgroundColor: "transparent" }}
-					onClick={() => {
-						dispatch({
-							type: ActionsEnum.REMOVE_DOWNLOAD_CARD,
-							payload: keyValue,
-						})
-					}}
-				>
-					<Icon name="close" />
-				</Button>
+				{/* remove card button */}
+
+				{isDownloadComplete && (
+					<Button
+						icon
+						floated="right"
+						style={{ backgroundColor: "transparent" }}
+						onClick={() => {
+							dispatch({
+								type: ActionsEnum.REMOVE_DOWNLOAD_CARD,
+								payload: keyValue,
+							})
+						}}
+					>
+						<Icon name="close" />
+					</Button>
+				)}
+
+				{/* Top content */}
+
 				<Image floated="left" size="tiny" src={thumbnail} />
 				<Card.Header>{title}</Card.Header>
 				<Card.Meta>
@@ -57,7 +70,9 @@ const DownloadCard = (props: IDownloadCardProps) => {
 					<strong>{t(`platform.${platform}`)}</strong>
 				</Card.Meta>
 
-				<div style={{ paddingTop: "1.3rem", marginBottom: "-0.8rem" }}>
+				{/* Bottom content */}
+
+				<div style={{ paddingTop: "3rem", marginBottom: "-0.8rem" }}>
 					{amountComplete} / {totalAmount} {unit}&nbsp;&nbsp;(
 					<strong>{completePercentage.toFixed(1)}%</strong>)
 				</div>
@@ -67,7 +82,13 @@ const DownloadCard = (props: IDownloadCardProps) => {
 					style={{ marginBottom: "0" }}
 				/>
 				{isDownloadComplete ? <strong>done!</strong> : status}
-				<Button.Group floated="right" style={{ marginTop: "0.5rem" }}>
+				{errorMessage && (
+					<StyledError>ERROR: {errorMessage}</StyledError>
+				)}
+
+				{/* Download control buttons */}
+
+				<Button.Group floated="right" style={{ marginTop: "-2.5rem" }}>
 					<Button
 						icon
 						onClick={() => {

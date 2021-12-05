@@ -1,4 +1,4 @@
-import { Optional, Required } from "utility-types"
+import { $Keys, Optional, Required } from "utility-types"
 
 import { TabEnum } from "renderer/components/Tabs"
 import { IDownloadCardProps, ISelectOption, Locale } from "./constants"
@@ -36,8 +36,8 @@ export interface AddDownloadCardPayload {
 
 export interface UpdateDownloadCardPayload {
 	downloadCardID: string
-	key: string
-	value: any
+	key: $Keys<IDownloadCardProps>
+	value: any // todo: use values from IDownloadCardProps
 }
 
 export type GlobalAction =
