@@ -3,11 +3,15 @@ import { Card, Image, Button, Progress, Icon } from "semantic-ui-react"
 import styled from "styled-components"
 import { useTranslation } from "react-i18next"
 
+import platformIcons from "common/platformIcons"
 import { IDownloadCardProps } from "common/constants"
 import { ActionsEnum } from "common/ipcTypes"
 import { globalContext } from "../ipc"
 
-import platformImage from "../../../assets/platforms/comic.naver.com.png"
+const StyledThumbnail = styled(Image)`
+	/* max height */
+	/* fixed aspect ratio */
+`
 
 const StyledError = styled.div`
 	color: red;
@@ -63,32 +67,34 @@ const DownloadCard = (props: IDownloadCardProps) => {
 
 				{/* Top content */}
 
-				<Image floated="left" size="tiny" src={thumbnail} />
+				<StyledThumbnail floated="left" size="tiny" src={thumbnail} />
 				<Card.Header>{title}</Card.Header>
 				<Card.Meta>
-					<Image src={platformImage} />
+					<Image src={platformIcons[platform]} />
 					<strong>{t(`platform.${platform}`)}</strong>
 				</Card.Meta>
 
 				{/* Bottom content */}
 
-				<div style={{ paddingTop: "3rem", marginBottom: "-0.8rem" }}>
-					{amountComplete} / {totalAmount} {unit}&nbsp;&nbsp;(
-					<strong>{completePercentage.toFixed(1)}%</strong>)
+				<div style={{ marginTop: "2rem" }}>
+					<div style={{ marginBottom: "-0.8rem" }}>
+						{amountComplete} / {totalAmount} {unit}&nbsp;&nbsp;(
+						<strong>{completePercentage.toFixed(1)}%</strong>)
+					</div>
+					<Progress
+						percent={completePercentage}
+						size="tiny"
+						style={{ marginBottom: "0" }}
+					/>
+					{isDownloadComplete ? <strong>done!</strong> : status}
+					{errorMessage && (
+						<StyledError>ERROR: {errorMessage}</StyledError>
+					)}
 				</div>
-				<Progress
-					percent={completePercentage}
-					size="tiny"
-					style={{ marginBottom: "0" }}
-				/>
-				{isDownloadComplete ? <strong>done!</strong> : status}
-				{errorMessage && (
-					<StyledError>ERROR: {errorMessage}</StyledError>
-				)}
 
 				{/* Download control buttons */}
 
-				<Button.Group floated="right" style={{ marginTop: "-2.5rem" }}>
+				<Button.Group floated="right" style={{ marginTop: "-1rem" }}>
 					<Button
 						icon
 						onClick={() => {

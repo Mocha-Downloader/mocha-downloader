@@ -139,7 +139,7 @@ const reducer = (state = defaultState, action: GlobalAction): IGlobalState => {
 
 			return {
 				...state,
-				downloadCards: downloadCards,
+				downloadCards,
 			}
 		}
 		case ActionsEnum.UPDATE_DOWNLOAD_CARD: {

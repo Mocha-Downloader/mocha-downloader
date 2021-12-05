@@ -45,7 +45,7 @@ function B2MB(num: number): number {
  */
 async function downloadVideo(url: string): Promise<void> {
 	const [updateDownloadCard] = createDownloadCard({
-		platform: "youtube.com",
+		platform: meta.id,
 		unit: "MB",
 	})
 	const video = ytdl(url)
