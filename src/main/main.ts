@@ -32,12 +32,14 @@ class AppUpdater {
 	}
 }
 
+new AppUpdater()
+
 export let mainWindow: BrowserWindow | null = null
 let tray: Tray | null = null
+let isQuitting = false // set this to true when the app is closing for real
 
 export function buildTray() {
-	tray?.destroy()
-
+	tray = null
 	tray = new Tray(getAssetPath("icon.png"))
 
 	tray.setContextMenu(
@@ -47,14 +49,22 @@ export function buildTray() {
 				enabled: false,
 			},
 			{
+				label: t("tray.show"),
+				click: () => {
+					if (mainWindow) mainWindow.show()
+				},
+			},
+			{
 				label: t("tray.about"),
 				click: () => {
 					m2r({ type: "showAbout" })
+					if (mainWindow) mainWindow.show()
 				},
 			},
 			{
 				label: t("tray.quit"),
 				click: () => {
+					isQuitting = true
 					app.quit()
 				},
 			},
@@ -94,7 +104,19 @@ const createWindow = async () => {
 		},
 	})
 
+	new MenuBuilder(mainWindow).buildMenu()
+
+	// Open urls in the user's browser instead of the electron window
+	mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+		shell.openExternal(url)
+		return { action: "deny" }
+	})
+
 	mainWindow.loadURL(resolveHtmlPath("index.html"))
+
+	/**
+	 * Add event listeners
+	 */
 
 	mainWindow.on("ready-to-show", () => {
 		if (!mainWindow) throw new Error('"mainWindow" is not defined')
@@ -102,20 +124,14 @@ const createWindow = async () => {
 		process.env.START_MINIMIZED ? mainWindow.minimize() : mainWindow.show()
 	})
 
-	mainWindow.on("closed", () => {
-		mainWindow = null
+	mainWindow.on("close", (e) => {
+		if (isQuitting) return
+
+		if (mainWindow) {
+			e.preventDefault()
+			mainWindow.hide()
+		}
 	})
-
-	const menuBuilder = new MenuBuilder(mainWindow)
-	menuBuilder.buildMenu()
-
-	// Open urls in the user's browser
-	mainWindow.webContents.setWindowOpenHandler(({ url }) => {
-		shell.openExternal(url)
-		return { action: "deny" }
-	})
-
-	new AppUpdater()
 }
 
 /**
@@ -123,20 +139,6 @@ const createWindow = async () => {
  */
 
 app.whenReady().then(() => {
-	buildTray()
 	createWindow()
-
-	// On macOS it's common to re-create a window in the app when the
-	// dock icon is clicked and there are no other windows open.
-	app.on("activate", () => {
-		if (mainWindow === null) createWindow()
-	})
-})
-
-app.on("window-all-closed", () => {
-	// Respect the OSX convention of having the application in memory even
-	// after all windows have been closed
-	if (process.platform === "darwin") return
-
-	app.quit()
+	buildTray()
 })

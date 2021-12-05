@@ -18,6 +18,7 @@
 	},
 	"tray": {
 		"about": "정보",
+		"show": "창 보이기",
 		"quit": "종료"
 	},
 	"platform": {
