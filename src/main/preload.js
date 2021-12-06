@@ -8,7 +8,7 @@ const { platform, arch, release } = require("os")
 
 contextBridge.exposeInMainWorld("electron", {
 	isDev:
-		process.env.NODE_ENV === "development" ||
+		process.env.NODE_ENV !== "production" ||
 		process.env.DEBUG_PROD === "true",
 	data: {
 		appVersion: version,

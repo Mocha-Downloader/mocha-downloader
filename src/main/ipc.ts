@@ -3,14 +3,13 @@
  */
 
 import { ipcMain } from "electron"
-import isDev from "electron-is-dev"
 import { changeLanguage } from "i18next"
 
 import { Platform } from "common/constants"
 import { R2MArgs } from "common/ipcTypes"
 
 import platforms from "./platforms"
-import { buildTray } from "./main"
+import { isDev, buildTray } from "./main"
 import { getPlatformType } from "./util"
 
 /**

@@ -7,7 +7,6 @@ import "regenerator-runtime/runtime"
 
 import { app, BrowserWindow, Menu, shell, Tray } from "electron"
 import { autoUpdater } from "electron-updater"
-import isDev from "electron-is-dev"
 import log from "electron-log"
 import i18n, { t } from "i18next"
 import path from "path"
@@ -17,6 +16,9 @@ import locales, { defaultLang } from "../common/locales"
 import "./ipc"
 import MenuBuilder from "./menu"
 import { getAssetPath, resolveHtmlPath, m2r } from "./util"
+
+export const isDev =
+	process.env.NODE_ENV !== "production" || process.env.DEBUG_PROD === "true"
 
 i18n.init({
 	resources: locales,

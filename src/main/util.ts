@@ -1,7 +1,6 @@
 import { app, BrowserWindow } from "electron"
 import { Required, Optional, $Keys } from "utility-types"
 import { randomUUID } from "crypto"
-import isDev from "electron-is-dev"
 import { URL } from "url"
 import axios from "axios"
 import path from "path"
@@ -13,7 +12,7 @@ import { DownloadPayload, M2RArgs } from "common/ipcTypes"
 
 export let resolveHtmlPath: (htmlFileName: string) => string
 
-if (isDev) {
+if (process.env.NODE_ENV === "development") {
 	const port = process.env.PORT || 1212
 	resolveHtmlPath = (htmlFileName: string) => {
 		const url = new URL(`http://localhost:${port}`)
