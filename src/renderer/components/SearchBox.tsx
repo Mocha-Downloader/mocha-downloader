@@ -1,3 +1,7 @@
+/**
+ * @file Where the link will be pasted for download.
+ */
+
 import { ChangeEvent, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { Input } from "semantic-ui-react"
