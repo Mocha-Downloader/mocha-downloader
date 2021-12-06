@@ -1,6 +1,6 @@
 /**
- *  Shows a list of checkbox when there are multiple things to download
- *  e.g. youtube playlist, web comics, etc.
+ * @file Shows a list of checkbox when there are multiple things to download.
+ * e.g. youtube playlist, web comics, etc.
  */
 
 import { useContext, useEffect } from "react"
@@ -11,29 +11,27 @@ import { globalContext } from "../ipc"
 
 const SelectOptions = () => {
 	const { globalState, dispatch } = useContext(globalContext)
-	let isEverythingSelected = globalState.selectOptions.selectedChoices.every(
-		(val) => val
-	)
+	const { selectOptions } = globalState
+
+	let isEverythingSelected = selectOptions.selectedChoices.every((val) => val)
 	// count the number of selected choices
 	let selectedChoicesCount =
-		globalState.selectOptions.selectedChoices.filter(Boolean).length
+		selectOptions.selectedChoices.filter(Boolean).length
 	const hide = () => {
 		dispatch({ type: ActionsEnum.HIDE_SELECT_OPTIONS })
 	}
 
 	useEffect(() => {
-		isEverythingSelected = globalState.selectOptions.selectedChoices.every(
-			(val) => val
-		)
+		isEverythingSelected = selectOptions.selectedChoices.every((val) => val)
 
 		selectedChoicesCount =
-			globalState.selectOptions.selectedChoices.filter(Boolean).length
-	}, [globalState.selectOptions.selectedChoices])
+			selectOptions.selectedChoices.filter(Boolean).length
+	}, [selectOptions.selectedChoices])
 
 	return (
 		<Modal
 			dimmer="blurring"
-			open={globalState.selectOptions.isVisible}
+			open={selectOptions.isVisible}
 			onClose={() => hide()}
 		>
 			<Modal.Header>Select items to download</Modal.Header>
@@ -41,38 +39,34 @@ const SelectOptions = () => {
 			<Modal.Content scrolling>
 				<Table striped>
 					<Table.Body>
-						{globalState.selectOptions.availableChoices?.map(
-							(val, index) => (
-								<Table.Row key={val.url}>
-									<Table.Cell>
-										<Checkbox
-											checked={
-												globalState.selectOptions
-													.selectedChoices[index]
-											}
-											onChange={(_, data) => {
-												dispatch({
-													type: ActionsEnum.UPDATE_SELECT_OPTIONS,
-													payload: {
-														index: index,
-														isSelected:
-															!!data.checked,
-													},
-												})
-											}}
-											label={val.title}
-										/>
-									</Table.Cell>
-									<Table.Cell>
-										<a href={val.url} target="_blank">
-											<Button compact floated="right">
-												visit
-											</Button>
-										</a>
-									</Table.Cell>
-								</Table.Row>
-							)
-						)}
+						{selectOptions.availableChoices?.map((val, index) => (
+							<Table.Row key={val.url}>
+								<Table.Cell>
+									<Checkbox
+										checked={
+											selectOptions.selectedChoices[index]
+										}
+										onChange={(_, data) => {
+											dispatch({
+												type: ActionsEnum.UPDATE_SELECT_OPTIONS,
+												payload: {
+													index: index,
+													isSelected: !!data.checked,
+												},
+											})
+										}}
+										label={val.title}
+									/>
+								</Table.Cell>
+								<Table.Cell>
+									<a href={val.url} target="_blank">
+										<Button compact floated="right">
+											visit
+										</Button>
+									</a>
+								</Table.Cell>
+							</Table.Row>
+						))}
 					</Table.Body>
 				</Table>
 			</Modal.Content>
@@ -86,8 +80,7 @@ const SelectOptions = () => {
 						dispatch({
 							type: ActionsEnum.SET_SELECT_OPTIONS,
 							payload: Array(
-								globalState.selectOptions.availableChoices
-									.length
+								selectOptions.availableChoices.length
 							).fill(!isEverythingSelected),
 						})
 					}}
@@ -107,16 +100,15 @@ const SelectOptions = () => {
 						window.electron.ipcRenderer.send({
 							type: "download",
 							payload: {
-								url: globalState.selectOptions.url,
+								url: selectOptions.url,
 								// https://stackoverflow.com/a/41271541/12979111
-								selected:
-									globalState.selectOptions.selectedChoices.reduce(
-										(prev, curr, i) => {
-											if (curr) prev.push(i)
-											return prev
-										},
-										[] as number[]
-									),
+								selected: selectOptions.selectedChoices.reduce(
+									(prev, curr, i) => {
+										if (curr) prev.push(i)
+										return prev
+									},
+									[] as number[]
+								),
 							},
 						})
 					}}
