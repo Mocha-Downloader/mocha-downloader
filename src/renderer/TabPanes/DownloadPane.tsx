@@ -20,11 +20,12 @@ const StyledInstructions = styled.div`
 
 const DownloadPane = () => {
 	const { globalState } = useContext(globalContext)
-	const [isDownloadListEmpty, setDownloadListEmpty] = useState(true)
+	const [downloadCardsCount, setDownloadCardsCount] = useState(0)
+
 	const { t } = useTranslation()
 
 	useEffect(() => {
-		setDownloadListEmpty(Object.keys(globalState.downloadCards).length == 0)
+		setDownloadCardsCount(Object.keys(globalState.downloadCards).length)
 	}, [globalState])
 
 	return (
@@ -39,7 +40,7 @@ const DownloadPane = () => {
 
 			<br />
 
-			{isDownloadListEmpty ? (
+			{downloadCardsCount <= 0 ? (
 				<StyledInstructions>
 					<Header size="huge" icon>
 						{/* https://en.wikipedia.org/wiki/Caffeine */}
