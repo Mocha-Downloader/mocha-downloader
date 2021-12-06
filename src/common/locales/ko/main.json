@@ -22,6 +22,7 @@
 		"quit": "종료"
 	},
 	"platform": {
+		"unknown": "알 수 없는 플랫폼",
 		"comic.naver.com": "네이버 웹툰",
 		"youtube.com": "유튜브",
 		"bittorrent": "토렌트",

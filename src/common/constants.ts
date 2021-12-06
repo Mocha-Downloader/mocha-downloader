@@ -62,6 +62,7 @@ export interface ISelectOption {
 }
 
 export type platformID =
+	| "unknown" // Not a valid platform
 	| "comic.naver.com"
 	| "youtube.com"
 	| "bittorrent"

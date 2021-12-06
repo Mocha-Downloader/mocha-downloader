@@ -27,7 +27,6 @@ function forEachPlatform<T>(f: (platform: Platform) => T | undefined): void {
  *  Quickly test features without having to paste link or drag & drop files.
  *
  * @argument {string} input - Raw test string to be parsed.
- *
  * @returns {boolean} Returns true if input is a valid test code. Returns false otherwise.
  */
 function testInput(input: string): boolean {
@@ -61,9 +60,9 @@ ipcMain.on("r2m", async (_, r2mArgs: R2MArgs) => {
 				return
 			})
 
-			// code should not reach this point if everything goes well
+			// todo: replace with user feedback
 			throw Error(
-				`Unsupported platform ${platformType} (${r2mArgs.payload.url})`
+				`Unsupported platform "${platformType}" (${r2mArgs.payload.url})`
 			)
 		}
 

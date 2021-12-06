@@ -82,7 +82,6 @@ async function downloadVideo(url: string): Promise<void> {
  *
  * @param {string} url - URL of the playlist
  * @param {number[]} selected - index of playlist videos to download starting from 0.
- *
  * @returns {Promise<void>}
  */
 async function downloadPlaylist(
@@ -100,7 +99,6 @@ async function downloadPlaylist(
  * Gets a list of all items in a playlist
  *
  * @param {string} url - URL of the playlist
- *
  * @returns {Promise<ytpl.Item[]>}
  */
 async function getPlaylistVideos(url: string): Promise<ytpl.Item[]> {

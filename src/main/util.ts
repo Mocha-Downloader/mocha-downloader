@@ -128,6 +128,8 @@ export function createDownloadCard(
 }
 
 export function getPlatformType(downloadPayload: DownloadPayload): platformID {
+	if (downloadPayload.url === "") return "unknown"
+
 	const parsedURL = new URL(downloadPayload.url)
 	return parsedURL.hostname.replace("www.", "") as platformID
 }
