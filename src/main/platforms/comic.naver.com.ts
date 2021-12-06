@@ -182,29 +182,26 @@ async function getList(parsedURL: URL): Promise<ISelectOption[]> {
 async function logic(downloadPayload: DownloadPayload): Promise<void> {
 	const parsedURL = new URL(downloadPayload.url)
 
-	switch (parsedURL.pathname) {
-		case "/webtoon/detail":
-			downloadEpisode(parsedURL.href)
-			break
+	if (parsedURL.pathname.includes("/detail")) {
+		downloadEpisode(parsedURL.href)
+		return
+	}
 
-		case "/webtoon/list":
-			if (
-				!downloadPayload.selected ||
-				downloadPayload.selected.length <= 0
-			) {
-				const selectable = await getList(parsedURL)
-				m2r({
-					type: "select",
-					payload: {
-						url: parsedURL.href,
-						availableChoices: selectable,
-					},
-				})
-				break
-			}
+	if (parsedURL.pathname.includes("/list")) {
+		if (!downloadPayload.selected || downloadPayload.selected.length <= 0) {
+			const selectable = await getList(parsedURL)
+			m2r({
+				type: "select",
+				payload: {
+					url: parsedURL.href,
+					availableChoices: selectable,
+				},
+			})
+			return
+		}
 
-			downloadEpisodes(parsedURL.href, downloadPayload.selected)
-			break
+		downloadEpisodes(parsedURL.href, downloadPayload.selected)
+		return
 	}
 }
 
