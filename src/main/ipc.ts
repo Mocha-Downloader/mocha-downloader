@@ -26,29 +26,22 @@ function forEachPlatform<T>(f: (platform: Platform) => T | undefined): void {
 /**
  *  Quickly test features without having to paste link or drag & drop files.
  *
- * @argument {string} platform - A short string ideally 2-3 characters ideantifying which platform to test for
- * @argument {string[]} args - Additional options for a more specific action
+ * @argument {string} input - Raw test string to be parsed.
  *
- * @returns {boolean} - Returns true if input is a valid test code. Returns false otherwise.
+ * @returns {boolean} Returns true if input is a valid test code. Returns false otherwise.
  */
-let testInput: (url: string) => boolean
+function testInput(input: string): boolean {
+	const [platformCode, ...strings] = input.split(" ")
+	let wasMatchFound = false
 
-if (isDev) {
-	testInput = (url) => {
-		let wasMatchFound = false
-		const [platformCode, ...strings] = url.split(" ")
+	forEachPlatform((platform) => {
+		if (platform.meta.code !== platformCode) return
 
-		forEachPlatform((platform) => {
-			if (platform.meta.code == platformCode) {
-				wasMatchFound = true
-				platform.test(...strings)
-				return true
-			}
-			return
-		})
+		wasMatchFound = true
+		platform.test(...strings)
+	})
 
-		return wasMatchFound
-	}
+	return wasMatchFound
 }
 
 ipcMain.on("r2m", async (_, r2mArgs: R2MArgs) => {
