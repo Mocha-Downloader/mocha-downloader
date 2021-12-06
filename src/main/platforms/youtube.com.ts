@@ -151,14 +151,15 @@ type OperationType = "v" | "p" | "c"
 async function test(operationType: OperationType) {
 	switch (operationType) {
 		case "v":
-			downloadVideo("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+			logic({
+				url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+			})
 			break
 
 		case "p":
-			downloadPlaylist(
-				"https://www.youtube.com/playlist?list=PLzkuLC6Yvumv_Rd5apfPRWEcjf9b1JRnq",
-				[0, 1]
-			)
+			logic({
+				url: "https://www.youtube.com/playlist?list=PLzkuLC6Yvumv_Rd5apfPRWEcjf9b1JRnq",
+			})
 			break
 
 		// case "c":

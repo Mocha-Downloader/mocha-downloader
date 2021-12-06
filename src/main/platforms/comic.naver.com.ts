@@ -222,55 +222,49 @@ async function test(
 	downloadType: DownloadType
 ): Promise<void> {
 	switch (comicType) {
+		// 신도림
 		case "w":
 			switch (downloadType) {
 				case "e":
-					// 신도림 episode 1
-					downloadEpisode(
-						"https://comic.naver.com/webtoon/detail?titleId=683496&no=1"
-					)
+					logic({
+						url: "https://comic.naver.com/webtoon/detail?titleId=683496&no=1",
+					})
 					break
 				case "l":
-					// 신도림 episode 1~3
-					downloadEpisodes(
-						"https://comic.naver.com/webtoon/list?titleId=683496",
-						[0, 1, 2]
-					)
+					logic({
+						url: "https://comic.naver.com/webtoon/list?titleId=683496",
+					})
 			}
 			break
 
+		// 괜찮아, 고3이야
 		case "b":
 			switch (downloadType) {
 				case "e":
-					// 괜찮아, 고3이야 episode 92 (remake prologue)
-					downloadEpisode(
-						"https://comic.naver.com/bestChallenge/detail?titleId=643799&no=92"
-					)
+					logic({
+						url: "https://comic.naver.com/bestChallenge/detail?titleId=643799&no=92",
+					})
 					break
 				case "l":
-					// 괜찮아, 고3이야 episode 92~93 (remake prologue ~ episode 2)
-					downloadEpisodes(
-						"https://comic.naver.com/bestChallenge/list?titleId=643799",
-						[91, 92, 93]
-					)
+					logic({
+						url: "https://comic.naver.com/bestChallenge/list?titleId=643799",
+					})
 					break
 			}
 			break
 
+		// test comic episode 1
 		case "c":
 			switch (downloadType) {
 				case "e":
-					// test comic episode 1
-					downloadEpisode(
-						"https://comic.naver.com/challenge/detail?titleId=785847&no=1"
-					)
+					logic({
+						url: "https://comic.naver.com/challenge/detail?titleId=785847&no=1",
+					})
 					break
 				case "l":
-					// test comic episode 1~3
-					downloadEpisodes(
-						"https://comic.naver.com/challenge/list?titleId=785847",
-						[0, 1, 2]
-					)
+					logic({
+						url: "https://comic.naver.com/challenge/list?titleId=785847",
+					})
 					break
 			}
 			break
