@@ -1,6 +1,11 @@
 name: Publish
 
-# on: push
+on:
+    workflow_dispatch:
+        inputs:
+            version_tag:
+                description: The version label to be used for this release
+                required: true
 
 jobs:
     publish:
