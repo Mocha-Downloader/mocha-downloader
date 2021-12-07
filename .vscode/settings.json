@@ -27,7 +27,8 @@
 		"toon",
 		"webtoon",
 		"webtoons",
-		"ytdl"
+		"ytdl",
+		"ytpl"
 	],
 	"search.exclude": {
 		".erb/dll": true,
