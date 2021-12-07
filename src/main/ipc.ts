@@ -24,7 +24,7 @@ function forEachPlatform<T>(f: (platform: Platform) => T | undefined): void {
 }
 
 /**
- *  Quickly test features without having to paste link or drag & drop files.
+ * Quickly test features without having to paste link or drag & drop files.
  *
  * @argument {string} input - Raw test string to be parsed.
  * @returns {boolean} Returns true if input is a valid test code. Returns false otherwise.
@@ -34,10 +34,12 @@ function testInput(input: string): boolean {
 	let wasMatchFound = false
 
 	forEachPlatform((platform) => {
-		if (platform.meta.code !== platformCode) return
-
-		wasMatchFound = true
-		platform.test(...strings)
+		if (platform.meta.code === platformCode) {
+			wasMatchFound = true
+			platform.test(...strings)
+			return true
+		}
+		return false
 	})
 
 	return wasMatchFound
@@ -52,23 +54,29 @@ ipcMain.on("r2m", async (_, r2mArgs: R2MArgs) => {
 
 			const platformType = getPlatformType(r2mArgs.payload)
 
+			let wasMatchFound = false
 			forEachPlatform((platform) => {
 				if (platform.meta.id === platformType) {
 					platform.logic(r2mArgs.payload)
+					wasMatchFound = true
 					return true
 				}
-				return
+				return false
 			})
 
 			// todo: replace with user feedback
-			throw Error(
-				`Unsupported platform "${platformType}" (${r2mArgs.payload.url})`
-			)
+			if (!wasMatchFound)
+				throw Error(
+					`Unsupported platform "${platformType}" (${r2mArgs.payload.url})`
+				)
+
+			break
 		}
 
 		case "changeLang": {
 			changeLanguage(r2mArgs.payload)
 			buildTray()
+			break
 		}
 	}
 })
