@@ -19,7 +19,7 @@ const StyledError = styled.div`
 
 const DownloadCard = (props: IDownloadCardProps) => {
 	const {
-		keyValue,
+		downloadCardID,
 
 		platform,
 		title,
@@ -57,7 +57,7 @@ const DownloadCard = (props: IDownloadCardProps) => {
 						onClick={() => {
 							dispatch({
 								type: ActionsEnum.REMOVE_DOWNLOAD_CARD,
-								payload: keyValue,
+								payload: downloadCardID,
 							})
 						}}
 					>
@@ -94,16 +94,35 @@ const DownloadCard = (props: IDownloadCardProps) => {
 
 				{/* Download control buttons */}
 
+				{/* // todo: wait for 500ms for further input in case the user clicks the button multiple times // */}
 				<Button.Group floated="right" style={{ marginTop: "-1rem" }}>
 					<Button
 						icon
 						onClick={() => {
+							window.electron.ipcRenderer.send({
+								type: "downloadControl",
+								payload: {
+									type: isDownloading ? "pause" : "resume",
+									downloadCardID: downloadCardID,
+								},
+							})
 							setIsDownloading((prev) => !prev)
 						}}
 					>
 						<Icon name={isDownloading ? "pause" : "play"} />
 					</Button>
-					<Button icon>
+					<Button
+						icon
+						onClick={() => {
+							window.electron.ipcRenderer.send({
+								type: "downloadControl",
+								payload: {
+									type: "stop",
+									downloadCardID: downloadCardID,
+								},
+							})
+						}}
+					>
 						<Icon name="stop" />
 					</Button>
 				</Button.Group>

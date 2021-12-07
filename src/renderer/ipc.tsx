@@ -122,6 +122,8 @@ const reducer = (state = defaultState, action: GlobalAction): IGlobalState => {
 
 			// default values
 			downloadCards[action.payload.downloadCardID] = {
+				downloadCardID: action.payload.downloadCardID,
+
 				title: "",
 				thumbnail:
 					"https://react.semantic-ui.com/images/wireframe/image.png", // placeholder image

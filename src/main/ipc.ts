@@ -11,6 +11,7 @@ import { R2MArgs } from "common/ipcTypes"
 import platforms from "./platforms"
 import { isDev, buildTray } from "./main"
 import { getPlatformType } from "./util"
+import { downloadPool } from "./downloading"
 
 /**
  * loops over each platform until the callback returns a truthy value.
@@ -69,6 +70,29 @@ ipcMain.on("r2m", async (_, r2mArgs: R2MArgs) => {
 				throw Error(
 					`Unsupported platform "${platformType}" (${r2mArgs.payload.url})`
 				)
+
+			break
+		}
+
+		case "downloadControl": {
+			const downloadController =
+				downloadPool[r2mArgs.payload.downloadCardID]
+
+			if (downloadController) {
+				switch (r2mArgs.payload.type) {
+					case "pause":
+						downloadController.pause()
+						break
+
+					case "resume":
+						downloadController.resume()
+						break
+
+					case "stop":
+						downloadController.stop()
+						break
+				}
+			}
 
 			break
 		}

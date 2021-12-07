@@ -108,10 +108,19 @@ export type DownloadPayload = {
 	selected?: number[]
 }
 
+export type downloadControlPayload = {
+	type: "pause" | "resume" | "stop"
+	downloadCardID: string
+}
+
 export type R2MArgs =
 	| {
 			type: "download"
 			payload: DownloadPayload
+	  }
+	| {
+			type: "downloadControl"
+			payload: downloadControlPayload
 	  }
 	| {
 			type: "changeLang"

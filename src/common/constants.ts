@@ -31,7 +31,7 @@ export interface Platform {
  * @interface
  */
 export interface IDownloadCardProps {
-	keyValue: string // key value that can be access programmatically. react key values can not be accessed for some reason.
+	downloadCardID: string
 
 	platform: platformID // the source of the downloading content
 	title: string
