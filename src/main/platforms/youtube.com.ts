@@ -84,10 +84,8 @@ async function downloadVideo(url: string): Promise<void> {
  * @param {number[]} selected - index of playlist videos to download starting from 0.
  * @returns {Promise<void>}
  */
-async function downloadPlaylist(
-	url: string,
-	selected: number[]
-): Promise<void> {
+async function downloadVideos(url: string, selected: number[]): Promise<void> {
+	// todo: don't fetch video list again when it's already fetched
 	const playlist = await ytpl(url, { limit: Infinity })
 
 	selected.map((playlistIndex) => {
@@ -96,15 +94,21 @@ async function downloadPlaylist(
 }
 
 /**
- * Gets a list of all items in a playlist
+ * Gets a list of all videos in a playlist or a channel.
  *
- * @param {string} url - URL of the playlist
+ * @param {string} url - URL of the playlist or the channel.
  * @returns {Promise<ytpl.Item[]>}
  */
-async function getPlaylistVideos(url: string): Promise<ytpl.Item[]> {
-	const playlist = await ytpl(url, { limit: Infinity })
+async function getVideoList(url: string): Promise<ytpl.Item[]> {
+	const parsedURL = new URL(url)
 
-	return playlist.items
+	// todo: get sort info from url instead of ignoring it
+	// url parsing doesn't work with trailing /videos for some reason
+	if (parsedURL.pathname.endsWith("/videos")) {
+		parsedURL.pathname = parsedURL.pathname.replace("/videos", "")
+	}
+
+	return (await ytpl(parsedURL.href, { limit: Infinity })).items
 }
 
 async function logic(downloadPayload: DownloadPayload) {
@@ -112,7 +116,7 @@ async function logic(downloadPayload: DownloadPayload) {
 
 	if (parsedURL.pathname.startsWith("/watch")) {
 		if (parsedURL.searchParams.has("list")) {
-			playlistLogic(downloadPayload)
+			videoListLogic(downloadPayload)
 			return
 		}
 
@@ -126,18 +130,32 @@ async function logic(downloadPayload: DownloadPayload) {
 	}
 
 	if (parsedURL.pathname.startsWith("/playlist")) {
-		playlistLogic(downloadPayload)
+		videoListLogic(downloadPayload)
 		return
 	}
 
-	if (parsedURL.pathname.startsWith("/c/")) {
+	if (
+		parsedURL.pathname.startsWith("/c/") ||
+		parsedURL.pathname.startsWith("/channel")
+	) {
+		videoListLogic(downloadPayload)
 		return
 	}
+
+	// todo: replace with user feedback
+	throw Error(
+		"Unrecognized content. If you think this is a bug, make a bug report! (https://github.com/Mocha-Downloader/mocha-downloader/issues)"
+	)
 }
 
-async function playlistLogic(downloadPayload: DownloadPayload) {
+/**
+ * Logic for downloading a list of videos (i.e. playlist and channel)
+ *
+ * @param {DownloadPayload} downloadPayload
+ */
+async function videoListLogic(downloadPayload: DownloadPayload) {
 	if (!downloadPayload.selected || downloadPayload.selected.length <= 0) {
-		getPlaylistVideos(downloadPayload.url).then((playlistData) => {
+		getVideoList(downloadPayload.url).then((playlistData) => {
 			m2r({
 				type: "select",
 				payload: {
@@ -147,7 +165,7 @@ async function playlistLogic(downloadPayload: DownloadPayload) {
 			})
 		})
 	} else {
-		downloadPlaylist(downloadPayload.url, downloadPayload.selected)
+		downloadVideos(downloadPayload.url, downloadPayload.selected)
 	}
 }
 
@@ -177,9 +195,10 @@ async function test(operationType: OperationType) {
 			})
 			break
 
+		// le me
 		case "c":
 			logic({
-				url: "https://www.youtube.com/c/Techquickie/videos",
+				url: "https://www.youtube.com/channel/UCq42p4jHBZnzZE9LG7hoBJw/videos",
 			})
 			break
 	}
