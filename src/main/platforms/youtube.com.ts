@@ -108,43 +108,54 @@ async function getPlaylistVideos(url: string): Promise<ytpl.Item[]> {
 }
 
 async function logic(downloadPayload: DownloadPayload) {
-	const playlistLogic = async () => {
-		if (!downloadPayload.selected || downloadPayload.selected.length <= 0) {
-			getPlaylistVideos(downloadPayload.url).then((playlistData) => {
-				m2r({
-					type: "select",
-					payload: {
-						url: downloadPayload.url,
-						availableChoices: playlistData,
-					},
-				})
-			})
-		} else {
-			downloadPlaylist(downloadPayload.url, downloadPayload.selected)
-		}
-	}
-
 	const parsedURL = new URL(downloadPayload.url)
 
-	switch (parsedURL.pathname) {
-		case "/watch":
-			if (parsedURL.searchParams.has("list")) {
-				playlistLogic()
-				return
-			}
+	if (parsedURL.pathname.startsWith("/watch")) {
+		if (parsedURL.searchParams.has("list")) {
+			playlistLogic(downloadPayload)
+			return
+		}
 
-			downloadVideo(downloadPayload.url)
-			return
-		case "/playlist":
-			playlistLogic()
-			return
+		downloadVideo(downloadPayload.url)
+		return
+	}
+
+	if (parsedURL.pathname.startsWith("/shorts")) {
+		downloadVideo(downloadPayload.url)
+		return
+	}
+
+	if (parsedURL.pathname.startsWith("/playlist")) {
+		playlistLogic(downloadPayload)
+		return
+	}
+
+	if (parsedURL.pathname.startsWith("/c/")) {
+		return
+	}
+}
+
+async function playlistLogic(downloadPayload: DownloadPayload) {
+	if (!downloadPayload.selected || downloadPayload.selected.length <= 0) {
+		getPlaylistVideos(downloadPayload.url).then((playlistData) => {
+			m2r({
+				type: "select",
+				payload: {
+					url: downloadPayload.url,
+					availableChoices: playlistData,
+				},
+			})
+		})
+	} else {
+		downloadPlaylist(downloadPayload.url, downloadPayload.selected)
 	}
 }
 
 // v: video
+// s: shorts
 // p: playlist
 // c: channel
-type OperationType = "v" | "p" | "c"
+type OperationType = "v" | "s" | "p" | "c"
 
 async function test(operationType: OperationType) {
 	switch (operationType) {
@@ -154,19 +165,23 @@ async function test(operationType: OperationType) {
 			})
 			break
 
+		case "s":
+			logic({
+				url: "https://www.youtube.com/shorts/qzqxZB2961Q",
+			})
+			break
+
 		case "p":
 			logic({
 				url: "https://www.youtube.com/playlist?list=PLzkuLC6Yvumv_Rd5apfPRWEcjf9b1JRnq",
 			})
 			break
 
-		// case "c":
-		// 	downloadChannel(
-		// 		"https://www.youtube.com/c/Techquickie/videos",
-		// 		[0],
-		// 		ChannelVideoSortEnum.RECENT
-		// 	)
-		// 	break
+		case "c":
+			logic({
+				url: "https://www.youtube.com/c/Techquickie/videos",
+			})
+			break
 	}
 }
 
