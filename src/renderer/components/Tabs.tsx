@@ -16,6 +16,7 @@ export enum TabEnum {
 
 export const StyledDownloadPaneContainer = styled(Container)`
 	display: flex;
+	margin-bottom: 4rem;
 `
 
 const StyledTab = styled(Tab)`

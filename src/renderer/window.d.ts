@@ -20,6 +20,7 @@ declare global {
 					release: string
 				}
 			}
+			readClipboardText(): string
 			ipcRenderer: {
 				on(listener: (m2rArgs: M2RArgs) => void): IpcRenderer
 				send(r2mArgs: R2MArgs): void

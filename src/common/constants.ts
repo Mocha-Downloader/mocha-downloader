@@ -1,5 +1,3 @@
-// main process
-
 import { DownloadPayload } from "./ipcTypes"
 
 /**
@@ -23,8 +21,6 @@ export interface Platform {
 	test(...args: string[]): Promise<void>
 }
 
-// renderer
-
 /**
  * Download card arguments
  *
@@ -44,8 +40,6 @@ export interface IDownloadCardProps {
 	amountComplete: number
 	isDownloadComplete: boolean // is everything completely done
 }
-
-// common
 
 /**
  * @type available Locale

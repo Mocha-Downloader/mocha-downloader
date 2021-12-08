@@ -1,8 +1,7 @@
 {
 	"appName": "모카 다운로더",
 	"topBar": {
-		"placeholder": "링크 붙여넣기",
-		"button": "다운로드"
+		"paste": "붙여넣기"
 	},
 	"instructions": {
 		"header": "링크를 붙여넣어 다운로드를 시작하세요",

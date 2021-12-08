@@ -3,7 +3,6 @@
  */
 
 import { ChangeEvent, useState } from "react"
-import { useTranslation } from "react-i18next"
 import { Input } from "semantic-ui-react"
 import styled from "styled-components"
 
@@ -11,8 +10,7 @@ const StyledInput = styled(Input)`
 	width: 100%;
 `
 
-const SearchBox = () => {
-	const { t } = useTranslation()
+const DebuggingInput = () => {
 	const [query, setQuery] = useState("")
 
 	const handleChange = (_: ChangeEvent, data: { value: string }) => {
@@ -39,10 +37,8 @@ const SearchBox = () => {
 			value={query}
 			onChange={handleChange}
 			onKeyDown={handleKeyDown}
-			action={t("topBar.button")}
-			placeholder={t("topBar.placeholder")}
 		/>
 	)
 }
 
-export default SearchBox
+export default DebuggingInput

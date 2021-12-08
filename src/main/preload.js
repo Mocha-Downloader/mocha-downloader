@@ -3,7 +3,7 @@
  */
 
 const { version } = require("../../release/app/package.json")
-const { contextBridge, ipcRenderer } = require("electron")
+const { clipboard, contextBridge, ipcRenderer } = require("electron")
 const { platform, arch, release } = require("os")
 
 contextBridge.exposeInMainWorld("electron", {
@@ -18,6 +18,7 @@ contextBridge.exposeInMainWorld("electron", {
 			release: release(),
 		},
 	},
+	readClipboardText: () => clipboard.readText(),
 	ipcRenderer: {
 		// sendSync freezes the client for some reason
 		send(...args) {

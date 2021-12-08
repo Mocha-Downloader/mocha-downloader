@@ -7,6 +7,7 @@ import { globalContext } from "../ipc"
 
 import AnimatedLogo from "../components/AnimatedLogo"
 import DownloadCard from "../components/DownloadCard"
+import DebuggingInput from "../components/DebuggingInput"
 import { StyledDownloadPaneContainer } from "../components/Tabs"
 
 const StyledInstructions = styled.div`
@@ -30,6 +31,14 @@ const DownloadPane = () => {
 
 	return (
 		<StyledDownloadPaneContainer>
+			{window.electron.isDev && (
+				<>
+					<DebuggingInput />
+					<br />
+					<br />
+				</>
+			)}
+
 			<Card.Group>
 				{Object.entries(globalState.downloadCards).map(
 					([key, downloadCardProps]) => {

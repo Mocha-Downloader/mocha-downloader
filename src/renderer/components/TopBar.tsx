@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next"
 import { Container, Menu } from "semantic-ui-react"
 import styled from "styled-components"
 
-import SearchBox from "./SearchBox"
+import DownloadButton from "./DownloadButton"
 
 const StyledContainer = styled(Container)`
 	height: 4rem;
@@ -25,7 +25,7 @@ const TopBar = () => {
 			<StyledContainer>
 				<Menu.Item header>{t("appName")}</Menu.Item>
 				<StyledSearchBoxContainer>
-					<SearchBox />
+					<DownloadButton />
 				</StyledSearchBoxContainer>
 			</StyledContainer>
 		</Menu>

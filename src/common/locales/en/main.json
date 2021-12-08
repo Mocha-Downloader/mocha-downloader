@@ -1,8 +1,7 @@
 {
 	"appName": "Mocha Downloader",
 	"topBar": {
-		"placeholder": "Paste link here",
-		"button": "Download"
+		"paste": "Paste"
 	},
 	"instructions": {
 		"header": "Paste link to start downloading",
