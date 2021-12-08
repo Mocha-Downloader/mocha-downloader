@@ -103,10 +103,16 @@ export type M2RArgs =
 				  }
 	  }
 
-export type DownloadPayload = {
-	url: string
-	selected?: number[]
-}
+export type DownloadPayload =
+	| {
+			type: "url"
+			url: string
+			selected?: number[]
+	  }
+	| {
+			type: "file"
+			data: string // file content as string
+	  }
 
 export type downloadControlPayload = {
 	type: "pause" | "resume" | "stop"

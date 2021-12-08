@@ -6,9 +6,10 @@ import axios from "axios"
 import path from "path"
 
 import { IDownloadCardProps, platformID } from "common/constants"
+import { DownloadPayload, M2RArgs } from "common/ipcTypes"
 
 import { mainWindow } from "./main"
-import { DownloadPayload, M2RArgs } from "common/ipcTypes"
+import { DownloadControl, downloadPool } from "./downloading"
 
 export let resolveHtmlPath: (htmlFileName: string) => string
 
@@ -98,7 +99,8 @@ export function m2r(m2rArgs: M2RArgs): void {
  * @returns {[(key: $Keys<IDownloadCardProps>, value: any) => void, string]}
  */
 export function createDownloadCard(
-	downloadCardData: Required<Optional<IDownloadCardProps>, "platform">
+	downloadCardData: Required<Optional<IDownloadCardProps>, "platform">,
+	downloadControl: DownloadControl
 ): [(key: $Keys<IDownloadCardProps>, value: any) => void, string] {
 	const downloadCardID = randomUUID()
 
@@ -113,23 +115,39 @@ export function createDownloadCard(
 		},
 	})
 
-	return [
-		(key: $Keys<IDownloadCardProps>, value: any) => {
-			m2r({
-				type: "download",
-				payload: {
-					action: "update",
-					payload: { downloadCardID: downloadCardID, key, value },
-				},
-			})
+	// todo: type hinting for value
+	const updateDownloadCard = (key: $Keys<IDownloadCardProps>, value: any) => {
+		m2r({
+			type: "download",
+			payload: {
+				action: "update",
+				payload: { downloadCardID: downloadCardID, key, value },
+			},
+		})
+	}
+
+	downloadPool[downloadCardID] = {
+		pause: downloadControl.pause,
+		resume: downloadControl.resume,
+		stop: () => {
+			updateDownloadCard("isDownloadComplete", true)
+			delete downloadPool[downloadCardID]
+			downloadControl.stop()
 		},
-		downloadCardID,
-	]
+	}
+
+	return [updateDownloadCard, downloadCardID]
 }
 
 export function getPlatformType(downloadPayload: DownloadPayload): platformID {
-	if (downloadPayload.url === "") return "unknown"
+	switch (downloadPayload.type) {
+		case "url":
+			if (downloadPayload.url === "") return "unknown"
 
-	const parsedURL = new URL(downloadPayload.url)
-	return parsedURL.hostname.replace("www.", "") as platformID
+			const parsedURL = new URL(downloadPayload.url)
+			return parsedURL.hostname.replace("www.", "") as platformID
+
+		default:
+			throw new Error("Failed to recognize platform type")
+	}
 }

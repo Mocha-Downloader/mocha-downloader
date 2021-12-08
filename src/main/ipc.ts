@@ -15,7 +15,7 @@ import { downloadPool } from "./downloading"
 
 /**
  * loops over each platform until the callback returns a truthy value.
- * WARNING: {@link https://developer.mozilla.org/en-US/docs/Glossary/Truthy truthy} and {@link https://developer.mozilla.org/en-US/docs/Glossary/Falsy falsy} values might not be as intuitive as you think. For example, an empty array is truthy in javascript.
+ * WARNING: [truthy](https://developer.mozilla.org/en-US/docs/Glossary/Truthy) and [falsy](https://developer.mozilla.org/en-US/docs/Glossary/Falsy) values might not be as intuitive as you think. For example, an empty array is truthy in javascript.
  */
 function forEachPlatform<T>(f: (platform: Platform) => T | undefined): void {
 	for (const key in platforms) {

@@ -1,5 +1,5 @@
 /**
- * @file Exposes api to the front end without compromising security. More information can be found {@link https://www.electronjs.org/docs/latest/tutorial/context-isolation here} and {@link https://github.com/reZach/secure-electron-template/blob/master/docs/secureapps.md here}
+ * @file Exposes api to the front end without compromising security. More information can be found [here](https://www.electronjs.org/docs/latest/tutorial/context-isolation) and [here](https://github.com/reZach/secure-electron-template/blob/master/docs/secureapps.md)
  */
 
 const { version } = require("../../release/app/package.json")

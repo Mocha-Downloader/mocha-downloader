@@ -4,7 +4,7 @@ import cheerio from "cheerio"
 import axios from "axios"
 
 import { Platform, ISelectOption, PlatformMeta } from "common/constants"
-
+import { DownloadPayload } from "common/ipcTypes"
 import {
 	getHTMLFromWindow,
 	getImageBuffer,
@@ -12,7 +12,6 @@ import {
 	parseSite,
 	createDownloadCard,
 } from "../util"
-import { DownloadPayload } from "common/ipcTypes"
 
 const meta: PlatformMeta = {
 	id: "comic.naver.com",
@@ -27,12 +26,32 @@ const meta: PlatformMeta = {
  * @returns {Promise<void>}
  */
 async function downloadEpisode(url: string): Promise<void> {
-	const [updateDownloadCard] = createDownloadCard({
-		platform: meta.id,
-		unit: "images",
-	})
+	let isPaused = false // set to true to pause download and change to false to resume
+	let isStopped = false // set to true to stop download
 
-	// load HTML content
+	const [updateDownloadCard] = createDownloadCard(
+		{
+			platform: meta.id,
+			unit: "images",
+		},
+		{
+			pause() {
+				isPaused = true
+			},
+			resume() {
+				isPaused = false
+			},
+			stop() {
+				isStopped = true
+				isPaused = false // set it to false to prevent infinite loops
+			},
+		}
+	)
+
+	/**
+	 * Load HTML content
+	 */
+
 	const [userAgent, $] = await parseSite(url, async (window) => {
 		return [
 			window.webContents.session.getUserAgent(),
@@ -52,7 +71,10 @@ async function downloadEpisode(url: string): Promise<void> {
 	// set download card title
 	updateDownloadCard("title", title)
 
-	// fetch image links
+	/**
+	 * Fetch image links
+	 */
+
 	const imgLinks: string[] = []
 	$("#comic_view_area > div.wt_viewer > img").each((i, elem) => {
 		//@ts-ignore
@@ -68,21 +90,39 @@ async function downloadEpisode(url: string): Promise<void> {
 	// set total download steps
 	updateDownloadCard("totalAmount", imgLinks.length)
 
+	if (isStopped) return
+
+	/**
+	 * Download images
+	 */
+
 	const imgs: Buffer[] = []
 	let amountComplete = 0 // number of images done downloading
 	await Promise.all(
 		imgLinks.map(async (imgLink, i) => {
+			if (isStopped) return
+
+			// wait 500ms while isPaused is set to true
+			while (isPaused) await new Promise((r) => setTimeout(r, 500))
+
 			imgs[i] = await getImageBuffer(imgLink, userAgent)
 			amountComplete += 1
 			updateDownloadCard("amountComplete", amountComplete)
 		})
 	)
 
+	if (isStopped) return
+
+	/**
+	 * Prepare for image stitching
+	 */
+
 	updateDownloadCard("status", "parsing images")
 
 	const imgsToStitch: OverlayOptions[] = []
 	let heightCount = 0
 	let maxWidth = 0
+
 	for (let i = 0; i < imgs.length; i++) {
 		const image = imgs[i]
 		const dimensions = sizeOf(image)
@@ -98,6 +138,12 @@ async function downloadEpisode(url: string): Promise<void> {
 		heightCount += dimensions.height
 	}
 
+	if (isStopped) return
+
+	/**
+	 * Stitch and save image
+	 */
+
 	updateDownloadCard("status", "stitching images")
 
 	await sharp({
@@ -111,6 +157,10 @@ async function downloadEpisode(url: string): Promise<void> {
 		.composite(imgsToStitch)
 		.png({ quality: 100 })
 		.toFile(`${title}.png`)
+
+	/**
+	 * Done!
+	 */
 
 	updateDownloadCard("isDownloadComplete", "true")
 }
@@ -180,28 +230,35 @@ async function getList(parsedURL: URL): Promise<ISelectOption[]> {
 }
 
 async function logic(downloadPayload: DownloadPayload): Promise<void> {
-	const parsedURL = new URL(downloadPayload.url)
+	switch (downloadPayload.type) {
+		case "url":
+			const parsedURL = new URL(downloadPayload.url)
 
-	if (parsedURL.pathname.includes("/detail")) {
-		downloadEpisode(parsedURL.href)
-		return
-	}
+			if (parsedURL.pathname.includes("/detail")) {
+				downloadEpisode(parsedURL.href)
+				return
+			}
 
-	if (parsedURL.pathname.includes("/list")) {
-		if (!downloadPayload.selected || downloadPayload.selected.length <= 0) {
-			const selectable = await getList(parsedURL)
-			m2r({
-				type: "select",
-				payload: {
-					url: parsedURL.href,
-					availableChoices: selectable,
-				},
-			})
-			return
-		}
+			if (parsedURL.pathname.includes("/list")) {
+				if (
+					!downloadPayload.selected ||
+					downloadPayload.selected.length <= 0
+				) {
+					const selectable = await getList(parsedURL)
+					m2r({
+						type: "select",
+						payload: {
+							url: parsedURL.href,
+							availableChoices: selectable,
+						},
+					})
+					return
+				}
 
-		downloadEpisodes(parsedURL.href, downloadPayload.selected)
-		return
+				downloadEpisodes(parsedURL.href, downloadPayload.selected)
+				return
+			}
+			break
 	}
 }
 
@@ -224,11 +281,13 @@ async function test(
 			switch (downloadType) {
 				case "e":
 					logic({
+						type: "url",
 						url: "https://comic.naver.com/webtoon/detail?titleId=683496&no=1",
 					})
 					break
 				case "l":
 					logic({
+						type: "url",
 						url: "https://comic.naver.com/webtoon/list?titleId=683496",
 					})
 			}
@@ -239,11 +298,13 @@ async function test(
 			switch (downloadType) {
 				case "e":
 					logic({
+						type: "url",
 						url: "https://comic.naver.com/bestChallenge/detail?titleId=643799&no=92",
 					})
 					break
 				case "l":
 					logic({
+						type: "url",
 						url: "https://comic.naver.com/bestChallenge/list?titleId=643799",
 					})
 					break
@@ -255,11 +316,13 @@ async function test(
 			switch (downloadType) {
 				case "e":
 					logic({
+						type: "url",
 						url: "https://comic.naver.com/challenge/detail?titleId=785847&no=1",
 					})
 					break
 				case "l":
 					logic({
+						type: "url",
 						url: "https://comic.naver.com/challenge/list?titleId=785847",
 					})
 					break

@@ -2,9 +2,9 @@ import ytdl from "ytdl-core"
 import ytpl from "ytpl"
 import fs from "fs"
 
-import { Platform, PlatformMeta } from "common/constants"
-
 import { createDownloadCard, m2r } from "../util"
+
+import { Platform, PlatformMeta } from "common/constants"
 import { DownloadPayload } from "common/ipcTypes"
 
 const meta: PlatformMeta = {
@@ -44,18 +44,31 @@ function B2MB(num: number): number {
  * @returns {Promise<void>}
  */
 async function downloadVideo(url: string): Promise<void> {
-	const [updateDownloadCard] = createDownloadCard({
-		platform: meta.id,
-		unit: "MB",
-	})
-	const video = ytdl(url)
-	const filePath = "video.mp4"
+	const [updateDownloadCard] = createDownloadCard(
+		{
+			platform: meta.id,
+			unit: "MB",
+		},
+		{
+			pause() {
+				video.pause()
+			},
+			resume() {
+				video.resume()
+			},
+			stop() {
+				video.destroy()
+			},
+		}
+	)
 
-	ytdl.getBasicInfo(url).then((videoInfo) => {
-		updateDownloadCard("title", videoInfo.videoDetails.title)
-		const thumbnail = videoInfo.videoDetails.thumbnails[0].url
-		updateDownloadCard("thumbnail", thumbnail)
-	})
+	const video = ytdl(url)
+
+	const videoInfo = await ytdl.getBasicInfo(url)
+
+	const filePath = `${videoInfo.videoDetails.title}.mp4`
+	updateDownloadCard("title", videoInfo.videoDetails.title)
+	updateDownloadCard("thumbnail", videoInfo.videoDetails.thumbnails[0].url)
 
 	// update progress
 	let _isTotalAmountDataSent = false
@@ -112,34 +125,38 @@ async function getVideoList(url: string): Promise<ytpl.Item[]> {
 }
 
 async function logic(downloadPayload: DownloadPayload) {
-	const parsedURL = new URL(downloadPayload.url)
+	switch (downloadPayload.type) {
+		case "url":
+			const parsedURL = new URL(downloadPayload.url)
 
-	if (parsedURL.pathname.startsWith("/watch")) {
-		if (parsedURL.searchParams.has("list")) {
-			videoListLogic(downloadPayload)
-			return
-		}
+			if (parsedURL.pathname.startsWith("/watch")) {
+				if (parsedURL.searchParams.has("list")) {
+					videoListLogic(downloadPayload)
+					return
+				}
 
-		downloadVideo(downloadPayload.url)
-		return
-	}
+				downloadVideo(downloadPayload.url)
+				return
+			}
 
-	if (parsedURL.pathname.startsWith("/shorts")) {
-		downloadVideo(downloadPayload.url)
-		return
-	}
+			if (parsedURL.pathname.startsWith("/shorts")) {
+				downloadVideo(downloadPayload.url)
+				return
+			}
 
-	if (parsedURL.pathname.startsWith("/playlist")) {
-		videoListLogic(downloadPayload)
-		return
-	}
+			if (parsedURL.pathname.startsWith("/playlist")) {
+				videoListLogic(downloadPayload)
+				return
+			}
 
-	if (
-		parsedURL.pathname.startsWith("/c/") ||
-		parsedURL.pathname.startsWith("/channel")
-	) {
-		videoListLogic(downloadPayload)
-		return
+			if (
+				parsedURL.pathname.startsWith("/c/") ||
+				parsedURL.pathname.startsWith("/channel")
+			) {
+				videoListLogic(downloadPayload)
+				return
+			}
+			break
 	}
 
 	// todo: replace with user feedback
@@ -154,18 +171,25 @@ async function logic(downloadPayload: DownloadPayload) {
  * @param {DownloadPayload} downloadPayload
  */
 async function videoListLogic(downloadPayload: DownloadPayload) {
-	if (!downloadPayload.selected || downloadPayload.selected.length <= 0) {
-		getVideoList(downloadPayload.url).then((playlistData) => {
-			m2r({
-				type: "select",
-				payload: {
-					url: downloadPayload.url,
-					availableChoices: playlistData,
-				},
-			})
-		})
-	} else {
-		downloadVideos(downloadPayload.url, downloadPayload.selected)
+	switch (downloadPayload.type) {
+		case "url":
+			if (
+				!downloadPayload.selected ||
+				downloadPayload.selected.length <= 0
+			) {
+				getVideoList(downloadPayload.url).then((playlistData) => {
+					m2r({
+						type: "select",
+						payload: {
+							url: downloadPayload.url,
+							availableChoices: playlistData,
+						},
+					})
+				})
+			} else {
+				downloadVideos(downloadPayload.url, downloadPayload.selected)
+			}
+			break
 	}
 }
 
@@ -179,18 +203,21 @@ async function test(operationType: OperationType) {
 	switch (operationType) {
 		case "v":
 			logic({
+				type: "url",
 				url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
 			})
 			break
 
 		case "s":
 			logic({
+				type: "url",
 				url: "https://www.youtube.com/shorts/qzqxZB2961Q",
 			})
 			break
 
 		case "p":
 			logic({
+				type: "url",
 				url: "https://www.youtube.com/playlist?list=PLzkuLC6Yvumv_Rd5apfPRWEcjf9b1JRnq",
 			})
 			break
@@ -198,6 +225,7 @@ async function test(operationType: OperationType) {
 		// le me
 		case "c":
 			logic({
+				type: "url",
 				url: "https://www.youtube.com/channel/UCq42p4jHBZnzZE9LG7hoBJw/videos",
 			})
 			break

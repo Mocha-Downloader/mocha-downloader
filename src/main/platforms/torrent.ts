@@ -1,24 +1,25 @@
 import webtorrent from "webtorrent"
 
 import { Platform, PlatformMeta } from "common/constants"
+import { DownloadPayload } from "common/ipcTypes"
 
 const meta: PlatformMeta = {
 	id: "bittorrent",
 	code: "tr",
 }
 
+const client = new webtorrent()
+
 /**
  * Download files via magnet link
  *
- * @param {string} torrentID - {@link https://en.wikipedia.org/wiki/Magnet_URI_scheme magnet link}
+ * @param {string} torrentID - [magnet link](https://en.wikipedia.org/wiki/Magnet_URI_scheme)
  * @returns {Promise<void>}
  */
 async function DownloadMagnetLink(torrentID: string): Promise<void> {
-	const client = new webtorrent()
-
 	client.add(torrentID, (torrent) => {
 		torrent.files.map((file) => {
-			console.log(file.name)
+			file.appendTo("body")
 		})
 	})
 }
@@ -30,8 +31,16 @@ async function DownloadMagnetLink(torrentID: string): Promise<void> {
  */
 async function DownloadFile(): Promise<void> {}
 
-async function logic(data: any) {
-	console.log(data)
+async function logic(downloadPayload: DownloadPayload) {
+	switch (downloadPayload.type) {
+		case "url":
+			DownloadMagnetLink(downloadPayload.url)
+			break
+
+		case "file":
+			DownloadFile()
+			break
+	}
 }
 
 // m: magnet link
@@ -47,7 +56,10 @@ async function test(actionType: ActionType) {
 			break
 
 		case "f":
-			DownloadFile()
+			logic({
+				type: "file",
+				data: "",
+			})
 			break
 	}
 }

@@ -2,7 +2,7 @@
  * @file Manages download pool
  */
 
-interface DownloadControl {
+export interface DownloadControl {
 	pause(): void
 	resume(): void
 	stop(): void
