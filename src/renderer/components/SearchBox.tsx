@@ -25,7 +25,10 @@ const SearchBox = () => {
 
 			window.electron.ipcRenderer.send({
 				type: "download",
-				payload: { url: query },
+				payload: {
+					type: "url",
+					url: query,
+				},
 			})
 		}
 	}

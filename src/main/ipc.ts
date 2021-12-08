@@ -51,26 +51,29 @@ ipcMain.on("r2m", async (_, r2mArgs: R2MArgs) => {
 
 	switch (r2mArgs.type) {
 		case "download": {
-			if (isDev && testInput(r2mArgs.payload.url)) return
+			switch (r2mArgs.payload.type) {
+				case "url":
+					if (isDev && testInput(r2mArgs.payload.url)) return
 
-			const platformType = getPlatformType(r2mArgs.payload)
+					const platformType = getPlatformType(r2mArgs.payload)
 
-			let wasMatchFound = false
-			forEachPlatform((platform) => {
-				if (platform.meta.id === platformType) {
-					platform.logic(r2mArgs.payload)
-					wasMatchFound = true
-					return true
-				}
-				return false
-			})
+					let wasMatchFound = false
+					forEachPlatform((platform) => {
+						if (platform.meta.id === platformType) {
+							platform.logic(r2mArgs.payload)
+							wasMatchFound = true
+							return true
+						}
+						return false
+					})
 
-			// todo: replace with user feedback
-			if (!wasMatchFound)
-				throw Error(
-					`Unsupported platform "${platformType}" (${r2mArgs.payload.url})`
-				)
-
+					// todo: replace with user feedback
+					if (!wasMatchFound)
+						throw Error(
+							`Unsupported platform "${platformType}" (${r2mArgs.payload.url})`
+						)
+					break
+			}
 			break
 		}
 
