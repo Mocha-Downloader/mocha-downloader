@@ -4,8 +4,8 @@
 		"paste": "붙여넣기"
 	},
 	"instructions": {
-		"header": "링크를 붙여넣어 다운로드를 시작하세요",
-		"subheader": "자세한 내용을 보려면 F1 키를 누르십시오"
+		"header": "링크를 복사한 후 '붙여넣기' 버튼을 누르세요",
+		"subheader": "자세한 내용을 보려면 F1 키를 누르세요"
 	},
 	"bottomBarTooltips": {
 		"download": "다운로드",

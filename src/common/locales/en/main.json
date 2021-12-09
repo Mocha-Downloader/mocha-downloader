@@ -4,7 +4,7 @@
 		"paste": "Paste"
 	},
 	"instructions": {
-		"header": "Paste link to start downloading",
+		"header": "Click the 'Paste' button after copying a link",
 		"subheader": "Press F1 to learn more"
 	},
 	"bottomBarTooltips": {
