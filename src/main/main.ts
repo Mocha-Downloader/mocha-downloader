@@ -41,7 +41,7 @@ let tray: Tray | null = null
 let isQuitting = false // set this to true when the app is closing for real
 
 export function buildTray() {
-	tray = null
+	tray?.destroy()
 	tray = new Tray(getAssetPath("icon.png"))
 
 	tray.setContextMenu(
