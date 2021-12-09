@@ -8,7 +8,7 @@ import {
 } from "semantic-ui-react"
 
 import { Locale } from "common/constants"
-import { StyledDownloadPaneContainer } from "../components/Tabs"
+import { StyledPaneContainer } from "../components/Tabs"
 
 interface ILanguageOptions {
 	key: Locale
@@ -26,7 +26,7 @@ const SettingsPane = () => {
 	const { i18n } = useTranslation()
 
 	return (
-		<StyledDownloadPaneContainer>
+		<StyledPaneContainer>
 			<Header size="huge" content="Settings" />
 			<Header size="medium" content="Appearance" dividing />
 			theme
@@ -55,7 +55,7 @@ const SettingsPane = () => {
 			<Input size="mini" />
 			<Header size="medium" content="Etc" dividing />
 			auto update
-		</StyledDownloadPaneContainer>
+		</StyledPaneContainer>
 	)
 }
 

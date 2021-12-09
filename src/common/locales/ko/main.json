@@ -5,7 +5,8 @@
 	},
 	"instructions": {
 		"header": "링크를 복사한 후 '붙여넣기' 버튼을 누르세요",
-		"subheader": "자세한 내용을 보려면 F1 키를 누르세요"
+		"subheader": "자세한 내용을 보려면 F1 키를 누르세요",
+		"drop": "배치 다운로드 파일을 여기에 드래그 앤 드롭하세요"
 	},
 	"bottomBarTooltips": {
 		"download": "다운로드",

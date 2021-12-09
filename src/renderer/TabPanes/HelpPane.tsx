@@ -1,7 +1,7 @@
-import { StyledDownloadPaneContainer } from "../components/Tabs"
+import { StyledPaneContainer } from "../components/Tabs"
 
 const HelpPane = () => {
-	return <StyledDownloadPaneContainer></StyledDownloadPaneContainer>
+	return <StyledPaneContainer></StyledPaneContainer>
 }
 
 export default HelpPane

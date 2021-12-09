@@ -5,7 +5,13 @@ const globalStyleCSS = css`
 	html,
 	body,
 	#root {
+		overflow: hidden;
+
+		margin: 0;
+		padding: 0;
+
 		height: 100vh;
+		width: 100vw;
 	}
 
 	.item:before {

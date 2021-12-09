@@ -1,4 +1,5 @@
 import { initReactI18next } from "react-i18next"
+import styled from "styled-components"
 import i18n from "i18next"
 
 import AboutModal from "./components/AboutModal"
@@ -21,14 +22,28 @@ i18n.use(initReactI18next).init({
 	},
 })
 
+const StyledAppContentGrid = styled.div`
+	display: grid;
+
+	height: 100vh;
+	width: 100vw;
+
+	/*
+	grid-template-columns: 1fr;
+	grid-template-rows: 4rem 1fr 4rem;
+	*/
+`
+
 const App = () => {
 	return (
 		<>
 			<GlobalStyle />
 
-			<TopBar />
-			<Tabs />
-			<BottomBar />
+			<StyledAppContentGrid>
+				<TopBar />
+				<Tabs />
+				<BottomBar />
+			</StyledAppContentGrid>
 
 			<SelectOptions />
 			<AboutModal />

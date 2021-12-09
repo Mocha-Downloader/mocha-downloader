@@ -5,16 +5,8 @@ import styled from "styled-components"
 import DownloadButton from "./DownloadButton"
 
 const StyledContainer = styled(Container)`
-	height: 4rem;
 	display: flex;
 	justify-content: space-between;
-`
-
-const StyledSearchBoxContainer = styled.div`
-	display: flex;
-	align-items: center;
-	width: 100%;
-	padding-left: 2rem;
 `
 
 const TopBar = () => {
@@ -24,9 +16,10 @@ const TopBar = () => {
 		<Menu fixed="top" inverted>
 			<StyledContainer>
 				<Menu.Item header>{t("appName")}</Menu.Item>
-				<StyledSearchBoxContainer>
+
+				<Menu.Item>
 					<DownloadButton />
-				</StyledSearchBoxContainer>
+				</Menu.Item>
 			</StyledContainer>
 		</Menu>
 	)

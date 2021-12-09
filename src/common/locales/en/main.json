@@ -5,7 +5,8 @@
 	},
 	"instructions": {
 		"header": "Click the 'Paste' button after copying a link",
-		"subheader": "Press F1 to learn more"
+		"subheader": "Press F1 to learn more",
+		"drop": "Drag and drop batch download file here"
 	},
 	"bottomBarTooltips": {
 		"download": "Download",

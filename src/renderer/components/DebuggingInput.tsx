@@ -6,7 +6,7 @@ import { ChangeEvent, useState } from "react"
 import { Input } from "semantic-ui-react"
 import styled from "styled-components"
 
-const StyledInput = styled(Input)`
+const StyledDebuggingInput = styled(Input)`
 	width: 100%;
 `
 
@@ -32,7 +32,7 @@ const DebuggingInput = () => {
 	}
 
 	return (
-		<StyledInput
+		<StyledDebuggingInput
 			size="large"
 			value={query}
 			onChange={handleChange}

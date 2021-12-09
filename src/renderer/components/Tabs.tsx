@@ -14,19 +14,37 @@ export enum TabEnum {
 	HELP = 2,
 }
 
-export const StyledDownloadPaneContainer = styled(Container)`
-	display: flex;
-	margin-bottom: 4rem;
-`
-
 const StyledTab = styled(Tab)`
-	display: flex;
-	padding-top: 5rem;
+	/* // todo: find a less hacky solution // */
+	margin-top: 48px;
+	margin-bottom: 47px;
+	height: calc(100vh - 48px - 47px);
+
+	overflow-y: scroll;
 
 	.tabular {
 		display: none;
 	}
 `
+
+const StyledContainer = styled(Container)`
+	display: flex;
+
+	width: 100%;
+	height: 100%;
+
+	padding-top: 1rem;
+`
+
+export const StyledPaneContainer: React.FC = ({ children }) => {
+	return (
+		<StyledContainer>
+			{children}
+			<br />
+			<br />
+		</StyledContainer>
+	)
+}
 
 const panes = [
 	{ render: () => <DownloadPane /> },
