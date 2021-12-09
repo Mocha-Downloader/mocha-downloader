@@ -44,6 +44,11 @@ Concern:
 
 - To include styles within the react component files and eliminate the need to manage css files.
 
+### use of container
+
+All Mocha Downloader contents are wrapped inside a [Container](https://semantic-ui.com/elements/container) ([react](https://react.semantic-ui.com/elements/container)).
+This is to make UI look decent on wide monitors by keeping the components stay on center when the window is maximized.
+
 ## Tips
 
 ### do not optimize page size
@@ -59,4 +64,4 @@ For a component-specific documentation, open the [components](./src/renderer/com
 <img alt="first impression" src="./.erb/img/first-impression.png" width="500" height="300" />
 
 - Default window size: 1000x600 (close to golden ratio)
-- ideal reading pattern: Headers (Paste link to... & Press F1...) first then Z pattern.
+- ideal reading pattern: Headers (Click the 'Paste' button... & Press F1...) first then Z pattern.
