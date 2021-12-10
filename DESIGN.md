@@ -1,7 +1,6 @@
 # Design
 
-This document aims to explain the design choices and philosophy of the mocha downloader.
-The goal of this is to help contributors align their effort to be more inlined with our philosophy.
+The purpose of this document is to help contributors align their effort to be more inlined with our philosophy and to distinguish intentional designs from design flaws.
 
 ## Core values
 
