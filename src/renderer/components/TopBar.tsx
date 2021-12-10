@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next"
 import { Container, Menu } from "semantic-ui-react"
 import styled from "styled-components"
 
-import DownloadButton from "./DownloadButton"
+import DownloadButton from "./PasteButton"
 
 const StyledContainer = styled(Container)`
 	display: flex;
