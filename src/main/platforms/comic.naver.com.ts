@@ -4,7 +4,7 @@ import cheerio from "cheerio"
 import axios from "axios"
 
 import { Platform, ISelectOption, PlatformMeta } from "common/constants"
-import { DownloadPayload } from "common/ipcTypes"
+import { DownloadData } from "common/ipcTypes"
 import {
 	getHTMLFromWindow,
 	getImageBuffer,
@@ -229,36 +229,29 @@ async function getList(parsedURL: URL): Promise<ISelectOption[]> {
 	return result
 }
 
-async function logic(downloadPayload: DownloadPayload): Promise<void> {
-	switch (downloadPayload.type) {
-		case "url":
-			const parsedURL = new URL(downloadPayload.url)
+async function logic(data: DownloadData): Promise<void> {
+	const parsedURL = new URL(data.data)
 
-			if (parsedURL.pathname.includes("/detail")) {
-				downloadEpisode(parsedURL.href)
-				return
-			}
+	if (parsedURL.pathname.includes("/detail")) {
+		downloadEpisode(parsedURL.href)
+		return
+	}
 
-			if (parsedURL.pathname.includes("/list")) {
-				if (
-					!downloadPayload.selected ||
-					downloadPayload.selected.length <= 0
-				) {
-					const selectable = await getList(parsedURL)
-					m2r({
-						type: "select",
-						payload: {
-							url: parsedURL.href,
-							availableChoices: selectable,
-						},
-					})
-					return
-				}
+	if (parsedURL.pathname.includes("/list")) {
+		if (!data.selected || data.selected.length <= 0) {
+			const selectable = await getList(parsedURL)
+			m2r({
+				type: "select",
+				payload: {
+					url: parsedURL.href,
+					availableChoices: selectable,
+				},
+			})
+			return
+		}
 
-				downloadEpisodes(parsedURL.href, downloadPayload.selected)
-				return
-			}
-			break
+		downloadEpisodes(parsedURL.href, data.selected)
+		return
 	}
 }
 
@@ -281,14 +274,12 @@ async function test(
 			switch (downloadType) {
 				case "e":
 					logic({
-						type: "url",
-						url: "https://comic.naver.com/webtoon/detail?titleId=683496&no=1",
+						data: "https://comic.naver.com/webtoon/detail?titleId=683496&no=1",
 					})
 					break
 				case "l":
 					logic({
-						type: "url",
-						url: "https://comic.naver.com/webtoon/list?titleId=683496",
+						data: "https://comic.naver.com/webtoon/list?titleId=683496",
 					})
 			}
 			break
@@ -298,14 +289,12 @@ async function test(
 			switch (downloadType) {
 				case "e":
 					logic({
-						type: "url",
-						url: "https://comic.naver.com/bestChallenge/detail?titleId=643799&no=92",
+						data: "https://comic.naver.com/bestChallenge/detail?titleId=643799&no=92",
 					})
 					break
 				case "l":
 					logic({
-						type: "url",
-						url: "https://comic.naver.com/bestChallenge/list?titleId=643799",
+						data: "https://comic.naver.com/bestChallenge/list?titleId=643799",
 					})
 					break
 			}
@@ -316,14 +305,12 @@ async function test(
 			switch (downloadType) {
 				case "e":
 					logic({
-						type: "url",
-						url: "https://comic.naver.com/challenge/detail?titleId=785847&no=1",
+						data: "https://comic.naver.com/challenge/detail?titleId=785847&no=1",
 					})
 					break
 				case "l":
 					logic({
-						type: "url",
-						url: "https://comic.naver.com/challenge/list?titleId=785847",
+						data: "https://comic.naver.com/challenge/list?titleId=785847",
 					})
 					break
 			}

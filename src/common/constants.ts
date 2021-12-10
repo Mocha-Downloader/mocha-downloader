@@ -1,4 +1,4 @@
-import { DownloadPayload } from "./ipcTypes"
+import { DownloadData } from "./ipcTypes"
 
 /**
  * Platform metadata.
@@ -17,7 +17,7 @@ export interface PlatformMeta {
  */
 export interface Platform {
 	meta: PlatformMeta
-	logic(downloadPayload: DownloadPayload): Promise<void>
+	logic(data: DownloadData): Promise<void>
 	test(...args: string[]): Promise<void>
 }
 

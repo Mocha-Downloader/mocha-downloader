@@ -101,15 +101,18 @@ const SelectOptions = () => {
 							type: "download",
 							payload: {
 								type: "url",
-								url: selectOptions.url,
-								// https://stackoverflow.com/a/41271541/12979111
-								selected: selectOptions.selectedChoices.reduce(
-									(prev, curr, i) => {
-										if (curr) prev.push(i)
-										return prev
-									},
-									[] as number[]
-								),
+								data: {
+									data: selectOptions.url,
+									// https://stackoverflow.com/a/41271541/12979111
+									selected:
+										selectOptions.selectedChoices.reduce(
+											(prev, curr, i) => {
+												if (curr) prev.push(i)
+												return prev
+											},
+											[] as number[]
+										),
+								},
 							},
 						})
 					}}

@@ -25,7 +25,9 @@ const DebuggingInput = () => {
 				type: "download",
 				payload: {
 					type: "url",
-					url: query,
+					data: {
+						data: query,
+					},
 				},
 			})
 		}

@@ -1,6 +1,7 @@
 import comicNaverCom from "./comic.naver.com"
 import youtubeCom from "./youtube.com"
 import torrent from "./torrent"
+import { Platform } from "common/constants"
 
 const platforms = { comicNaverCom, youtubeCom, torrent }
 
@@ -41,3 +42,16 @@ const platforms = { comicNaverCom, youtubeCom, torrent }
 }
 
 export default platforms
+
+/**
+ * loops over each platform until the callback returns a truthy value.
+ * WARNING: [truthy](https://developer.mozilla.org/en-US/docs/Glossary/Truthy) and [falsy](https://developer.mozilla.org/en-US/docs/Glossary/Falsy) values might not be as intuitive as you think. For example, an empty array is truthy in javascript.
+ */
+export function forEachPlatform<T>(
+	f: (platform: Platform) => T | undefined
+): void {
+	for (const key in platforms) {
+		// @ts-ignore
+		if (f(platforms[key] as Platform)) return
+	}
+}

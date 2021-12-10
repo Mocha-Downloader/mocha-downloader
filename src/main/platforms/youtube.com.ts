@@ -5,7 +5,7 @@ import fs from "fs"
 import { createDownloadCard, m2r } from "../util"
 
 import { Platform, PlatformMeta } from "common/constants"
-import { DownloadPayload } from "common/ipcTypes"
+import { DownloadData } from "common/ipcTypes"
 
 const meta: PlatformMeta = {
 	id: "youtube.com",
@@ -124,39 +124,35 @@ async function getVideoList(url: string): Promise<ytpl.Item[]> {
 	return (await ytpl(parsedURL.href, { limit: Infinity })).items
 }
 
-async function logic(downloadPayload: DownloadPayload) {
-	switch (downloadPayload.type) {
-		case "url":
-			const parsedURL = new URL(downloadPayload.url)
+async function logic(data: DownloadData) {
+	const parsedURL = new URL(data.data)
 
-			if (parsedURL.pathname.startsWith("/watch")) {
-				if (parsedURL.searchParams.has("list")) {
-					videoListLogic(downloadPayload)
-					return
-				}
+	if (parsedURL.pathname.startsWith("/watch")) {
+		if (parsedURL.searchParams.has("list")) {
+			videoListLogic(data)
+			return
+		}
 
-				downloadVideo(downloadPayload.url)
-				return
-			}
+		downloadVideo(data.data)
+		return
+	}
 
-			if (parsedURL.pathname.startsWith("/shorts")) {
-				downloadVideo(downloadPayload.url)
-				return
-			}
+	if (parsedURL.pathname.startsWith("/shorts")) {
+		downloadVideo(data.data)
+		return
+	}
 
-			if (parsedURL.pathname.startsWith("/playlist")) {
-				videoListLogic(downloadPayload)
-				return
-			}
+	if (parsedURL.pathname.startsWith("/playlist")) {
+		videoListLogic(data)
+		return
+	}
 
-			if (
-				parsedURL.pathname.startsWith("/c/") ||
-				parsedURL.pathname.startsWith("/channel")
-			) {
-				videoListLogic(downloadPayload)
-				return
-			}
-			break
+	if (
+		parsedURL.pathname.startsWith("/c/") ||
+		parsedURL.pathname.startsWith("/channel")
+	) {
+		videoListLogic(data)
+		return
 	}
 
 	// todo: replace with user feedback
@@ -168,28 +164,21 @@ async function logic(downloadPayload: DownloadPayload) {
 /**
  * Logic for downloading a list of videos (i.e. playlist and channel)
  *
- * @param {DownloadPayload} downloadPayload
+ * @param {DownloadPayload} data
  */
-async function videoListLogic(downloadPayload: DownloadPayload) {
-	switch (downloadPayload.type) {
-		case "url":
-			if (
-				!downloadPayload.selected ||
-				downloadPayload.selected.length <= 0
-			) {
-				getVideoList(downloadPayload.url).then((playlistData) => {
-					m2r({
-						type: "select",
-						payload: {
-							url: downloadPayload.url,
-							availableChoices: playlistData,
-						},
-					})
-				})
-			} else {
-				downloadVideos(downloadPayload.url, downloadPayload.selected)
-			}
-			break
+async function videoListLogic(data: DownloadData) {
+	if (!data.selected || data.selected.length <= 0) {
+		getVideoList(data.data).then((playlistData) => {
+			m2r({
+				type: "select",
+				payload: {
+					url: data.data,
+					availableChoices: playlistData,
+				},
+			})
+		})
+	} else {
+		downloadVideos(data.data, data.selected)
 	}
 }
 
@@ -203,30 +192,26 @@ async function test(operationType: OperationType) {
 	switch (operationType) {
 		case "v":
 			logic({
-				type: "url",
-				url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+				data: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
 			})
 			break
 
 		case "s":
 			logic({
-				type: "url",
-				url: "https://www.youtube.com/shorts/qzqxZB2961Q",
+				data: "https://www.youtube.com/shorts/qzqxZB2961Q",
 			})
 			break
 
 		case "p":
 			logic({
-				type: "url",
-				url: "https://www.youtube.com/playlist?list=PLzkuLC6Yvumv_Rd5apfPRWEcjf9b1JRnq",
+				data: "https://www.youtube.com/playlist?list=PLzkuLC6Yvumv_Rd5apfPRWEcjf9b1JRnq",
 			})
 			break
 
 		// le me
 		case "c":
 			logic({
-				type: "url",
-				url: "https://www.youtube.com/channel/UCq42p4jHBZnzZE9LG7hoBJw/videos",
+				data: "https://www.youtube.com/channel/UCq42p4jHBZnzZE9LG7hoBJw/videos",
 			})
 			break
 	}

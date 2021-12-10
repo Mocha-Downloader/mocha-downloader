@@ -5,46 +5,13 @@
 import { ipcMain } from "electron"
 import { changeLanguage } from "i18next"
 
-import { Platform } from "common/constants"
 import { R2MArgs } from "common/ipcTypes"
 
-import platforms from "./platforms"
 import { isDev, buildTray } from "./main"
-import { getPlatformType } from "./util"
 import { downloadPool } from "./downloading"
 
-/**
- * loops over each platform until the callback returns a truthy value.
- * WARNING: [truthy](https://developer.mozilla.org/en-US/docs/Glossary/Truthy) and [falsy](https://developer.mozilla.org/en-US/docs/Glossary/Falsy) values might not be as intuitive as you think. For example, an empty array is truthy in javascript.
- */
-function forEachPlatform<T>(f: (platform: Platform) => T | undefined): void {
-	for (const key in platforms) {
-		// @ts-ignore
-		if (f(platforms[key] as Platform)) return
-	}
-}
-
-/**
- * Quickly test features without having to paste link or drag & drop files.
- *
- * @argument {string} input - Raw test string to be parsed.
- * @returns {boolean} Returns true if input is a valid test code. Returns false otherwise.
- */
-function testInput(input: string): boolean {
-	const [platformCode, ...strings] = input.split(" ")
-	let wasMatchFound = false
-
-	forEachPlatform((platform) => {
-		if (platform.meta.code === platformCode) {
-			wasMatchFound = true
-			platform.test(...strings)
-			return true
-		}
-		return false
-	})
-
-	return wasMatchFound
-}
+import parseFile from "./parseFile"
+import parseURL from "./parseURL"
 
 ipcMain.on("r2m", async (_, r2mArgs: R2MArgs) => {
 	if (isDev) console.log("r2m:", r2mArgs)
@@ -53,25 +20,11 @@ ipcMain.on("r2m", async (_, r2mArgs: R2MArgs) => {
 		case "download": {
 			switch (r2mArgs.payload.type) {
 				case "url":
-					if (isDev && testInput(r2mArgs.payload.url)) return
+					parseURL(r2mArgs.payload.data)
+					break
 
-					const platformType = getPlatformType(r2mArgs.payload)
-
-					let wasMatchFound = false
-					forEachPlatform((platform) => {
-						if (platform.meta.id === platformType) {
-							platform.logic(r2mArgs.payload)
-							wasMatchFound = true
-							return true
-						}
-						return false
-					})
-
-					// todo: replace with user feedback
-					if (!wasMatchFound)
-						throw Error(
-							`Unsupported platform "${platformType}" (${r2mArgs.payload.url})`
-						)
+				case "file":
+					parseFile(r2mArgs.payload.data)
 					break
 			}
 			break

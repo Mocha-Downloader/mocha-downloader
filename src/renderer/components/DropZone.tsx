@@ -45,10 +45,10 @@ const DropZone = () => {
 				// todo: user feedback for invalid file, empty file, and unreadable file
 				if (!fileContent) return
 
-				// todo: start batch download
-				const batchDownloadData = JSON.parse(fileContent)
-
-				console.log(batchDownloadData)
+				window.electron.ipcRenderer.send({
+					type: "download",
+					payload: { type: "file", data: fileContent },
+				})
 			}
 
 			reader.readAsText(file)

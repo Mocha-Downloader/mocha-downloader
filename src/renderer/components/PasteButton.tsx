@@ -26,7 +26,9 @@ const PasteButton = () => {
 							type: "download",
 							payload: {
 								type: "url",
-								url: window.electron.readClipboardText(),
+								data: {
+									data: window.electron.readClipboardText(),
+								},
 							},
 						})
 					}}

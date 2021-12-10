@@ -103,11 +103,15 @@ export type M2RArgs =
 				  }
 	  }
 
+export type DownloadData = {
+	data: string // either a url or a file content
+	selected?: number[]
+}
+
 export type DownloadPayload =
 	| {
 			type: "url"
-			url: string
-			selected?: number[]
+			data: DownloadData
 	  }
 	| {
 			type: "file"
