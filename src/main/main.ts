@@ -141,13 +141,15 @@ const createWindow = async () => {
  * Add event listeners
  */
 
-// set user agent
-session.defaultSession.webRequest.onBeforeSendHeaders((details, callback) => {
-	details.requestHeaders["User-Agent"] = userAgent
-	callback({ cancel: false, requestHeaders: details.requestHeaders })
-})
-
 app.whenReady().then(() => {
+	// set user agent
+	session.defaultSession.webRequest.onBeforeSendHeaders(
+		(details, callback) => {
+			details.requestHeaders["User-Agent"] = userAgent
+			callback({ cancel: false, requestHeaders: details.requestHeaders })
+		}
+	)
+
 	createWindow()
 	buildTray()
 })
