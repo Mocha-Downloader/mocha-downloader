@@ -1,7 +1,9 @@
 import comicNaverCom from "./comic.naver.com"
 import youtubeCom from "./youtube.com"
 import torrent from "./torrent"
-import { Platform } from "common/constants"
+
+import { Platform, platformID } from "common/constants"
+import { DownloadPayload } from "common/ipcTypes"
 
 const platforms = { comicNaverCom, youtubeCom, torrent }
 
@@ -46,6 +48,9 @@ export default platforms
 /**
  * loops over each platform until the callback returns a truthy value.
  * WARNING: [truthy](https://developer.mozilla.org/en-US/docs/Glossary/Truthy) and [falsy](https://developer.mozilla.org/en-US/docs/Glossary/Falsy) values might not be as intuitive as you think. For example, an empty array is truthy in javascript.
+ *
+ * @template {any} T - type of return value of the callback function
+ * @param {function(Platform): T | undefined} f - callback function
  */
 export function forEachPlatform<T>(
 	f: (platform: Platform) => T | undefined
@@ -54,4 +59,18 @@ export function forEachPlatform<T>(
 		// @ts-ignore
 		if (f(platforms[key] as Platform)) return
 	}
+}
+
+/**
+ * Identifies download payload's content type.
+ *
+ * @param {DownloadPayload} data - The type of payload to identify
+ * @returns {platformID} the type of platform
+ */
+export function getPlatformType(data: DownloadPayload): platformID {
+	// throw new Error("Failed to recognize platform type")
+	if (data.data === "") return "unknown"
+
+	const parsedURL = new URL(data.data)
+	return parsedURL.hostname.replace("www.", "") as platformID
 }

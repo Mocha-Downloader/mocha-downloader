@@ -1,5 +1,4 @@
-import { getPlatformType } from "./util"
-import { forEachPlatform } from "./platforms"
+import { forEachPlatform, getPlatformType } from "./platforms"
 
 import { DownloadPayload } from "common/ipcTypes"
 import { isDev } from "./main"
@@ -7,7 +6,7 @@ import { isDev } from "./main"
 /**
  * Quickly test features without having to paste link or drag & drop files.
  *
- * @argument {string} input - Raw test string to be parsed.
+ * @param {string} input - Raw test string to be parsed.
  * @returns {boolean} Returns true if input is a valid test code. Returns false otherwise.
  */
 function testInput(input: string): boolean {
