@@ -4,8 +4,8 @@ import fs from "fs"
 
 import { createDownloadCard, m2r } from "../util"
 
-import { Platform, PlatformMeta } from "common/constants"
-import { DownloadPayload } from "common/ipcTypes"
+import { Platform, PlatformMeta } from "../../common/constants"
+import { DownloadPayload } from "../../common/ipcTypes"
 
 const meta: PlatformMeta = {
 	id: "youtube.com",

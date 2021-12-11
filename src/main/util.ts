@@ -5,8 +5,8 @@ import { URL } from "url"
 import axios from "axios"
 import path from "path"
 
-import { IDownloadCardProps } from "common/constants"
-import { M2RArgs } from "common/ipcTypes"
+import { IDownloadCardProps } from "../common/constants"
+import { M2RArgs } from "../common/ipcTypes"
 
 import { mainWindow } from "./main"
 import { DownloadControl, downloadPool } from "./downloading"
@@ -96,7 +96,7 @@ export function m2r(m2rArgs: M2RArgs): void {
  * Creates a download card and return the uuid of it and a function that updates the card.
  *
  * @param {any} downloadCardData - download card data
- * @returns {[(key: $Keys<IDownloadCardProps>, value: any) => void, string]}
+ * @returns {[(key: $Keys<IDownloadCardProps>, value: any) => void, string]} download card updater and download card UUID
  */
 export function createDownloadCard(
 	downloadCardData: Required<Optional<IDownloadCardProps>, "platform">,

@@ -1,7 +1,7 @@
 import { useContext } from "react"
 import { Button, Header, Modal } from "semantic-ui-react"
 
-import { ActionsEnum } from "common/ipcTypes"
+import { ActionsEnum } from "../../common/ipcTypes"
 import { globalContext } from "../ipc"
 
 const AboutModal = () => {

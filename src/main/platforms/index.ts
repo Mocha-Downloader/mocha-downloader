@@ -2,8 +2,8 @@ import comicNaverCom from "./comic.naver.com"
 import youtubeCom from "./youtube.com"
 import torrent from "./torrent"
 
-import { Platform, platformID } from "common/constants"
-import { DownloadPayload } from "common/ipcTypes"
+import { Platform, platformID } from "../../common/constants"
+import { DownloadPayload } from "../../common/ipcTypes"
 
 const platforms = { comicNaverCom, youtubeCom, torrent }
 

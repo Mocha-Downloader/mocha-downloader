@@ -6,7 +6,7 @@
 import { useContext, useEffect } from "react"
 import { Button, Checkbox, Icon, Modal, Table } from "semantic-ui-react"
 
-import { ActionsEnum } from "common/ipcTypes"
+import { ActionsEnum } from "../../common/ipcTypes"
 import { globalContext } from "../ipc"
 
 const SelectOptions = () => {

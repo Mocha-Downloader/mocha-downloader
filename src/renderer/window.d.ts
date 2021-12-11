@@ -4,7 +4,7 @@
 
 import { IpcRenderer } from "electron"
 
-import { M2RArgs, R2MArgs } from "common/ipcTypes"
+import { M2RArgs, R2MArgs } from "../common/ipcTypes"
 
 export {}
 

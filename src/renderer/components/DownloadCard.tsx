@@ -3,9 +3,9 @@ import { Card, Image, Button, Progress, Icon } from "semantic-ui-react"
 import styled from "styled-components"
 import { useTranslation } from "react-i18next"
 
-import platformIcons from "common/platformIcons"
-import { IDownloadCardProps } from "common/constants"
-import { ActionsEnum } from "common/ipcTypes"
+import platformIcons from "../../common/platformIcons"
+import { IDownloadCardProps } from "../../common/constants"
+import { ActionsEnum } from "../../common/ipcTypes"
 import { globalContext } from "../ipc"
 
 const StyledThumbnail = styled(Image)`

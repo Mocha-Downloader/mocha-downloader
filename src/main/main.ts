@@ -12,7 +12,7 @@ import i18n, { t } from "i18next"
 import path from "path"
 
 import locales, { defaultLang } from "../common/locales"
-import { userAgent } from "common/constants"
+import { userAgent } from "../common/constants"
 
 import "./ipc"
 import MenuBuilder from "./menu"

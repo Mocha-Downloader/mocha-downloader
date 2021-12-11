@@ -16,8 +16,8 @@ import {
 	IDownloadCardProps,
 	ISelectOption,
 	Locale,
-} from "common/constants"
-import { ActionsEnum, GlobalAction } from "common/ipcTypes"
+} from "../common/constants"
+import { ActionsEnum, GlobalAction } from "../common/ipcTypes"
 import { TabEnum } from "./components/Tabs"
 
 interface IGlobalState {
@@ -192,8 +192,19 @@ export const globalContext = createContext({} as IContext)
 export const GlobalStore = (props: { children: ReactNode }): ReactElement => {
 	const [globalState, dispatch] = useReducer(reducer, defaultState)
 
-	// register listener only once
+	// this code runs only once
+	// it's functionally the same as being in preload.js
+	// I put it here because it has typescript support
 	useEffect(() => {
+		// load settings only once
+		window.electron.ipcRenderer.send({
+			type: "settings",
+			payload: {
+				type: "load",
+			},
+		})
+
+		// register listener
 		window.electron.ipcRenderer.on((m2rArgs) => {
 			if (window.electron.isDev) console.log("m2r:", m2rArgs)
 
@@ -234,6 +245,10 @@ export const GlobalStore = (props: { children: ReactNode }): ReactElement => {
 							})
 							break
 					}
+					break
+
+				case "settings":
+					break
 			}
 		})
 	}, [])

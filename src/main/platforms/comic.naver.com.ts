@@ -8,8 +8,8 @@ import {
 	ISelectOption,
 	PlatformMeta,
 	userAgent,
-} from "common/constants"
-import { DownloadPayload } from "common/ipcTypes"
+} from "../../common/constants"
+import { DownloadPayload } from "../../common/ipcTypes"
 import {
 	getHTMLFromWindow,
 	getImageBuffer,

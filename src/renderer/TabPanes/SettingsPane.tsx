@@ -7,7 +7,7 @@ import {
 	Input,
 } from "semantic-ui-react"
 
-import { Locale } from "common/constants"
+import { Locale } from "../../common/constants"
 import { StyledPaneContainer } from "../components/Tabs"
 
 interface ILanguageOptions {

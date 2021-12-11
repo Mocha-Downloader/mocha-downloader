@@ -5,7 +5,7 @@
 import downloadLogic from "./downloadLogic"
 import platforms from "./platforms"
 
-import { DownloadPayload } from "common/ipcTypes"
+import { DownloadPayload } from "../common/ipcTypes"
 
 export type BatchFile = {
 	version: "1.0"

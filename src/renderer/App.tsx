@@ -8,7 +8,7 @@ import SelectOptions from "./components/SelectOptions"
 import Tabs from "./components/Tabs"
 import TopBar from "./components/TopBar"
 
-import locales from "common/locales"
+import locales from "../common/locales"
 
 import GlobalStyle from "./globalStyle"
 import "semantic-ui-css/semantic.min.css"

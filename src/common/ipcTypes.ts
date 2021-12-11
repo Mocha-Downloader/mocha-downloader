@@ -1,6 +1,7 @@
 import { $Keys, Optional, Required } from "utility-types"
 
-import { TabEnum } from "renderer/components/Tabs"
+import type { Settings } from "../main/settings"
+import { TabEnum } from "../renderer/components/Tabs"
 import { IDownloadCardProps, ISelectOption, Locale } from "./constants"
 
 export enum ActionsEnum {
@@ -81,6 +82,10 @@ export type GlobalAction =
 
 export type M2RArgs =
 	| {
+			type: "settings"
+			payload: Settings
+	  }
+	| {
 			type: "showAbout"
 	  }
 	| {
@@ -119,6 +124,17 @@ export type downloadControlPayload = {
 	downloadCardID: string
 }
 
+export type SettingsPayload =
+	// load settings
+	| {
+			type: "load"
+	  }
+
+	// save settings
+	| {
+			type: "save"
+	  }
+
 export type R2MArgs =
 	// file drop or paste button click
 	| {
@@ -142,4 +158,10 @@ export type R2MArgs =
 	| {
 			type: "changeLang"
 			payload: Locale
+	  }
+
+	// Mocha Downloader settings
+	| {
+			type: "settings"
+			payload: SettingsPayload
 	  }

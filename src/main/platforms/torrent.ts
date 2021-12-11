@@ -1,7 +1,7 @@
 import webtorrent from "webtorrent"
 
-import { Platform, PlatformMeta } from "common/constants"
-import { DownloadPayload } from "common/ipcTypes"
+import { Platform, PlatformMeta } from "../../common/constants"
+import { DownloadPayload } from "../../common/ipcTypes"
 
 const meta: PlatformMeta = {
 	id: "bittorrent",

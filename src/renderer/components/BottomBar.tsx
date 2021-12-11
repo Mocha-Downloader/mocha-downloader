@@ -3,7 +3,7 @@ import { Menu, Container, Icon, Popup } from "semantic-ui-react"
 import { useTranslation } from "react-i18next"
 
 import { globalContext } from "../ipc"
-import { ActionsEnum } from "common/ipcTypes"
+import { ActionsEnum } from "../../common/ipcTypes"
 import { TabEnum } from "./Tabs"
 
 const BottomBar = () => {
