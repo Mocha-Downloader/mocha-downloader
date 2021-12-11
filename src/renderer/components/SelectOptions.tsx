@@ -100,9 +100,8 @@ const SelectOptions = () => {
 						window.electron.ipcRenderer.send({
 							type: "download",
 							payload: {
-								type: "url",
-								data: {
-									data: selectOptions.url,
+								data: selectOptions.url,
+								options: {
 									// https://stackoverflow.com/a/41271541/12979111
 									selected:
 										selectOptions.selectedChoices.reduce(

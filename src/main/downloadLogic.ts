@@ -1,7 +1,7 @@
 import { getPlatformType } from "./util"
 import { forEachPlatform } from "./platforms"
 
-import { DownloadData } from "common/ipcTypes"
+import { DownloadPayload } from "common/ipcTypes"
 import { isDev } from "./main"
 
 /**
@@ -26,7 +26,7 @@ function testInput(input: string): boolean {
 	return wasMatchFound
 }
 
-export default function parseURL(data: DownloadData) {
+export default function downloadLogic(data: DownloadPayload) {
 	if (isDev && testInput(data.data)) return
 
 	const platformType = getPlatformType(data)

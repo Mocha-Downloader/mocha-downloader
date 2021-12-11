@@ -5,7 +5,7 @@ import fs from "fs"
 import { createDownloadCard, m2r } from "../util"
 
 import { Platform, PlatformMeta } from "common/constants"
-import { DownloadData } from "common/ipcTypes"
+import { DownloadPayload } from "common/ipcTypes"
 
 const meta: PlatformMeta = {
 	id: "youtube.com",
@@ -124,7 +124,7 @@ async function getVideoList(url: string): Promise<ytpl.Item[]> {
 	return (await ytpl(parsedURL.href, { limit: Infinity })).items
 }
 
-async function logic(data: DownloadData) {
+async function logic(data: DownloadPayload) {
 	const parsedURL = new URL(data.data)
 
 	if (parsedURL.pathname.startsWith("/watch")) {
@@ -166,8 +166,8 @@ async function logic(data: DownloadData) {
  *
  * @param {DownloadPayload} data
  */
-async function videoListLogic(data: DownloadData) {
-	if (!data.selected || data.selected.length <= 0) {
+async function videoListLogic(data: DownloadPayload) {
+	if (!data.options?.selected || data.options.selected.length <= 0) {
 		getVideoList(data.data).then((playlistData) => {
 			m2r({
 				type: "select",
@@ -178,7 +178,7 @@ async function videoListLogic(data: DownloadData) {
 			})
 		})
 	} else {
-		downloadVideos(data.data, data.selected)
+		downloadVideos(data.data, data.options.selected)
 	}
 }
 

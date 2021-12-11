@@ -46,8 +46,8 @@ const DropZone = () => {
 				if (!fileContent) return
 
 				window.electron.ipcRenderer.send({
-					type: "download",
-					payload: { type: "file", data: fileContent },
+					type: "fileDrop",
+					payload: fileContent,
 				})
 			}
 

@@ -1,7 +1,7 @@
 import webtorrent from "webtorrent"
 
 import { Platform, PlatformMeta } from "common/constants"
-import { DownloadData } from "common/ipcTypes"
+import { DownloadPayload } from "common/ipcTypes"
 
 const meta: PlatformMeta = {
 	id: "bittorrent",
@@ -31,7 +31,7 @@ async function DownloadMagnetLink(torrentID: string): Promise<void> {
  */
 async function DownloadFile(): Promise<void> {}
 
-async function logic(data: DownloadData) {
+async function logic(data: DownloadPayload) {
 	if (data.data.startsWith("magnet:")) {
 		DownloadMagnetLink(data.data)
 	} else {

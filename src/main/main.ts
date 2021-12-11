@@ -5,13 +5,14 @@
 import "core-js/stable"
 import "regenerator-runtime/runtime"
 
-import { app, BrowserWindow, Menu, shell, Tray } from "electron"
+import { app, BrowserWindow, Menu, session, shell, Tray } from "electron"
 import { autoUpdater } from "electron-updater"
 import log from "electron-log"
 import i18n, { t } from "i18next"
 import path from "path"
 
 import locales, { defaultLang } from "../common/locales"
+import { userAgent } from "common/constants"
 
 import "./ipc"
 import MenuBuilder from "./menu"
@@ -139,6 +140,12 @@ const createWindow = async () => {
 /**
  * Add event listeners
  */
+
+// set user agent
+session.defaultSession.webRequest.onBeforeSendHeaders((details, callback) => {
+	details.requestHeaders["User-Agent"] = userAgent
+	callback({ cancel: false, requestHeaders: details.requestHeaders })
+})
 
 app.whenReady().then(() => {
 	createWindow()

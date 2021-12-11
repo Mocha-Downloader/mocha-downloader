@@ -23,6 +23,7 @@
 	},
 	"platform": {
 		"unknown": "Unknown platform",
+		"file": "file",
 		"comic.naver.com": "Naver Comics",
 		"youtube.com": "YouTube",
 		"bittorrent": "Torrent",

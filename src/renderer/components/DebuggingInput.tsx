@@ -23,12 +23,7 @@ const DebuggingInput = () => {
 
 			window.electron.ipcRenderer.send({
 				type: "download",
-				payload: {
-					type: "url",
-					data: {
-						data: query,
-					},
-				},
+				payload: { data: query },
 			})
 		}
 	}

@@ -1,9 +1,9 @@
-import { DownloadData } from "common/ipcTypes"
-import parseURL from "./parseURL"
+import { DownloadPayload } from "common/ipcTypes"
+import downloadLogic from "./downloadLogic"
 
 export type BatchFile = {
 	version: "1.0"
-	download: DownloadData[]
+	download: DownloadPayload[]
 }
 
 export default function parseFile(data: string) {
@@ -11,6 +11,6 @@ export default function parseFile(data: string) {
 
 	console.log(parsedData)
 	parsedData.download.forEach((data) => {
-		parseURL(data)
+		downloadLogic(data)
 	})
 }

@@ -6,7 +6,7 @@ import axios from "axios"
 import path from "path"
 
 import { IDownloadCardProps, platformID } from "common/constants"
-import { DownloadData, M2RArgs } from "common/ipcTypes"
+import { DownloadPayload, M2RArgs } from "common/ipcTypes"
 
 import { mainWindow } from "./main"
 import { DownloadControl, downloadPool } from "./downloading"
@@ -139,7 +139,7 @@ export function createDownloadCard(
 	return [updateDownloadCard, downloadCardID]
 }
 
-export function getPlatformType(data: DownloadData): platformID {
+export function getPlatformType(data: DownloadPayload): platformID {
 	// throw new Error("Failed to recognize platform type")
 	if (data.data === "") return "unknown"
 

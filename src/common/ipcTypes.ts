@@ -103,20 +103,16 @@ export type M2RArgs =
 				  }
 	  }
 
-export type DownloadData = {
-	data: string // either a url or a file content
+export type DownloadOptions = {
 	selected?: number[]
 }
 
-export type DownloadPayload =
-	| {
-			type: "url"
-			data: DownloadData
-	  }
-	| {
-			type: "file"
-			data: string // file content as string
-	  }
+export type DownloadPayload = {
+	data: string // either a url or a file content
+	options?: DownloadOptions
+}
+
+export type FileDropPayload = string // file content as string
 
 export type downloadControlPayload = {
 	type: "pause" | "resume" | "stop"
@@ -124,14 +120,25 @@ export type downloadControlPayload = {
 }
 
 export type R2MArgs =
+	// file drop or paste button click
 	| {
 			type: "download"
 			payload: DownloadPayload
 	  }
+
+	// file drag and drop
+	| {
+			type: "fileDrop"
+			payload: FileDropPayload
+	  }
+
+	// pause, resume, stop
 	| {
 			type: "downloadControl"
 			payload: downloadControlPayload
 	  }
+
+	// change locale
 	| {
 			type: "changeLang"
 			payload: Locale

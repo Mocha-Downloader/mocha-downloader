@@ -3,8 +3,13 @@ import sizeOf from "image-size"
 import cheerio from "cheerio"
 import axios from "axios"
 
-import { Platform, ISelectOption, PlatformMeta } from "common/constants"
-import { DownloadData } from "common/ipcTypes"
+import {
+	Platform,
+	ISelectOption,
+	PlatformMeta,
+	userAgent,
+} from "common/constants"
+import { DownloadPayload } from "common/ipcTypes"
 import {
 	getHTMLFromWindow,
 	getImageBuffer,
@@ -52,12 +57,9 @@ async function downloadEpisode(url: string): Promise<void> {
 	 * Load HTML content
 	 */
 
-	const [userAgent, $] = await parseSite(url, async (window) => {
-		return [
-			window.webContents.session.getUserAgent(),
-			cheerio.load(await getHTMLFromWindow(window)),
-		]
-	})
+	const $ = await parseSite(url, async (window) =>
+		cheerio.load(await getHTMLFromWindow(window))
+	)
 
 	// set download card thumbnail
 	updateDownloadCard(
@@ -229,8 +231,8 @@ async function getList(parsedURL: URL): Promise<ISelectOption[]> {
 	return result
 }
 
-async function logic(data: DownloadData): Promise<void> {
-	const parsedURL = new URL(data.data)
+async function logic(payload: DownloadPayload): Promise<void> {
+	const parsedURL = new URL(payload.data)
 
 	if (parsedURL.pathname.includes("/detail")) {
 		downloadEpisode(parsedURL.href)
@@ -238,7 +240,10 @@ async function logic(data: DownloadData): Promise<void> {
 	}
 
 	if (parsedURL.pathname.includes("/list")) {
-		if (!data.selected || data.selected.length <= 0) {
+		if (
+			!payload.options?.selected ||
+			payload.options.selected.length <= 0
+		) {
 			const selectable = await getList(parsedURL)
 			m2r({
 				type: "select",
@@ -250,7 +255,7 @@ async function logic(data: DownloadData): Promise<void> {
 			return
 		}
 
-		downloadEpisodes(parsedURL.href, data.selected)
+		downloadEpisodes(parsedURL.href, payload.options.selected)
 		return
 	}
 }

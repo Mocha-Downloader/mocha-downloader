@@ -1,4 +1,9 @@
-import { DownloadData } from "./ipcTypes"
+import { DownloadPayload } from "./ipcTypes"
+
+/**
+ * [User Agent](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/User-Agent) for Mocha Downloader
+ */
+export const userAgent = "MochaDownloader"
 
 /**
  * Platform metadata.
@@ -17,7 +22,7 @@ export interface PlatformMeta {
  */
 export interface Platform {
 	meta: PlatformMeta
-	logic(data: DownloadData): Promise<void>
+	logic(payload: DownloadPayload): Promise<void>
 	test(...args: string[]): Promise<void>
 }
 
@@ -57,9 +62,10 @@ export interface ISelectOption {
 
 export type platformID =
 	| "unknown" // Not a valid platform
+	| "file"
 	| "comic.naver.com"
 	| "youtube.com"
 	| "bittorrent"
 	| "webtoon.kakao.com"
 
-export type platformCode = "nv" | "yt" | "tr" | "kw"
+export type platformCode = "f" | "nv" | "yt" | "tr" | "kw"
