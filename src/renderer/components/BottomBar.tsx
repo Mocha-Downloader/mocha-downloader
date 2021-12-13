@@ -47,23 +47,6 @@ const BottomBar = () => {
 					}
 				/>
 
-				<Popup
-					inverted
-					content={t("bottomBarTooltips.help")}
-					trigger={
-						<Menu.Item
-							onClick={() => {
-								dispatch({
-									type: ActionsEnum.SET_TAB_INDEX,
-									payload: TabEnum.HELP,
-								})
-							}}
-						>
-							<Icon link size="large" name="question circle" />
-						</Menu.Item>
-					}
-				/>
-
 				{/* Separate links that opens a new tab in the browser */}
 
 				<Menu.Menu position="right">

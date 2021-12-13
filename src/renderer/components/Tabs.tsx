@@ -6,12 +6,10 @@ import { globalContext } from "../ipc"
 
 import DownloadPane from "../TabPanes/DownloadPane"
 import SettingsPane from "../TabPanes/SettingsPane"
-import HelpPane from "../TabPanes/HelpPane"
 
 export enum TabEnum {
 	DOWNLOAD = 0,
 	SETTINGS = 1,
-	HELP = 2,
 }
 
 const StyledTab = styled(Tab)`
@@ -49,7 +47,6 @@ export const StyledPaneContainer: React.FC = ({ children }) => {
 const panes = [
 	{ render: () => <DownloadPane /> },
 	{ render: () => <SettingsPane /> },
-	{ render: () => <HelpPane /> },
 ]
 
 const Tabs = () => {
