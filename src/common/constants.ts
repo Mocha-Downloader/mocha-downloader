@@ -3,7 +3,9 @@ import { DownloadPayload } from "./ipcTypes"
 /**
  * [User Agent](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/User-Agent) for Mocha Downloader
  */
-export const userAgent = "MochaDownloader"
+export const userAgent =
+	// todo: get user agent from electron
+	"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.93 Safari/537.36"
 
 /**
  * Platform metadata.
