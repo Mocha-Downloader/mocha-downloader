@@ -3,12 +3,7 @@ import sizeOf from "image-size"
 import cheerio from "cheerio"
 import axios from "axios"
 
-import {
-	Platform,
-	ISelectOption,
-	PlatformMeta,
-	userAgent,
-} from "../../common/constants"
+import { Platform, ISelectOption, PlatformMeta } from "../../common/constants"
 import { DownloadPayload } from "../../common/ipcTypes"
 import {
 	getHTMLFromWindow,
@@ -107,7 +102,7 @@ async function downloadEpisode(url: string): Promise<void> {
 			// wait 500ms while isPaused is set to true
 			while (isPaused) await new Promise((r) => setTimeout(r, 500))
 
-			imgs[i] = await getImageBuffer(imgLink, userAgent)
+			imgs[i] = await getImageBuffer(imgLink)
 			amountComplete += 1
 			updateDownloadCard("amountComplete", amountComplete)
 		})

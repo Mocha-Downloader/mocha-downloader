@@ -5,7 +5,7 @@ import { URL } from "url"
 import axios from "axios"
 import path from "path"
 
-import { IDownloadCardProps } from "../common/constants"
+import { IDownloadCardProps, userAgent } from "../common/constants"
 import { M2RArgs } from "../common/ipcTypes"
 
 import { mainWindow } from "./main"
@@ -70,10 +70,7 @@ export async function getHTMLFromWindow(
 		.then((html) => String(html))
 }
 
-export async function getImageBuffer(
-	imageURL: string,
-	userAgent: string
-): Promise<Buffer> {
+export async function getImageBuffer(imageURL: string): Promise<Buffer> {
 	return axios
 		.get(imageURL, {
 			responseType: "arraybuffer",
