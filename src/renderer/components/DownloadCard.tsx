@@ -7,6 +7,7 @@ import {
 	Icon,
 	Modal,
 	Header,
+	SemanticICONS,
 } from "semantic-ui-react"
 import styled from "styled-components"
 import { useTranslation } from "react-i18next"
@@ -25,7 +26,32 @@ const StyledError = styled.div`
 	color: red;
 `
 
+enum ConfirmTypeEnum {
+	delete,
+	stop,
+}
+
+function getConfirmMessage(confirmType: ConfirmTypeEnum): string {
+	switch (confirmType) {
+		case ConfirmTypeEnum.delete:
+			return "Delete card?"
+		case ConfirmTypeEnum.stop:
+			return "Stop download?"
+	}
+}
+
+function getConfirmIcon(confirmType: ConfirmTypeEnum): SemanticICONS {
+	switch (confirmType) {
+		case ConfirmTypeEnum.delete:
+			return "trash alternate outline"
+		case ConfirmTypeEnum.stop:
+			return "stop circle outline"
+	}
+}
+
 const DownloadCard = (props: IDownloadCardProps) => {
+	// todo: always show confirm modal settings
+
 	const {
 		downloadCardID,
 
@@ -42,10 +68,14 @@ const DownloadCard = (props: IDownloadCardProps) => {
 	} = props
 
 	const { dispatch } = useContext(globalContext)
-	const [isRemoveConfirmModalVisible, setRemoveConfirmModalVisibility] =
-		useState(false)
+
 	const [isDownloading, setIsDownloading] = useState(true)
 	const [completePercentage, setCompletePercentage] = useState(0)
+
+	const [isConfirmModalVisible, setConfirmModalVisibility] = useState(false)
+	const [confirmType, setConfirmType] = useState<ConfirmTypeEnum>(
+		ConfirmTypeEnum.stop
+	)
 
 	const { t } = useTranslation()
 
@@ -55,7 +85,8 @@ const DownloadCard = (props: IDownloadCardProps) => {
 	}, [amountComplete])
 
 	const handleRemoveCardButtonClicked = () => {
-		setRemoveConfirmModalVisibility(true)
+		setConfirmType(ConfirmTypeEnum.delete)
+		setConfirmModalVisibility(true)
 	}
 
 	const handlePauseResumeButtonClicked = () => {
@@ -70,13 +101,30 @@ const DownloadCard = (props: IDownloadCardProps) => {
 	}
 
 	const handleStopButtonClicked = () => {
-		window.electron.ipcRenderer.send({
-			type: "downloadControl",
-			payload: {
-				type: "stop",
-				downloadCardID: downloadCardID,
-			},
-		})
+		setConfirmType(ConfirmTypeEnum.stop)
+		setConfirmModalVisibility(true)
+	}
+
+	const handleConfirmButtonClicked = () => {
+		setConfirmModalVisibility(false)
+
+		switch (confirmType) {
+			case ConfirmTypeEnum.delete:
+				dispatch({
+					type: ActionsEnum.REMOVE_DOWNLOAD_CARD,
+					payload: downloadCardID,
+				})
+				break
+			case ConfirmTypeEnum.stop:
+				window.electron.ipcRenderer.send({
+					type: "downloadControl",
+					payload: {
+						type: "stop",
+						downloadCardID: downloadCardID,
+					},
+				})
+				break
+		}
 	}
 
 	return (
@@ -85,18 +133,19 @@ const DownloadCard = (props: IDownloadCardProps) => {
 			<Modal
 				basic
 				size="small"
-				open={isRemoveConfirmModalVisible}
+				open={isConfirmModalVisible}
 				onOpen={() => {
-					setRemoveConfirmModalVisibility(true)
+					setConfirmModalVisibility(true)
 				}}
 				onClose={() => {
-					setRemoveConfirmModalVisibility(false)
+					setConfirmModalVisibility(false)
 				}}
 			>
 				<Header icon>
-					<Icon name="trash alternate outline" />
-					Delete card?
+					<Icon name={getConfirmIcon(confirmType)} />
+					{getConfirmMessage(confirmType)}
 				</Header>
+
 				<Modal.Actions
 					style={{ display: "flex", justifyContent: "center" }}
 				>
@@ -104,21 +153,14 @@ const DownloadCard = (props: IDownloadCardProps) => {
 						basic
 						color="red"
 						inverted
-						onClick={() => setRemoveConfirmModalVisibility(false)}
+						onClick={() => setConfirmModalVisibility(false)}
 					>
 						<Icon name="x" /> No
 					</Button>
 					<Button
 						color="green"
 						inverted
-						onClick={() => {
-							setRemoveConfirmModalVisibility(false)
-
-							dispatch({
-								type: ActionsEnum.REMOVE_DOWNLOAD_CARD,
-								payload: downloadCardID,
-							})
-						}}
+						onClick={handleConfirmButtonClicked}
 					>
 						<Icon name="check" /> Yes
 					</Button>
