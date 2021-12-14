@@ -5,7 +5,7 @@
 		"aaron-bond.better-comments",
 		"esbenp.prettier-vscode",
 		"dsznajder.es7-react-js-snippets",
-		"jpoissonnier.vscode-styled-components",
-		"bierner.jsdoc-markdown-highlighting"
+		"bierner.jsdoc-markdown-highlighting",
+		"styled-components.vscode-styled-components"
 	]
 }
