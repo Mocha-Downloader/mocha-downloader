@@ -85,6 +85,7 @@
 		"electron-debug": "^3.2.0",
 		"electron-devtools-installer": "^3.2.0",
 		"electron-log": "^4.4.1",
+		"electron-notarize": "^1.1.1",
 		"electron-rebuild": "^3.2.5",
 		"electron-updater": "^4.6.1",
 		"enzyme": "^3.11.0",
@@ -136,6 +137,35 @@
 			"node_modules",
 			"package.json"
 		],
+		"afterSign": ".erb/scripts/notarize.js",
+		"mac": {
+			"target": {
+				"target": "default",
+				"arch": [
+					"arm64",
+					"x64"
+				]
+			},
+			"type": "distribution",
+			"hardenedRuntime": true,
+			"entitlements": "assets/entitlements.mac.plist",
+			"entitlementsInherit": "assets/entitlements.mac.plist",
+			"gatekeeperAssess": false
+		},
+		"dmg": {
+			"contents": [
+				{
+					"x": 130,
+					"y": 220
+				},
+				{
+					"x": 410,
+					"y": 220,
+					"type": "link",
+					"path": "/Applications"
+				}
+			]
+		},
 		"win": {
 			"target": [
 				"nsis"
@@ -143,7 +173,7 @@
 		},
 		"linux": {
 			"target": [
-				"AppImage"
+				"Utility"
 			],
 			"category": "Development"
 		},

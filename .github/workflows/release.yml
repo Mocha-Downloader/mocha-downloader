@@ -9,7 +9,7 @@ on:
 
 jobs:
     publish:
-        runs-on: ubuntu-latest
+        runs-on: macos-latest
 
         steps:
             - name: Checkout
@@ -30,4 +30,5 @@ jobs:
               run: |
                   yarn postinstall
                   yarn build
-                  yarn electron-builder -- --publish always --win --linux
+				  brew cask install wine-stable
+                  yarn electron-builder --publish always --win --linux --mac
