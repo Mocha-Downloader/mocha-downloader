@@ -173,9 +173,9 @@
 		},
 		"linux": {
 			"target": [
-				"Utility"
+				"AppImage"
 			],
-			"category": "Development"
+			"category": "Utility"
 		},
 		"directories": {
 			"app": "release/app",
