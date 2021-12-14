@@ -31,24 +31,6 @@ enum ConfirmTypeEnum {
 	stop,
 }
 
-function getConfirmMessage(confirmType: ConfirmTypeEnum): string {
-	switch (confirmType) {
-		case ConfirmTypeEnum.delete:
-			return "Delete card?"
-		case ConfirmTypeEnum.stop:
-			return "Stop download?"
-	}
-}
-
-function getConfirmIcon(confirmType: ConfirmTypeEnum): SemanticICONS {
-	switch (confirmType) {
-		case ConfirmTypeEnum.delete:
-			return "trash alternate outline"
-		case ConfirmTypeEnum.stop:
-			return "stop circle outline"
-	}
-}
-
 const DownloadCard = (props: IDownloadCardProps) => {
 	// todo: always show confirm modal settings
 
@@ -83,6 +65,24 @@ const DownloadCard = (props: IDownloadCardProps) => {
 		const percentageValue = 100 * (amountComplete / totalAmount)
 		if (!isNaN(percentageValue)) setCompletePercentage(percentageValue)
 	}, [amountComplete])
+
+	const getConfirmMessage = (confirmType: ConfirmTypeEnum): string => {
+		switch (confirmType) {
+			case ConfirmTypeEnum.delete:
+				return t("downloadCard.confirmModal.deleteCard")
+			case ConfirmTypeEnum.stop:
+				return t("downloadCard.confirmModal.stopDownload")
+		}
+	}
+
+	const getConfirmIcon = (confirmType: ConfirmTypeEnum): SemanticICONS => {
+		switch (confirmType) {
+			case ConfirmTypeEnum.delete:
+				return "trash alternate outline"
+			case ConfirmTypeEnum.stop:
+				return "stop circle outline"
+		}
+	}
 
 	const handleRemoveCardButtonClicked = () => {
 		setConfirmType(ConfirmTypeEnum.delete)
@@ -155,14 +155,15 @@ const DownloadCard = (props: IDownloadCardProps) => {
 						inverted
 						onClick={() => setConfirmModalVisibility(false)}
 					>
-						<Icon name="x" /> No
+						<Icon name="x" /> {t("downloadCard.confirmModal.no")}
 					</Button>
 					<Button
 						color="green"
 						inverted
 						onClick={handleConfirmButtonClicked}
 					>
-						<Icon name="check" /> Yes
+						<Icon name="check" />{" "}
+						{t("downloadCard.confirmModal.yes")}
 					</Button>
 				</Modal.Actions>
 			</Modal>

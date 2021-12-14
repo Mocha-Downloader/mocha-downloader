@@ -8,6 +8,14 @@
 		"subheader": "자세한 내용을 보려면 F1 키를 누르세요",
 		"drop": "배치 다운로드 파일을 여기에 드래그 앤 드롭하세요"
 	},
+	"downloadCard": {
+		"confirmModal": {
+			"deleteCard": "카드를 삭제하시겠습니까?",
+			"stopDownload": "다운로드를 중지하시겠습니까?",
+			"yes": "예",
+			"no": "아니오"
+		}
+	},
 	"bottomBarTooltips": {
 		"download": "다운로드",
 		"settings": "설정",

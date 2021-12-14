@@ -8,6 +8,14 @@
 		"subheader": "Press F1 to learn more",
 		"drop": "Drag and drop batch download file here"
 	},
+	"downloadCard": {
+		"confirmModal": {
+			"deleteCard": "Delete card?",
+			"stopDownload": "Stop download?",
+			"yes": "Yes",
+			"no": "No"
+		}
+	},
 	"bottomBarTooltips": {
 		"download": "Download",
 		"settings": "Settings",
