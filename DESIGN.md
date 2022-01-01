@@ -64,3 +64,14 @@ For a component-specific documentation, open the [components](./src/renderer/com
 
 - Default window size: 1000x600 (close to golden ratio)
 - ideal reading pattern: Headers (Click the 'Paste' button... & Press F1...) first then Z pattern.
+
+## Rules
+
+### typing Mocha Downloader
+
+Mocha Downloader must be typed with space and capitalization when possible.
+
+Exceptions:
+
+- when it's in a url
+- when it's being used as an id in [package.json](./release/app/package.json)
