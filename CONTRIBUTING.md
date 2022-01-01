@@ -70,6 +70,11 @@ yarn package
   - must have a meta property and a logic function. Check [`src/main/constants.ts`](./src/main/constants.ts) for more info.
   - export it in [`src/main/platforms/index.ts`](./src/main/platforms/index.ts)
 - add a 16x16px sized png icon to [`./assets`](./assets)
+- create new [label(s)](https://github.com/Mocha-Downloader/mocha-downloader/labels) for github issues page
+
+  - format: `platform:<PLATFORM_ID>`
+
+- add platform-specific settings
 
 ## Translations
 
