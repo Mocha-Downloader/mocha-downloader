@@ -1,20 +1,4 @@
 {
-	"name": "mocha-downloader",
-	"productName": "mocha-downloader",
-	"description": "A GUI tool for searching, parsing, and downloading contents from the web.",
-	"bugs": {
-		"url": "https://github.com/Mocha-Downloader/mocha-downloader/issues"
-	},
-	"homepage": "https://github.com/Mocha-Downloader/mocha-downloader",
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/Mocha-Downloader/mocha-downloader.git"
-	},
-	"author": {
-		"name": "developomp",
-		"email": "developomp@gmail.com",
-		"url": "https://developomp.com"
-	},
 	"scripts": {
 		"postinstall": "ts-node .erb/scripts/fix-double-semicolon.ts && ts-node .erb/scripts/check-native-dep.ts && electron-builder install-app-deps && cross-env NODE_ENV=development TS_NODE_TRANSPILE_ONLY=true webpack --config ./.erb/configs/webpack.config.renderer.dev.dll.ts",
 		"icons": "ts-node ./.erb/scripts/generate-icons.ts",

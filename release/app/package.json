@@ -1,14 +1,9 @@
 {
 	"name": "mocha-downloader",
-	"productName": "mocha-downloader",
-	"version": "0.0.1",
-	"description": "A GUI tool for searching, parsing, and downloading contents from the web.",
+	"productName": "Mocha Downloader",
+	"version": "0.0.2",
+	"description": "An all-in-one tool for downloading content from the web.",
 	"main": "./dist/main/main.js",
-	"author": {
-		"name": "developomp",
-		"email": "developomp@gmail.com",
-		"url": "https://developomp.com"
-	},
 	"scripts": {
 		"electron-rebuild": "node -r ts-node/register ../../.erb/scripts/electron-rebuild.js",
 		"link-modules": "node -r ts-node/register ../../.erb/scripts/link-modules.js",
