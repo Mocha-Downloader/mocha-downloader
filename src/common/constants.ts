@@ -64,10 +64,8 @@ export interface ISelectOption {
 
 export type platformID =
 	| "unknown" // Not a valid platform
-	| "file"
 	| "comic.naver.com"
 	| "youtube.com"
 	| "bittorrent"
-	| "webtoon.kakao.com"
 
-export type platformCode = "f" | "nv" | "yt" | "tr" | "kw"
+export type platformCode = "nv" | "yt" | "tr"
