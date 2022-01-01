@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next"
-import { Checkbox, Dropdown, Header, Input } from "semantic-ui-react"
+import { Dropdown, Header } from "semantic-ui-react"
 
 import { Locale } from "../../common/constants"
 import { LanguageOptions } from "../../common/locales"
@@ -10,9 +10,9 @@ const SettingsPane = () => {
 
 	return (
 		<StyledPaneContainer>
-			<Header size="huge" content="Settings" />
+			<Header size="huge" content="Settings" dividing />
 
-			<Header size="medium" content="Language" dividing />
+			<Header size="small" content="Language" />
 			<Dropdown
 				search
 				selection
@@ -31,22 +31,26 @@ const SettingsPane = () => {
 				}}
 			/>
 
-			<Header size="medium" content="Network" dividing />
-			<Checkbox label="use tor" />
-
-			<Header size="medium" content="proxy" />
-			<Input size="mini" />
-
-			<Header size="medium" content="Etc" dividing />
-			<Checkbox label="auto update" />
-
 			<Header size="large" content="Platform settings" dividing />
 
-			<Header size="medium" content="File" dividing />
+			{/* Naver Comics settings*/}
 
 			<Header size="medium" content="Naver Comics" dividing />
 
+			<Header size="small" content="Maximum concurrent downloads" />
+			<Header size="small" content="Image format" />
+			<Header size="small" content="split images" />
+
+			{/* YouTube settings */}
+
 			<Header size="medium" content="YouTube" dividing />
+
+			<Header size="small" content="Maximum concurrent downloads" />
+			<Header size="small" content="video format" />
+			<Header size="small" content="video resolution" />
+			<Header size="small" content="audio bitrate" />
+
+			{/* Torrent settings */}
 
 			<Header size="medium" content="Torrent" dividing />
 		</StyledPaneContainer>
