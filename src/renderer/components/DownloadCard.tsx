@@ -146,19 +146,20 @@ const DownloadCard = (props: IDownloadCardProps) => {
 					{getConfirmMessage(confirmType)}
 				</Header>
 
+				{/* Confirm card deletion */}
 				<Modal.Actions
 					style={{ display: "flex", justifyContent: "center" }}
 				>
 					<Button
 						basic
-						color="red"
+						color="grey"
 						inverted
 						onClick={() => setConfirmModalVisibility(false)}
 					>
 						<Icon name="x" /> {t("downloadCard.confirmModal.no")}
 					</Button>
 					<Button
-						color="green"
+						color="red"
 						inverted
 						onClick={handleConfirmButtonClicked}
 					>
