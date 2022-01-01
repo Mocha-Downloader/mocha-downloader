@@ -71,6 +71,12 @@ export function getPlatformType(data: DownloadPayload): platformID {
 	// throw new Error("Failed to recognize platform type")
 	if (data.data === "") return "unknown"
 
-	const parsedURL = new URL(data.data)
-	return parsedURL.hostname.replace("www.", "") as platformID
+	if (data.data.startsWith("magnet")) return "bittorrent"
+
+	try {
+		const parsedURL = new URL(data.data)
+		return parsedURL.hostname.replace("www.", "") as platformID
+	} catch {
+		return "unknown"
+	}
 }
