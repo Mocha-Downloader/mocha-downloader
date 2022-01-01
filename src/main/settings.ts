@@ -1,13 +1,15 @@
+import { Locale, mochaPath } from "../common/constants"
 import { existsSync, readFileSync, statSync, writeFileSync } from "fs"
+import { recursiveMkdir } from "./util"
 
-const settingsPath = "settings.json"
+const settingsPath = `${mochaPath}/settings.json`
 
 export type Settings = {
-	amICool: boolean
+	locale: Locale
 }
 
 export let settings: Settings = {
-	amICool: true,
+	locale: "en",
 }
 
 // todo: watch settings file and apply changes instantly (allow manual editing)
@@ -32,5 +34,7 @@ export async function loadSettings(): Promise<void> {
 export async function saveSettings(): Promise<void> {
 	// todo: failed to save settings feedback
 	// todo: prettify string
-	writeFileSync("settings.json", JSON.stringify(settings))
+
+	await recursiveMkdir(mochaPath)
+	writeFileSync(settingsPath, JSON.stringify(settings))
 }

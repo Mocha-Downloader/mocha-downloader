@@ -4,6 +4,7 @@ import { randomUUID } from "crypto"
 import { URL } from "url"
 import axios from "axios"
 import path from "path"
+import fs from "fs"
 
 import { IDownloadCardProps, userAgent } from "../common/constants"
 import { M2RArgs } from "../common/ipcTypes"
@@ -134,4 +135,14 @@ export function createDownloadCard(
 	}
 
 	return [updateDownloadCard, downloadCardID]
+}
+
+/**
+ * Create directory recursively.
+ *
+ * @param {string} path - path of directory to create.
+ * @returns {Promise<void>}
+ */
+export async function recursiveMkdir(path: string): Promise<void> {
+	fs.promises.mkdir(path, { recursive: true })
 }

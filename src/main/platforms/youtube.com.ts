@@ -2,9 +2,9 @@ import ytdl from "ytdl-core"
 import ytpl from "ytpl"
 import fs from "fs"
 
-import { createDownloadCard, m2r } from "../util"
+import { createDownloadCard, m2r, recursiveMkdir } from "../util"
 
-import { Platform, PlatformMeta } from "../../common/constants"
+import { mochaPath, Platform, PlatformMeta } from "../../common/constants"
 import { DownloadPayload } from "../../common/ipcTypes"
 
 const meta: PlatformMeta = {
@@ -66,9 +66,13 @@ async function downloadVideo(url: string): Promise<void> {
 
 	const videoInfo = await ytdl.getBasicInfo(url)
 
-	const filePath = `${videoInfo.videoDetails.title}.mp4`
+	const folderPath = `${mochaPath}/${meta.id}/${videoInfo.videoDetails.ownerChannelName}`
+	const filePath = `${folderPath}/${videoInfo.videoDetails.title}.mp4`
+
 	updateDownloadCard("title", videoInfo.videoDetails.title)
 	updateDownloadCard("thumbnail", videoInfo.videoDetails.thumbnails[0].url)
+
+	recursiveMkdir(folderPath)
 
 	// update progress
 	let _isTotalAmountDataSent = false

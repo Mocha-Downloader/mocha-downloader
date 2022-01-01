@@ -3,7 +3,12 @@ import sizeOf from "image-size"
 import cheerio from "cheerio"
 import axios from "axios"
 
-import { Platform, ISelectOption, PlatformMeta } from "../../common/constants"
+import {
+	Platform,
+	ISelectOption,
+	PlatformMeta,
+	mochaPath,
+} from "../../common/constants"
 import { DownloadPayload } from "../../common/ipcTypes"
 import {
 	getHTMLFromWindow,
@@ -11,6 +16,7 @@ import {
 	m2r,
 	parseSite,
 	createDownloadCard,
+	recursiveMkdir,
 } from "../util"
 
 const meta: PlatformMeta = {
@@ -63,10 +69,11 @@ async function downloadEpisode(url: string): Promise<void> {
 	)
 
 	// get title
-	const title = $("meta[property='og:description']").attr("content")
+	const comicTitle = $(".thumb > a > img").attr("title")
+	const episodeTitle = $("meta[property='og:description']").attr("content")
 
 	// set download card title
-	updateDownloadCard("title", title)
+	updateDownloadCard("title", episodeTitle)
 
 	/**
 	 * Fetch image links
@@ -143,23 +150,28 @@ async function downloadEpisode(url: string): Promise<void> {
 
 	updateDownloadCard("status", "stitching images")
 
-	await sharp({
-		create: {
-			width: maxWidth,
-			height: heightCount,
-			channels: 3,
-			background: "#ffffff",
-		},
+	const folderPath = `${mochaPath}/${meta.id}/${comicTitle}`
+
+	recursiveMkdir(folderPath).then(() => {
+		// save image
+		sharp({
+			create: {
+				width: maxWidth,
+				height: heightCount,
+				channels: 3,
+				background: "#ffffff",
+			},
+		})
+			.composite(imgsToStitch)
+			.png({ quality: 100 })
+			.toFile(`${folderPath}/${episodeTitle}.png`)
+
+		/**
+		 * Done!
+		 */
+
+		updateDownloadCard("isDownloadComplete", "true")
 	})
-		.composite(imgsToStitch)
-		.png({ quality: 100 })
-		.toFile(`${title}.png`)
-
-	/**
-	 * Done!
-	 */
-
-	updateDownloadCard("isDownloadComplete", "true")
 }
 
 /**
