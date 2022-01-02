@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next"
 import { Container, Menu } from "semantic-ui-react"
 import styled from "styled-components"
 
-import DownloadButton from "./PasteButton"
+import PasteButton from "./PasteButton"
 
 const StyledContainer = styled(Container)`
 	display: flex;
@@ -18,7 +18,7 @@ const TopBar = () => {
 				<Menu.Item header>{t("appName")}</Menu.Item>
 
 				<Menu.Item>
-					<DownloadButton />
+					<PasteButton />
 				</Menu.Item>
 			</StyledContainer>
 		</Menu>
