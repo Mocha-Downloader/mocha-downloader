@@ -18,8 +18,18 @@ import { ActionsEnum } from "../../common/ipcTypes"
 import { globalContext } from "../ipc"
 
 const StyledThumbnail = styled(Image)`
+	margin-bottom: 0 !important;
+
 	/* // todo: max height // */
 	/* // todo: fixed aspect ratio // */
+`
+
+const StyledTitle = styled(Card.Header)`
+	min-height: 1.5rem;
+`
+
+const StyledBottomContent = styled.div`
+	margin-top: 2rem;
 `
 
 const StyledError = styled.div`
@@ -186,7 +196,7 @@ const DownloadCard = (props: IDownloadCardProps) => {
 				{/* Top content */}
 
 				<StyledThumbnail floated="left" size="tiny" src={thumbnail} />
-				<Card.Header>{title}</Card.Header>
+				<StyledTitle>{title}</StyledTitle>
 				<Card.Meta>
 					<Image src={platformIcons[platform]} />
 					<strong>{t(`platform.${platform}`)}</strong>
@@ -194,8 +204,22 @@ const DownloadCard = (props: IDownloadCardProps) => {
 
 				{/* Bottom content */}
 
-				<div style={{ marginTop: "2rem" }}>
-					<div style={{ marginBottom: "-0.8rem" }}>
+				<StyledBottomContent>
+					{/* Download control buttons */}
+					{/* // todo: wait for 500ms for further input in case the user clicks the button multiple times // */}
+					<Button.Group
+						floated="right"
+						style={{ marginTop: "-1.5rem" }}
+					>
+						<Button icon onClick={handlePauseResumeButtonClicked}>
+							<Icon name={isDownloading ? "pause" : "play"} />
+						</Button>
+						<Button icon onClick={handleStopButtonClicked}>
+							<Icon name="stop" />
+						</Button>
+					</Button.Group>
+
+					<div>
 						{amountComplete} / {totalAmount} {unit}&nbsp;&nbsp;(
 						<strong>{completePercentage.toFixed(1)}%</strong>)
 					</div>
@@ -208,19 +232,7 @@ const DownloadCard = (props: IDownloadCardProps) => {
 					{errorMessage && (
 						<StyledError>ERROR: {errorMessage}</StyledError>
 					)}
-				</div>
-
-				{/* Download control buttons */}
-
-				{/* // todo: wait for 500ms for further input in case the user clicks the button multiple times // */}
-				<Button.Group floated="right" style={{ marginTop: "-1rem" }}>
-					<Button icon onClick={handlePauseResumeButtonClicked}>
-						<Icon name={isDownloading ? "pause" : "play"} />
-					</Button>
-					<Button icon onClick={handleStopButtonClicked}>
-						<Icon name="stop" />
-					</Button>
-				</Button.Group>
+				</StyledBottomContent>
 			</Card.Content>
 		</Card>
 	)
