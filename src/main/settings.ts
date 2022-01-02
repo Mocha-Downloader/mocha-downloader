@@ -1,6 +1,8 @@
-import { mochaPath, Settings } from "../common/constants"
+import { Locale, mochaPath, Settings } from "../common/constants"
 import { existsSync, readFileSync, statSync, writeFileSync } from "fs"
-import { recursiveMkdir } from "./util"
+import { m2r, recursiveMkdir } from "./util"
+import { buildTray } from "./main"
+import { changeLanguage } from "i18next"
 
 const settingsPath = `${mochaPath}/settings.json`
 
@@ -20,9 +22,17 @@ export async function loadSettings(): Promise<void> {
 
 	const fileContent = readFileSync(settingsPath, "utf-8")
 
-	// todo: check if settings is valid
+	// todo: check if settings are valid
 
 	settings = JSON.parse(fileContent) as Settings
+
+	changeLangTo(settings.locale)
+
+	// send parsed result to front end
+	m2r({
+		type: "settings",
+		payload: settings,
+	})
 }
 
 export async function saveSettings(): Promise<void> {
@@ -31,4 +41,10 @@ export async function saveSettings(): Promise<void> {
 
 	await recursiveMkdir(mochaPath)
 	writeFileSync(settingsPath, JSON.stringify(settings))
+}
+
+export async function changeLangTo(lang: Locale): Promise<void> {
+	settings.locale = lang
+	changeLanguage(lang)
+	buildTray()
 }

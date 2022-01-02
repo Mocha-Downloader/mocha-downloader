@@ -3,16 +3,14 @@
  */
 
 import { ipcMain } from "electron"
-import { changeLanguage } from "i18next"
 
 import { R2MArgs } from "../common/ipcTypes"
 
-import { m2r } from "./util"
 import parseFile from "./parseFile"
-import { isDev, buildTray } from "./main"
+import { isDev } from "./main"
 import downloadLogic from "./downloadLogic"
 import { downloadPool } from "./downloading"
-import { settings, loadSettings, saveSettings } from "./settings"
+import { loadSettings, saveSettings, changeLangTo } from "./settings"
 
 ipcMain.on("r2m", async (_, r2mArgs: R2MArgs) => {
 	if (isDev) console.log("r2m:", r2mArgs)
@@ -52,12 +50,7 @@ ipcMain.on("r2m", async (_, r2mArgs: R2MArgs) => {
 		case "settings":
 			switch (r2mArgs.payload.type) {
 				case "load":
-					await loadSettings()
-
-					m2r({
-						type: "settings",
-						payload: settings,
-					})
+					loadSettings()
 					return
 
 				case "save":
@@ -65,9 +58,7 @@ ipcMain.on("r2m", async (_, r2mArgs: R2MArgs) => {
 					return
 
 				case "changeLanguage":
-					settings.locale = r2mArgs.payload.payload
-					changeLanguage(r2mArgs.payload.payload)
-					buildTray()
+					changeLangTo(r2mArgs.payload.payload)
 					break
 			}
 
