@@ -72,8 +72,6 @@ async function downloadVideo(url: string): Promise<void> {
 	updateDownloadCard("title", videoInfo.videoDetails.title)
 	updateDownloadCard("thumbnail", videoInfo.videoDetails.thumbnails[0].url)
 
-	recursiveMkdir(folderPath)
-
 	// update progress
 	let _isTotalAmountDataSent = false
 	video.on("progress", (_, downloadedBytes: number, totalBytes: number) => {
@@ -91,7 +89,9 @@ async function downloadVideo(url: string): Promise<void> {
 	})
 
 	// save to file
-	video.pipe(fs.createWriteStream(filePath))
+	recursiveMkdir(folderPath).then(() => {
+		video.pipe(fs.createWriteStream(filePath))
+	})
 }
 
 /**
