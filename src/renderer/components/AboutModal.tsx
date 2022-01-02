@@ -1,12 +1,13 @@
 import { useContext } from "react"
 import { Button, Header, Modal } from "semantic-ui-react"
+import { useTranslation } from "react-i18next"
 
 import { ActionsEnum } from "../../common/ipcTypes"
 import { globalContext } from "../ipc"
 
 const AboutModal = () => {
+	const { t } = useTranslation()
 	const { globalState, dispatch } = useContext(globalContext)
-	const { platform, arch, release } = window.electron.data.os
 
 	return (
 		<Modal
@@ -14,20 +15,14 @@ const AboutModal = () => {
 			onClose={() => dispatch({ type: ActionsEnum.HIDE_ABOUT_MODAL })}
 			onOpen={() => dispatch({ type: ActionsEnum.SHOW_ABOUT_MODAL })}
 		>
-			<Header icon="info" content="Mocha Downloader" />
+			<Header icon="info" content={t("about.title")} />
 
 			<Modal.Content style={{ whiteSpace: "pre-line" }}>
-				A GUI tool for searching, parsing, and downloading contents from
-				the web.
+				{t("about.description")}
 				<br />
 				<br />
-				{/* known bug: https://github.com/electron/electron/issues/7085 */}
-				Version: <strong>{window.electron.data.appVersion}</strong>
-				<br />
-				OS:{" "}
-				<strong>
-					{platform} {arch} {release}
-				</strong>
+				{t("about.version")}:{" "}
+				<strong>{window.electron.data.appVersion}</strong>
 				<br />
 				<br />
 				<strong>
@@ -35,7 +30,7 @@ const AboutModal = () => {
 						href="https://mocha-downloader.github.io/docs/licenses"
 						target="_blank"
 					>
-						LICENSES
+						{t("about.licenses")}
 					</a>
 				</strong>
 			</Modal.Content>
@@ -46,7 +41,7 @@ const AboutModal = () => {
 						dispatch({ type: ActionsEnum.HIDE_ABOUT_MODAL })
 					}
 				>
-					OK
+					{t("about.close")}
 				</Button>
 			</Modal.Actions>
 		</Modal>

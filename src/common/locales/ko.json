@@ -16,6 +16,13 @@
 			"no": "아니오"
 		}
 	},
+	"about": {
+		"title": "모카 다운로더",
+		"description": "웹에서 콘텐츠를 다운로드하기 위한 툴.",
+		"version": "버전",
+		"licenses": "라이선스",
+		"close": "닫기"
+	},
 	"bottomBarTooltips": {
 		"download": "다운로드",
 		"settings": "설정",

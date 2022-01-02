@@ -16,6 +16,13 @@
 			"no": "No"
 		}
 	},
+	"about": {
+		"title": "Mocha Downloader",
+		"description": "An all-in-one tool for downloading content from the web.",
+		"version": "Version",
+		"licenses": "LICENSES",
+		"close": "Close"
+	},
 	"bottomBarTooltips": {
 		"download": "Download",
 		"settings": "Settings",
