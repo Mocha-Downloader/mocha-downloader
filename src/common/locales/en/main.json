@@ -28,6 +28,20 @@
 		"show": "Show Window",
 		"quit": "Quit"
 	},
+	"settings": {
+		"settings": "Settings",
+		"language": "Language",
+		"platformSettings": "Platform settings",
+		"maxConcurrentDownloads": "maximum concurrent downloads",
+		"naverComics": "Naver Comics",
+		"imageFormat": "image format",
+		"splitImages": "split images",
+		"youtube": "YouTube",
+		"videoFormat": "video format",
+		"videoResolution": "video resolution",
+		"audioBitrate": "audio bitrate",
+		"torrent": "Torrent"
+	},
 	"platform": {
 		"unknown": "Unknown platform",
 		"file": "file",

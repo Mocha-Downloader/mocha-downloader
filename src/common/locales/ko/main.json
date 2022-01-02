@@ -28,6 +28,20 @@
 		"show": "창 보이기",
 		"quit": "종료"
 	},
+	"settings": {
+		"settings": "설정",
+		"language": "언어",
+		"platformSettings": "플랫폼 설정",
+		"maxConcurrentDownloads": "최대 동시 다운로드",
+		"naverComics": "네이버 웹툰",
+		"imageFormat": "이미지 형식",
+		"splitImages": "이미지 분활",
+		"youtube": "유튜브",
+		"videoFormat": "영상 형식",
+		"videoResolution": "영상 화질",
+		"audioBitrate": "오디오 비트 전송률",
+		"torrent": "토렌트"
+	},
 	"platform": {
 		"unknown": "알 수 없는 플랫폼",
 		"file": "파일",

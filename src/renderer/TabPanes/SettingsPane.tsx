@@ -6,13 +6,13 @@ import { LanguageOptions } from "../../common/locales"
 import { StyledPaneContainer } from "../components/Tabs"
 
 const SettingsPane = () => {
-	const { i18n } = useTranslation()
+	const { t, i18n } = useTranslation()
 
 	return (
 		<StyledPaneContainer>
-			<Header size="huge" content="Settings" dividing />
+			<Header size="huge" content={t("settings.settings")} dividing />
 
-			<Header size="small" content="Language" />
+			<Header size="small" content={t("settings.language")} />
 			<Dropdown
 				search
 				selection
@@ -31,28 +31,42 @@ const SettingsPane = () => {
 				}}
 			/>
 
-			<Header size="large" content="Platform settings" dividing />
+			<Header
+				size="large"
+				content={t("settings.platformSettings")}
+				dividing
+			/>
 
 			{/* Naver Comics settings*/}
 
-			<Header size="medium" content="Naver Comics" dividing />
+			<Header
+				size="medium"
+				content={t("settings.naverComics")}
+				dividing
+			/>
 
-			<Header size="small" content="Maximum concurrent downloads" />
-			<Header size="small" content="Image format" />
-			<Header size="small" content="split images" />
+			<Header
+				size="small"
+				content={t("settings.maxConcurrentDownloads")}
+			/>
+			<Header size="small" content={t("settings.imageFormat")} />
+			<Header size="small" content={t("settings.splitImages")} />
 
 			{/* YouTube settings */}
 
-			<Header size="medium" content="YouTube" dividing />
+			<Header size="medium" content={t("settings.youtube")} dividing />
 
-			<Header size="small" content="Maximum concurrent downloads" />
-			<Header size="small" content="video format" />
-			<Header size="small" content="video resolution" />
-			<Header size="small" content="audio bitrate" />
+			<Header
+				size="small"
+				content={t("settings.maxConcurrentDownloads")}
+			/>
+			<Header size="small" content={t("settings.videoFormat")} />
+			<Header size="small" content={t("settings.videoResolution")} />
+			<Header size="small" content={t("settings.audioBitrate")} />
 
 			{/* Torrent settings */}
 
-			<Header size="medium" content="Torrent" dividing />
+			<Header size="medium" content={t("settings.torrent")} dividing />
 		</StyledPaneContainer>
 	)
 }
