@@ -13,17 +13,17 @@ const meta: PlatformMeta = {
 }
 
 // enum ChannelVideoSortEnum {
-// 	RECENT = "RECENT",
-// 	OLDEST = "OLDEST",
-// 	POPULAR = "POPULAR",
+// 	RECENT,
+// 	OLDEST,
+// 	POPULAR,
 // }
 
 // enum PlaylistVideoSortEnum {
-// 	RECENT_ADDED = "RECENT_ADDED",
-// 	OLDEST_ADDED = "OLDEST_ADDED",
-// 	POPULAR = "POPULAR",
-// 	RECENT_PUBLISHED = "RECENT_PUBLISHED",
-// 	OLDEST_PUBLISHED = "OLDEST_PUBLISHED",
+// 	RECENT_ADDED,
+// 	OLDEST_ADDED,
+// 	POPULAR,
+// 	RECENT_PUBLISHED,
+// 	OLDEST_PUBLISHED,
 // }
 
 /**
