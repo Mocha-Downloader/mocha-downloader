@@ -79,3 +79,7 @@ export type platformCode = "nv" | "yt" | "tr"
 export type Settings = {
 	locale: Locale
 }
+
+export const defaultSettings: Settings = {
+	locale: "en",
+}

@@ -13,6 +13,7 @@ import {
 import notification from "./notification"
 
 import {
+	defaultSettings,
 	Dict,
 	IDownloadCardProps,
 	ISelectOption,
@@ -43,9 +44,7 @@ interface IContext {
 }
 
 const defaultState: IGlobalState = {
-	settings: {
-		locale: "en",
-	},
+	settings: defaultSettings,
 	aboutModalVisibility: false,
 	locale: "en",
 	tabIndex: TabEnum.DOWNLOAD,

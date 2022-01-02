@@ -1,16 +1,23 @@
-import { Locale, mochaPath, Settings } from "../common/constants"
+import {
+	defaultSettings,
+	Locale,
+	mochaPath,
+	Settings,
+} from "../common/constants"
 import { existsSync, readFileSync, statSync, writeFileSync } from "fs"
 import { m2r, recursiveMkdir } from "./util"
-import { buildTray } from "./main"
+import { buildTray, isDev } from "./main"
 import { changeLanguage } from "i18next"
 
 const settingsPath = `${mochaPath}/settings.json`
 
-export let settings: Settings
+export let settings: Settings = defaultSettings
 
 // todo: watch settings file and apply changes instantly (allow manual editing)
 
 export async function loadSettings(): Promise<void> {
+	if (isDev) console.log("loading settings!")
+
 	// create file if it doesn't exist
 	if (!existsSync(settingsPath)) {
 		await saveSettings()
@@ -24,6 +31,14 @@ export async function loadSettings(): Promise<void> {
 
 	// todo: check if settings are valid
 
+	// generate settings and run again if file is empty
+	if (!fileContent) {
+		await saveSettings()
+		await loadSettings()
+
+		return
+	}
+
 	settings = JSON.parse(fileContent) as Settings
 
 	changeLangTo(settings.locale)
@@ -36,14 +51,23 @@ export async function loadSettings(): Promise<void> {
 }
 
 export async function saveSettings(): Promise<void> {
+	if (isDev) console.log("Saving settings!")
+
 	// todo: failed to save settings feedback
 	// todo: prettify string
 
-	await recursiveMkdir(mochaPath)
-	writeFileSync(settingsPath, JSON.stringify(settings))
+	recursiveMkdir(mochaPath).then(() => {
+		const settingsJSON = JSON.stringify(settings)
+
+		if (isDev) console.log("Saving settings:", settingsJSON)
+
+		writeFileSync(settingsPath, settingsJSON || "")
+	})
 }
 
 export async function changeLangTo(lang: Locale): Promise<void> {
+	if (isDev) console.log("changing language to: ", lang)
+
 	settings.locale = lang
 	changeLanguage(lang)
 	buildTray()
