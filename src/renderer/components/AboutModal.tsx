@@ -5,8 +5,6 @@ import { ActionsEnum } from "../../common/ipcTypes"
 import { globalContext } from "../ipc"
 
 const AboutModal = () => {
-	// known bug: https://github.com/electron/electron/issues/7085
-
 	const { globalState, dispatch } = useContext(globalContext)
 	const { platform, arch, release } = window.electron.data.os
 
@@ -23,6 +21,7 @@ const AboutModal = () => {
 				the web.
 				<br />
 				<br />
+				{/* known bug: https://github.com/electron/electron/issues/7085 */}
 				Version: <strong>{window.electron.data.appVersion}</strong>
 				<br />
 				OS:{" "}
