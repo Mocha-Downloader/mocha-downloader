@@ -131,7 +131,10 @@ export type DownloadPayload = {
 	options?: DownloadOptions
 }
 
-export type FileDropPayload = string // file content as string
+export type FileDropPayload = {
+	name: string
+	content: string
+}
 
 export type downloadControlPayload = {
 	type: "pause" | "resume" | "stop"
