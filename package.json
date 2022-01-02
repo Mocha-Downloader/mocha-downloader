@@ -160,6 +160,9 @@
 			]
 		},
 		"linux": {
+			"asarUnpack": [
+				"**/node_modules/sharp/**"
+			],
 			"target": [
 				"AppImage"
 			],
