@@ -2,6 +2,7 @@ import { forEachPlatform, getPlatformType } from "./platforms"
 
 import { DownloadPayload } from "../common/ipcTypes"
 import { isDev } from "./main"
+import { m2r } from "./util"
 
 /**
  * Quickly test features without having to paste link or drag & drop files.
@@ -40,7 +41,10 @@ export default function downloadLogic(data: DownloadPayload) {
 		return false
 	})
 
-	// todo: replace with user feedback
-	if (!wasMatchFound)
-		throw Error(`Unsupported platform "${platformType}" (${data.data})`)
+	if (!wasMatchFound) {
+		m2r({
+			type: "unsupported platform",
+			payload: data.data,
+		})
+	}
 }

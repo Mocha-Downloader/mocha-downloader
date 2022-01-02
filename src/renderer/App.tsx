@@ -1,5 +1,6 @@
 import { initReactI18next } from "react-i18next"
 import styled from "styled-components"
+import ReactNotification from "react-notifications-component"
 import i18n from "i18next"
 
 import AboutModal from "./components/AboutModal"
@@ -12,6 +13,7 @@ import locales from "../common/locales"
 
 import GlobalStyle from "./globalStyle"
 import "semantic-ui-css/semantic.min.css"
+import "react-notifications-component/dist/theme.css"
 
 i18n.use(initReactI18next).init({
 	resources: locales,
@@ -39,13 +41,15 @@ const App = () => {
 		<>
 			<GlobalStyle />
 
+			<ReactNotification />
+			<SelectOptions />
+
 			<StyledAppContentGrid>
 				<TopBar />
 				<Tabs />
 				<BottomBar />
 			</StyledAppContentGrid>
 
-			<SelectOptions />
 			<AboutModal />
 		</>
 	)

@@ -89,6 +89,10 @@ export type M2RArgs =
 			type: "showAbout"
 	  }
 	| {
+			type: "unsupported platform"
+			payload: string
+	  }
+	| {
 			type: "select"
 			payload: {
 				url: string

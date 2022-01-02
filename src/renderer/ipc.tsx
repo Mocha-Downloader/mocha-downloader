@@ -10,6 +10,7 @@ import {
 	useEffect,
 	useReducer,
 } from "react"
+import notification from "./notification"
 
 import {
 	Dict,
@@ -209,8 +210,18 @@ export const GlobalStore = (props: { children: ReactNode }): ReactElement => {
 			if (window.electron.isDev) console.log("m2r:", m2rArgs)
 
 			switch (m2rArgs.type) {
+				case "settings":
+					break
+
 				case "showAbout":
 					dispatch({ type: ActionsEnum.SHOW_ABOUT_MODAL })
+					break
+
+				case "unsupported platform":
+					notification.warning(
+						"Platform not supported",
+						`Unable to download from: "${m2rArgs.payload}"`
+					)
 					break
 
 				case "select":
@@ -245,9 +256,6 @@ export const GlobalStore = (props: { children: ReactNode }): ReactElement => {
 							})
 							break
 					}
-					break
-
-				case "settings":
 					break
 			}
 		})
