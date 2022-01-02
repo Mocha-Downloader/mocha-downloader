@@ -1,5 +1,5 @@
-import en from "./en/main.json"
-import ko from "./ko/main.json"
+import en from "./en.json"
+import ko from "./ko.json"
 
 import { FlagNameValues } from "semantic-ui-react"
 
