@@ -1,10 +1,16 @@
 import { $Keys, Optional, Required } from "utility-types"
 
-import type { Settings } from "../main/settings"
 import { TabEnum } from "../renderer/components/Tabs"
-import { IDownloadCardProps, ISelectOption, Locale } from "./constants"
+import {
+	IDownloadCardProps,
+	ISelectOption,
+	Locale,
+	Settings,
+} from "./constants"
 
 export enum ActionsEnum {
+	UPDATE_SETTINGS = "UPDATE_SETTINGS",
+
 	SHOW_ABOUT_MODAL = "SHOW_ABOUT_MODAL",
 	HIDE_ABOUT_MODAL = "HIDE_ABOUT_MODAL",
 
@@ -42,6 +48,10 @@ export interface UpdateDownloadCardPayload {
 }
 
 export type GlobalAction =
+	| {
+			type: ActionsEnum.UPDATE_SETTINGS
+			payload: Settings
+	  }
 	| {
 			type: ActionsEnum.SHOW_ABOUT_MODAL
 	  }
@@ -139,6 +149,12 @@ export type SettingsPayload =
 			type: "save"
 	  }
 
+	// change language
+	| {
+			type: "changeLanguage"
+			payload: Locale
+	  }
+
 export type R2MArgs =
 	// file drop or paste button click
 	| {
@@ -156,12 +172,6 @@ export type R2MArgs =
 	| {
 			type: "downloadControl"
 			payload: downloadControlPayload
-	  }
-
-	// change locale
-	| {
-			type: "changeLang"
-			payload: Locale
 	  }
 
 	// Mocha Downloader settings

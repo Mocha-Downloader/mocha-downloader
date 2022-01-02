@@ -49,11 +49,6 @@ ipcMain.on("r2m", async (_, r2mArgs: R2MArgs) => {
 
 			break
 
-		case "changeLang":
-			changeLanguage(r2mArgs.payload)
-			buildTray()
-			break
-
 		case "settings":
 			switch (r2mArgs.payload.type) {
 				case "load":
@@ -63,12 +58,20 @@ ipcMain.on("r2m", async (_, r2mArgs: R2MArgs) => {
 						type: "settings",
 						payload: settings,
 					})
-					break
+					return
 
 				case "save":
 					saveSettings()
+					return
+
+				case "changeLanguage":
+					settings.locale = r2mArgs.payload.payload
+					changeLanguage(r2mArgs.payload.payload)
+					buildTray()
 					break
 			}
+
+			saveSettings()
 			break
 	}
 })

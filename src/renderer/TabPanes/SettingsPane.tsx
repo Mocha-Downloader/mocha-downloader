@@ -1,12 +1,16 @@
 import { useTranslation } from "react-i18next"
 import { Dropdown, Header } from "semantic-ui-react"
 
+import { globalContext } from "../ipc"
+
 import { Locale } from "../../common/constants"
 import { LanguageOptions } from "../../common/locales"
 import { StyledPaneContainer } from "../components/Tabs"
+import { useContext } from "react"
 
 const SettingsPane = () => {
 	const { t, i18n } = useTranslation()
+	const { globalState } = useContext(globalContext)
 
 	return (
 		<StyledPaneContainer>
@@ -16,7 +20,7 @@ const SettingsPane = () => {
 			<Dropdown
 				search
 				selection
-				defaultValue="en"
+				defaultValue={globalState.settings.locale}
 				options={LanguageOptions}
 				onChange={(_, { value }) => {
 					const locale: Locale = value as Locale
@@ -25,8 +29,8 @@ const SettingsPane = () => {
 
 					i18n.changeLanguage(locale)
 					window.electron.ipcRenderer.send({
-						type: "changeLang",
-						payload: locale,
+						type: "settings",
+						payload: { type: "changeLanguage", payload: locale },
 					})
 				}}
 			/>

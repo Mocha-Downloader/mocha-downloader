@@ -1,16 +1,10 @@
-import { Locale, mochaPath } from "../common/constants"
+import { mochaPath, Settings } from "../common/constants"
 import { existsSync, readFileSync, statSync, writeFileSync } from "fs"
 import { recursiveMkdir } from "./util"
 
 const settingsPath = `${mochaPath}/settings.json`
 
-export type Settings = {
-	locale: Locale
-}
-
-export let settings: Settings = {
-	locale: "en",
-}
+export let settings: Settings
 
 // todo: watch settings file and apply changes instantly (allow manual editing)
 

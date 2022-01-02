@@ -17,11 +17,14 @@ import {
 	IDownloadCardProps,
 	ISelectOption,
 	Locale,
+	Settings,
 } from "../common/constants"
 import { ActionsEnum, GlobalAction } from "../common/ipcTypes"
 import { TabEnum } from "./components/Tabs"
+import { changeLanguage } from "i18next"
 
 interface IGlobalState {
+	settings: Settings
 	aboutModalVisibility: boolean
 	locale: Locale
 	tabIndex: TabEnum
@@ -40,6 +43,9 @@ interface IContext {
 }
 
 const defaultState: IGlobalState = {
+	settings: {
+		locale: "en",
+	},
 	aboutModalVisibility: false,
 	locale: "en",
 	tabIndex: TabEnum.DOWNLOAD,
@@ -54,6 +60,14 @@ const defaultState: IGlobalState = {
 
 const reducer = (state = defaultState, action: GlobalAction): IGlobalState => {
 	switch (action.type) {
+		// about settings
+		case ActionsEnum.UPDATE_SETTINGS:
+			changeLanguage(action.payload.locale)
+			return {
+				...state,
+				settings: action.payload,
+			}
+
 		// about modal related
 		case ActionsEnum.SHOW_ABOUT_MODAL:
 			return {
@@ -211,6 +225,10 @@ export const GlobalStore = (props: { children: ReactNode }): ReactElement => {
 
 			switch (m2rArgs.type) {
 				case "settings":
+					dispatch({
+						type: ActionsEnum.UPDATE_SETTINGS,
+						payload: m2rArgs.payload,
+					})
 					break
 
 				case "showAbout":

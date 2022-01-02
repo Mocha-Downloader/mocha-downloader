@@ -75,3 +75,7 @@ export type platformID =
 	| "bittorrent"
 
 export type platformCode = "nv" | "yt" | "tr"
+
+export type Settings = {
+	locale: Locale
+}
