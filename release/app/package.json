@@ -1,7 +1,7 @@
 {
 	"name": "mocha-downloader",
 	"productName": "Mocha Downloader",
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"description": "An all-in-one tool for downloading content from the web.",
 	"main": "./dist/main/main.js",
 	"scripts": {
