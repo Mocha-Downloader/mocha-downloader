@@ -20,6 +20,7 @@ import {
 	Locale,
 	Settings,
 } from "../common/constants"
+import { largeIcons } from "../common/platformIcons"
 import { ActionsEnum, GlobalAction } from "../common/ipcTypes"
 import { TabEnum } from "./components/Tabs"
 import { changeLanguage } from "i18next"
@@ -110,8 +111,7 @@ const reducer = (state = defaultState, action: GlobalAction): IGlobalState => {
 				downloadCardID: action.payload.downloadCardID,
 
 				title: "",
-				thumbnail:
-					"https://react.semantic-ui.com/images/wireframe/image.png", // placeholder image
+				thumbnail: largeIcons[action.payload.data.platform], // placeholder image
 
 				status: "initializing",
 				unit: "",
