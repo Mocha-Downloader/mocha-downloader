@@ -51,13 +51,23 @@ async function DownloadTorrent(torrentID: string): Promise<void> {
 			updateDownloadCard("title", torrent.name)
 			updateDownloadCard("totalAmount", B2MB(torrent.length))
 
-			torrent.files.map((file) => {
-				console.log(file.name)
-			})
+			// torrent.files.every((file) => {
+			// 	if (
+			// 		file.name.endsWith(".png") ||
+			// 		file.name.endsWith(".jpg") ||
+			// 		file.name.endsWith(".jpeg")
+			// 	) {
+			// 		// todo: update thumbnail
+
+			// 		return false // break the loop
+			// 	}
+
+			// 	return true // continue to the next file
+			// })
 
 			torrent.on("download", () => {
-				// stop if there was an update 500 ms ago
-				if (new Date().getTime() - lastUpdated >= 500) return
+				// stop if there was an update 200ms ago
+				if (new Date().getTime() - lastUpdated <= 200) return
 
 				updateDownloadCard("amountComplete", B2MB(torrent.downloaded))
 			})
@@ -85,6 +95,7 @@ async function test(actionType: ActionType) {
 			})
 			break
 
+		// todo: fix torrent file downlaod testing code
 		case "f":
 			axios
 				.get(
