@@ -11,6 +11,7 @@ import { isDev } from "./main"
 import downloadLogic from "./downloadLogic"
 import { downloadPool } from "./downloading"
 import { loadSettings, saveSettings, changeLangTo } from "./settings"
+import { m2r } from "./util"
 
 ipcMain.on("r2m", async (_, r2mArgs: R2MArgs) => {
 	if (isDev) console.log("r2m:", r2mArgs)
@@ -40,6 +41,23 @@ ipcMain.on("r2m", async (_, r2mArgs: R2MArgs) => {
 						break
 
 					case "stop":
+						// set card download status to complete
+						m2r({
+							type: "download",
+							payload: {
+								action: "update",
+								payload: {
+									downloadCardID:
+										r2mArgs.payload.downloadCardID,
+									key: "isDownloadComplete",
+									value: true,
+								},
+							},
+						})
+
+						// remove download controller from download pool
+						delete downloadPool[r2mArgs.payload.downloadCardID]
+
 						downloadController.stop()
 						break
 				}

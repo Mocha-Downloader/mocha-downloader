@@ -59,83 +59,54 @@ const defaultState: IGlobalState = {
 
 const reducer = (state = defaultState, action: GlobalAction): IGlobalState => {
 	switch (action.type) {
-		// about settings
 		case ActionsEnum.UPDATE_SETTINGS:
+			// change settings
+
+			state.settings = action.payload
+
+			// and apply settings
+
 			changeLanguage(action.payload.locale)
-			return {
-				...state,
-				settings: action.payload,
-			}
+			break
 
 		// about modal related
 		case ActionsEnum.SHOW_ABOUT_MODAL:
-			return {
-				...state,
-				aboutModalVisibility: true,
-			}
+			state.aboutModalVisibility = true
+			break
 
 		case ActionsEnum.HIDE_ABOUT_MODAL:
-			return {
-				...state,
-				aboutModalVisibility: false,
-			}
+			state.aboutModalVisibility = false
+			break
 
 		// SelectOptions related
 
 		case ActionsEnum.SHOW_SELECT_OPTIONS:
-			return {
-				...state,
-				selectOptions: {
-					...state.selectOptions,
+			state.selectOptions = {
+				...state.selectOptions,
 
-					isVisible: true,
-					url: action.payload.url || state.selectOptions.url,
-					availableChoices:
-						action.payload.availableChoices ||
-						state.selectOptions.availableChoices,
-				},
+				isVisible: true,
+				url: action.payload.url || state.selectOptions.url,
+				availableChoices:
+					action.payload.availableChoices ||
+					state.selectOptions.availableChoices,
 			}
-		case ActionsEnum.HIDE_SELECT_OPTIONS: {
-			return {
-				...state,
-				selectOptions: {
-					...state.selectOptions,
-
-					isVisible: false,
-				},
-			}
-		}
-		case ActionsEnum.SET_SELECT_OPTIONS: {
-			return {
-				...state,
-				selectOptions: {
-					...state.selectOptions,
-
-					selectedChoices: action.payload || [],
-				},
-			}
-		}
-		case ActionsEnum.UPDATE_SELECT_OPTIONS: {
-			const selectedChoices = state.selectOptions.selectedChoices
-			selectedChoices[action.payload.index] = action.payload.isSelected
-
-			return {
-				...state,
-				selectOptions: {
-					...state.selectOptions,
-
-					selectedChoices: selectedChoices,
-				},
-			}
-		}
+			break
+		case ActionsEnum.HIDE_SELECT_OPTIONS:
+			state.selectOptions.isVisible = false
+			break
+		case ActionsEnum.SET_SELECT_OPTIONS:
+			state.selectOptions.selectedChoices = action.payload || []
+			break
+		case ActionsEnum.UPDATE_SELECT_OPTIONS:
+			state.selectOptions.selectedChoices[action.payload.index] =
+				action.payload.isSelected
+			break
 
 		// downloadCard related
 
-		case ActionsEnum.ADD_DOWNLOAD_CARD: {
-			const downloadCards = state.downloadCards
-
-			// default values
-			downloadCards[action.payload.downloadCardID] = {
+		case ActionsEnum.ADD_DOWNLOAD_CARD:
+			// create a new card with default values
+			state.downloadCards[action.payload.downloadCardID] = {
 				downloadCardID: action.payload.downloadCardID,
 
 				title: "",
@@ -152,53 +123,46 @@ const reducer = (state = defaultState, action: GlobalAction): IGlobalState => {
 				// convert to any to prevent error ts(2783)
 				...(action.payload.data as any),
 			}
+			break
+		case ActionsEnum.UPDATE_DOWNLOAD_CARD:
+			const downloadCard =
+				state.downloadCards[action.payload.downloadCardID]
 
-			return {
-				...state,
-				downloadCards,
-			}
-		}
-		case ActionsEnum.UPDATE_DOWNLOAD_CARD: {
-			const DownloadCards = state.downloadCards
+			// stop if card doesn't exist
+			if (!downloadCard) return { ...state }
+			// stop if card doesn't have such property
+			if (!downloadCard.hasOwnProperty(action.payload.key))
+				return { ...state }
 
-			if (
-				DownloadCards[action.payload.downloadCardID].hasOwnProperty(
-					action.payload.key
-				)
-			)
-				// @ts-ignore
-				DownloadCards[action.payload.downloadCardID][
-					action.payload.key
-				] = action.payload.value
+			// @ts-ignore
+			// update property
+			downloadCard[action.payload.key] = action.payload.value
 
-			return {
-				...state,
-				downloadCards: DownloadCards,
-			}
-		}
-		case ActionsEnum.REMOVE_DOWNLOAD_CARD: {
-			const downloadCards = state.downloadCards
+			state.downloadCards[action.payload.downloadCardID] = downloadCard
+			break
+		case ActionsEnum.REMOVE_DOWNLOAD_CARD:
+			delete state.downloadCards[action.payload]
 
-			delete downloadCards[action.payload]
-
-			return {
-				...state,
-				downloadCards,
-			}
-		}
+			window.electron.ipcRenderer.send({
+				type: "downloadControl",
+				payload: {
+					type: "stop",
+					downloadCardID: action.payload,
+				},
+			})
+			break
 
 		// tabs related
 
-		case ActionsEnum.SET_TAB_INDEX: {
-			return {
-				...state,
-				tabIndex: action.payload,
-			}
-		}
+		case ActionsEnum.SET_TAB_INDEX:
+			state.tabIndex = action.payload
+			break
 
 		default:
-			return state
+			break
 	}
+
+	return { ...state }
 }
 
 export const globalContext = createContext({} as IContext)

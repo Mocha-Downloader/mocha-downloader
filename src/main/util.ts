@@ -10,7 +10,6 @@ import { IDownloadCardProps, userAgent } from "../common/constants"
 import { M2RArgs } from "../common/ipcTypes"
 
 import { mainWindow } from "./main"
-import { DownloadControl, downloadPool } from "./downloading"
 
 export let resolveHtmlPath: (htmlFileName: string) => string
 
@@ -97,8 +96,7 @@ export function m2r(m2rArgs: M2RArgs): void {
  * @returns {[(key: $Keys<IDownloadCardProps>, value: any) => void, string]} download card updater and download card UUID
  */
 export function createDownloadCard(
-	downloadCardData: Required<Optional<IDownloadCardProps>, "platform">,
-	downloadControl: DownloadControl
+	downloadCardData: Required<Optional<IDownloadCardProps>, "platform">
 ): [(key: $Keys<IDownloadCardProps>, value: any) => void, string] {
 	const downloadCardID = randomUUID()
 
@@ -122,16 +120,6 @@ export function createDownloadCard(
 				payload: { downloadCardID: downloadCardID, key, value },
 			},
 		})
-	}
-
-	downloadPool[downloadCardID] = {
-		pause: downloadControl.pause,
-		resume: downloadControl.resume,
-		stop: () => {
-			updateDownloadCard("isDownloadComplete", true)
-			delete downloadPool[downloadCardID]
-			downloadControl.stop()
-		},
 	}
 
 	return [updateDownloadCard, downloadCardID]

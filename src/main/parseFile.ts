@@ -13,27 +13,36 @@ export type BatchFile = {
 	download: DownloadPayload[]
 }
 
-export default function parseFile(payload: FileDropPayload) {
+export default function parseFile(file: FileDropPayload) {
 	// check if it's a Mocha Downloader batch download file
-	try {
-		const parsedData = JSON.parse(payload.content) as BatchFile
+	if (file.name.endsWith(".json") || file.name.endsWith(".jsonc")) {
+		try {
+			const parsedData = JSON.parse(file.content) as BatchFile
 
-		parsedData.download.forEach((data) => {
-			downloadLogic(data)
-		})
+			parsedData.download.forEach((data) => {
+				downloadLogic(data)
+			})
 
-		return
-	} catch (err) {
-		// file's not a batch download file. Continue.
+			return
+		} catch (err) {
+			// file's not a batch download file. Continue.
+		}
 	}
 
-	if (payload.content.startsWith("magnet")) {
-		platforms.torrent.logic({ data: payload.content })
+	if (file.name.endsWith(".torrent")) {
+		platforms.torrent.logic({ data: file.content })
+
+		return
+	}
+
+	if (file.content.startsWith("magnet:")) {
+		platforms.torrent.logic({ data: file.content })
+
 		return
 	}
 
 	m2r({
 		type: "unsupported platform",
-		payload: payload.name,
+		payload: file.name,
 	})
 }

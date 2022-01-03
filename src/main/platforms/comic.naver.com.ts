@@ -18,6 +18,7 @@ import {
 	createDownloadCard,
 	recursiveMkdir,
 } from "../util"
+import { downloadPool } from "../downloading"
 
 const meta: PlatformMeta = {
 	id: "comic.naver.com",
@@ -35,24 +36,23 @@ async function downloadEpisode(url: string): Promise<void> {
 	let isPaused = false // set to true to pause download and change to false to resume
 	let isStopped = false // set to true to stop download
 
-	const [updateDownloadCard] = createDownloadCard(
-		{
-			platform: meta.id,
-			unit: "images",
+	const [updateDownloadCard, downloadCardID] = createDownloadCard({
+		platform: meta.id,
+		unit: "images",
+	})
+
+	downloadPool[downloadCardID] = {
+		pause() {
+			isPaused = true
 		},
-		{
-			pause() {
-				isPaused = true
-			},
-			resume() {
-				isPaused = false
-			},
-			stop() {
-				isStopped = true
-				isPaused = false // set it to false to prevent infinite loops
-			},
-		}
-	)
+		resume() {
+			isPaused = false
+		},
+		stop() {
+			isStopped = true
+			isPaused = false // set it to false to prevent infinite loops
+		},
+	}
 
 	/**
 	 * Load HTML content

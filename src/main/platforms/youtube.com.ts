@@ -6,6 +6,7 @@ import { createDownloadCard, m2r, recursiveMkdir } from "../util"
 
 import { mochaPath, Platform, PlatformMeta } from "../../common/constants"
 import { DownloadPayload } from "../../common/ipcTypes"
+import { downloadPool } from "../downloading"
 
 const meta: PlatformMeta = {
 	id: "youtube.com",
@@ -44,25 +45,25 @@ function B2MB(num: number): number {
  * @returns {Promise<void>}
  */
 async function downloadVideo(url: string): Promise<void> {
-	const [updateDownloadCard] = createDownloadCard(
-		{
-			platform: meta.id,
-			unit: "MB",
-		},
-		{
-			pause() {
-				video.pause()
-			},
-			resume() {
-				video.resume()
-			},
-			stop() {
-				video.destroy()
-			},
-		}
-	)
+	const [updateDownloadCard, downloadCardID] = createDownloadCard({
+		platform: meta.id,
+		unit: "MB",
+	})
 
 	const video = ytdl(url)
+
+	downloadPool[downloadCardID] = {
+		pause() {
+			video.pause()
+		},
+		resume() {
+			video.resume()
+		},
+		stop() {
+			console.log(video, typeof video)
+			video.destroy()
+		},
+	}
 
 	const videoInfo = await ytdl.getBasicInfo(url)
 
