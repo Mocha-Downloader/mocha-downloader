@@ -134,3 +134,13 @@ export function createDownloadCard(
 export async function recursiveMkdir(path: string): Promise<void> {
 	fs.promises.mkdir(path, { recursive: true })
 }
+
+/**
+ * Converts byte to megabyte.
+ *
+ * @param {number} num - number of bytes to be converted
+ * @returns {number}
+ */
+export function B2MB(num: number): number {
+	return num / 1048576
+}

@@ -2,7 +2,7 @@ import ytdl from "ytdl-core"
 import ytpl from "ytpl"
 import fs from "fs"
 
-import { createDownloadCard, m2r, recursiveMkdir } from "../util"
+import { B2MB, createDownloadCard, m2r, recursiveMkdir } from "../util"
 
 import { mochaPath, Platform, PlatformMeta } from "../../common/constants"
 import { DownloadPayload } from "../../common/ipcTypes"
@@ -26,16 +26,6 @@ const meta: PlatformMeta = {
 // 	RECENT_PUBLISHED,
 // 	OLDEST_PUBLISHED,
 // }
-
-/**
- * Converts byte to megabyte.
- *
- * @param {number} num - number of bytes to be converted
- * @returns {number}
- */
-function B2MB(num: number): number {
-	return num / 1048576
-}
 
 /**
  * Download a video from youtube.
@@ -78,11 +68,11 @@ async function downloadVideo(url: string): Promise<void> {
 	video.on("progress", (_, downloadedBytes: number, totalBytes: number) => {
 		// send total amount data only once
 		if (!_isTotalAmountDataSent) {
-			updateDownloadCard("totalAmount", B2MB(totalBytes).toFixed(2))
+			updateDownloadCard("totalAmount", B2MB(totalBytes))
 			_isTotalAmountDataSent = true
 		}
 
-		updateDownloadCard("amountComplete", B2MB(downloadedBytes).toFixed(2))
+		updateDownloadCard("amountComplete", B2MB(downloadedBytes))
 	})
 
 	video.on("end", () => {

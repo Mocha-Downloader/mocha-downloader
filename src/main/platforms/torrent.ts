@@ -1,10 +1,11 @@
 import webtorrent from "webtorrent"
 import axios from "axios"
 
-import { createDownloadCard } from "../util"
+import { B2MB, createDownloadCard } from "../util"
 
 import { mochaPath, Platform, PlatformMeta } from "../../common/constants"
 import { DownloadPayload } from "../../common/ipcTypes"
+import { downloadPool } from "../downloading"
 
 const meta: PlatformMeta = {
 	id: "bittorrent",
@@ -20,19 +21,10 @@ const client = new webtorrent()
  * @returns {Promise<void>}
  */
 async function DownloadTorrent(torrentID: string): Promise<void> {
-	const [updateDownloadCard] = createDownloadCard({
+	const [updateDownloadCard, downloadCardID] = createDownloadCard({
 		platform: meta.id,
 		unit: "MB",
 	})
-
-	// downloadPool[downloadCardID] = {
-	// 	pause() {
-	// 	},
-	// 	resume() {
-	// 	},
-	// 	stop() {
-	// 	},
-	// }
 
 	const parsedTorrentID = torrentID.startsWith("magnet:")
 		? torrentID // leave it as it is if torrentID starts with "magnet:"
@@ -42,8 +34,32 @@ async function DownloadTorrent(torrentID: string): Promise<void> {
 		parsedTorrentID,
 		{ path: `${mochaPath}/${meta.id}` },
 		(torrent) => {
+			let lastUpdated = new Date().getTime()
+
+			downloadPool[downloadCardID] = {
+				pause() {
+					torrent.pause()
+				},
+				resume() {
+					torrent.resume()
+				},
+				stop() {
+					torrent.destroy()
+				},
+			}
+
+			updateDownloadCard("title", torrent.name)
+			updateDownloadCard("totalAmount", B2MB(torrent.length))
+
 			torrent.files.map((file) => {
 				console.log(file.name)
+			})
+
+			torrent.on("download", () => {
+				// stop if there was an update 500 ms ago
+				if (new Date().getTime() - lastUpdated >= 500) return
+
+				updateDownloadCard("amountComplete", B2MB(torrent.downloaded))
 			})
 
 			torrent.on("done", () => {
@@ -78,10 +94,8 @@ async function test(actionType: ActionType) {
 					{ responseType: "text" }
 				)
 				.then((res) => {
-					console.log(res, typeof res)
-
 					logic({
-						data: String(res),
+						data: res.data,
 					})
 				})
 

@@ -29,7 +29,7 @@ const StyledTitle = styled(Card.Header)`
 `
 
 const StyledBottomContent = styled.div`
-	margin-top: 2rem;
+	margin-top: 2.1rem;
 `
 
 const StyledError = styled.div`
@@ -39,6 +39,10 @@ const StyledError = styled.div`
 enum ConfirmTypeEnum {
 	delete,
 	stop,
+}
+
+const formatAmount = (amount: number) => {
+	return Number.isInteger(amount) ? amount : amount.toFixed(1)
 }
 
 const DownloadCard = (props: IDownloadCardProps) => {
@@ -220,7 +224,10 @@ const DownloadCard = (props: IDownloadCardProps) => {
 					</Button.Group>
 
 					<div>
-						{amountComplete} / {totalAmount} {unit}&nbsp;&nbsp;(
+						{formatAmount(amountComplete)}
+						{" / "}
+						{formatAmount(totalAmount)}
+						{` ${unit}  `}(
 						<strong>{completePercentage.toFixed(1)}%</strong>)
 					</div>
 					<Progress
