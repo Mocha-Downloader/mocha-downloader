@@ -132,7 +132,7 @@ export function createDownloadCard(
  * @returns {Promise<void>}
  */
 export async function recursiveMkdir(path: string): Promise<void> {
-	fs.promises.mkdir(path, { recursive: true })
+	fs.mkdirSync(path, { recursive: true })
 }
 
 /**
