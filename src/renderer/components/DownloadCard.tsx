@@ -215,10 +215,18 @@ const DownloadCard = (props: IDownloadCardProps) => {
 						floated="right"
 						style={{ marginTop: "-1.5rem" }}
 					>
-						<Button icon onClick={handlePauseResumeButtonClicked}>
+						<Button
+							icon
+							disabled={isDownloadComplete}
+							onClick={handlePauseResumeButtonClicked}
+						>
 							<Icon name={isDownloading ? "pause" : "play"} />
 						</Button>
-						<Button icon onClick={handleStopButtonClicked}>
+						<Button
+							icon
+							disabled={isDownloadComplete}
+							onClick={handleStopButtonClicked}
+						>
 							<Icon name="stop" />
 						</Button>
 					</Button.Group>
