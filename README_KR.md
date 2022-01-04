@@ -3,11 +3,9 @@
 [![라이선스: MIT](https://img.shields.io/badge/라이선스-mit-blue.svg?style=for-the-badge)](./LICENSE)
 [![디스코드](https://img.shields.io/badge/디스코드-5865F2.svg?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/aQqamSCUcS)
 
-**현재 개발중**
-
 - [English Documentation (영어 문서)](./README.md)
 
-웹 컨텐츠 다운로드 툴.
+웹에서 컨텐츠를 다운로드하기 위한 간단한 다운로드 유틸리티.
 
 에러 제보, 제안 사항, 또는 질문은 [이슈 페이지](https://github.com/Mocha-Downloader/mocha-downloader/issues)를 통해 보내주시면 감사하겠습니다.
 

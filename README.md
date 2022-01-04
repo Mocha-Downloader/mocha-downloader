@@ -3,11 +3,9 @@
 [![License: MIT](https://img.shields.io/badge/license-mit-blue.svg?style=for-the-badge)](./LICENSE)
 [![Discord](https://img.shields.io/badge/discord-5865F2.svg?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/aQqamSCUcS)
 
-**currently in alpha**
-
 - [한국어 문서 (Korean Documentation)](./README_KR.md)
 
-An all-in-one tool for downloading content from the web.
+A simple all-in-one download utility for downloading content from the web.
 
 Feel free to [open a issue](https://github.com/Mocha-Downloader/mocha-downloader/issues) for suggestions, bug reports, or questions.
 
