@@ -54,6 +54,7 @@ async function downloadEpisode(url: string): Promise<void> {
 	 * Load HTML content
 	 */
 
+	updateDownloadCard("status", "loading HTML content")
 	const $ = await parseSite(url, async (window) =>
 		cheerio.load(await getHTMLFromWindow(window))
 	)
@@ -91,7 +92,7 @@ async function downloadEpisode(url: string): Promise<void> {
 
 	// stop if no image was found
 	if (imgLinks.length <= 0) {
-		updateDownloadCard("status", "ERROR: couldn't fetch images")
+		updateDownloadCard("errorMessage", "couldn't fetch images")
 		return
 	}
 
@@ -104,6 +105,7 @@ async function downloadEpisode(url: string): Promise<void> {
 	 * Download images
 	 */
 
+	updateDownloadCard("status", "downloading images")
 	const imgs: Buffer[] = []
 	let amountComplete = 0 // number of images done downloading
 

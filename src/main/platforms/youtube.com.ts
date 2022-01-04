@@ -42,6 +42,7 @@ async function downloadVideo(url: string): Promise<void> {
 	})
 
 	const video = ytdl(url)
+	updateDownloadCard("status", "downloading video")
 
 	downloadPool[downloadCardID] = {
 		pause() {

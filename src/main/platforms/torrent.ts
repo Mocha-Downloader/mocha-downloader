@@ -35,7 +35,7 @@ export async function downloadTorrent(
 	updateDownloadCard("downloadPath", downloadPath)
 
 	client.add(torrentID, { path: downloadPath }, (torrent) => {
-		let lastUpdated = new Date().getTime()
+		updateDownloadCard("status", "downloading")
 
 		downloadPool[downloadCardID] = {
 			pause() {
@@ -66,6 +66,7 @@ export async function downloadTorrent(
 		// 	return true // continue to the next file
 		// })
 
+		let lastUpdated = new Date().getTime()
 		torrent.on("download", () => {
 			// stop if there was an update 200ms ago
 			if (new Date().getTime() - lastUpdated <= 200) return
