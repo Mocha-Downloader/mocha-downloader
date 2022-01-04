@@ -15,6 +15,7 @@
 		"lint": "cross-env NODE_ENV=development eslint . --cache --ext .js,.jsx,.ts,.tsx"
 	},
 	"dependencies": {
+		"arraybuffer-to-buffer": "^0.0.7",
 		"axios": "^0.24.0",
 		"cheerio": "^1.0.0-rc.10",
 		"history": "^5.2.0",

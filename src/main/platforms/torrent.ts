@@ -1,5 +1,6 @@
 import webtorrent from "webtorrent"
 import axios from "axios"
+import arrayBufferToBuffer from "arraybuffer-to-buffer"
 
 import { B2MB, createDownloadCard } from "../util"
 
@@ -17,18 +18,20 @@ const client = new webtorrent()
 /**
  * Download from a torrent file or a [magnet link](https://en.wikipedia.org/wiki/Magnet_URI_scheme).
  *
- * @param {string} torrentID - either a magnet link or a .torrent file content
+ * @param {unknown} torrentID - either a magnet link or a .torrent file content
  * @returns {Promise<void>}
  */
-async function DownloadTorrent(torrentID: string): Promise<void> {
+async function DownloadTorrent(torrentID: unknown): Promise<void> {
 	const [updateDownloadCard, downloadCardID] = createDownloadCard({
 		platform: meta.id,
 		unit: "MB",
 	})
 
-	const parsedTorrentID = torrentID.startsWith("magnet:")
-		? torrentID // leave it as it is if torrentID starts with "magnet:"
-		: Buffer.from(torrentID, "utf-8") // convert it to buffer otherwise
+	console.log(typeof torrentID)
+	const stringID = String(torrentID)
+	const parsedTorrentID = stringID.startsWith("magnet:")
+		? stringID // use as string if torrentID starts with "magnet:"
+		: arrayBufferToBuffer(torrentID as ArrayBuffer) // convert it to buffer otherwise
 
 	client.add(
 		parsedTorrentID,
@@ -95,20 +98,16 @@ async function test(actionType: ActionType) {
 			})
 			break
 
-		// todo: fix torrent file downlaod testing code
 		case "f":
-			axios
-				.get(
-					encodeURI(
-						"https://webtorrent.io/torrents/big-buck-bunny.torrent"
-					),
-					{ responseType: "text" }
-				)
-				.then((res) => {
-					logic({
-						data: res.data,
-					})
+			axios({
+				method: "GET",
+				url: "https://webtorrent.io/torrents/big-buck-bunny.torrent",
+				responseType: "arraybuffer",
+			}).then((res) => {
+				logic({
+					data: res.data,
 				})
+			})
 
 			break
 	}
