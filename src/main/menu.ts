@@ -5,7 +5,7 @@ import {
 	MenuItemConstructorOptions,
 	shell,
 } from "electron"
-import { isDev } from "./main"
+import { isDev } from "./constants"
 
 import { m2r } from "./util"
 

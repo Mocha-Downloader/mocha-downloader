@@ -7,7 +7,7 @@ import { ipcMain } from "electron"
 import { R2MArgs } from "../common/ipcTypes"
 
 import parseFile from "./parseFile"
-import { isDev } from "./main"
+import { isDev } from "./constants"
 import downloadLogic from "./downloadLogic"
 import { downloadPool } from "./downloading"
 import { loadSettings, saveSettings, changeLangTo } from "./settings"

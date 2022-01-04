@@ -61,6 +61,8 @@ const DownloadCard = (props: IDownloadCardProps) => {
 		totalAmount,
 		amountComplete,
 		isDownloadComplete,
+
+		downloadPath,
 	} = props
 
 	const { dispatch } = useContext(globalContext)
@@ -101,6 +103,10 @@ const DownloadCard = (props: IDownloadCardProps) => {
 	const handleRemoveCardButtonClicked = () => {
 		setConfirmType(ConfirmTypeEnum.delete)
 		setConfirmModalVisibility(true)
+	}
+
+	const handleOpenFolderButtonClicked = () => {
+		window.electron.openDirectory(downloadPath)
 	}
 
 	const handlePauseResumeButtonClicked = () => {
@@ -215,6 +221,13 @@ const DownloadCard = (props: IDownloadCardProps) => {
 						floated="right"
 						style={{ marginTop: "-1.5rem" }}
 					>
+						<Button
+							icon
+							disabled={!downloadPath}
+							onClick={handleOpenFolderButtonClicked}
+						>
+							<Icon name="folder" />
+						</Button>
 						<Button
 							icon
 							disabled={isDownloadComplete}

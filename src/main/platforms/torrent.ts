@@ -4,9 +4,10 @@ import arrayBufferToBuffer from "arraybuffer-to-buffer"
 
 import { B2MB, createDownloadCard } from "../util"
 
-import { mochaPath, Platform, PlatformMeta } from "../../common/constants"
+import { Platform, PlatformMeta } from "../../common/constants"
 import { DownloadPayload } from "../../common/ipcTypes"
 import { downloadPool } from "../downloading"
+import { mochaPath } from "../constants"
 
 const meta: PlatformMeta = {
 	id: "bittorrent",
@@ -29,7 +30,11 @@ export async function downloadTorrent(
 		unit: "MB",
 	})
 
-	client.add(torrentID, { path: `${mochaPath}/${meta.id}` }, (torrent) => {
+	// todo: use file path and not the path of torrent folder
+	const downloadPath = `${mochaPath}/${meta.id}`
+	updateDownloadCard("downloadPath", downloadPath)
+
+	client.add(torrentID, { path: downloadPath }, (torrent) => {
 		let lastUpdated = new Date().getTime()
 
 		downloadPool[downloadCardID] = {
@@ -70,6 +75,7 @@ export async function downloadTorrent(
 
 		torrent.on("done", () => {
 			updateDownloadCard("isDownloadComplete", true)
+			delete downloadPool[downloadCardID]
 		})
 	})
 }

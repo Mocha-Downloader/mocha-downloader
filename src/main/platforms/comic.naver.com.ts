@@ -3,12 +3,7 @@ import sizeOf from "image-size"
 import cheerio from "cheerio"
 import axios from "axios"
 
-import {
-	Platform,
-	ISelectOption,
-	PlatformMeta,
-	mochaPath,
-} from "../../common/constants"
+import { Platform, ISelectOption, PlatformMeta } from "../../common/constants"
 import { DownloadPayload } from "../../common/ipcTypes"
 import {
 	getHTMLFromWindow,
@@ -19,6 +14,7 @@ import {
 	recursiveMkdir,
 } from "../util"
 import { downloadPool } from "../downloading"
+import { mochaPath } from "../constants"
 
 const meta: PlatformMeta = {
 	id: "comic.naver.com",
@@ -62,18 +58,26 @@ async function downloadEpisode(url: string): Promise<void> {
 		cheerio.load(await getHTMLFromWindow(window))
 	)
 
-	// set download card thumbnail
+	/**
+	 * Title
+	 */
+
+	const comicTitle = $(".thumb > a > img").attr("title")
+	const episodeTitle = $("meta[property='og:description']").attr("content")
+
+	const downloadPath = `${mochaPath}/${meta.id}/${comicTitle}`
+
+	updateDownloadCard("downloadPath", downloadPath)
+	updateDownloadCard("title", episodeTitle)
+
+	/**
+	 * Thumbnail
+	 */
+
 	updateDownloadCard(
 		"thumbnail",
 		$("#sectionContWide > div.comicinfo > div.thumb > a > img").attr("src")
 	)
-
-	// get title
-	const comicTitle = $(".thumb > a > img").attr("title")
-	const episodeTitle = $("meta[property='og:description']").attr("content")
-
-	// set download card title
-	updateDownloadCard("title", episodeTitle)
 
 	/**
 	 * Fetch image links
@@ -102,14 +106,15 @@ async function downloadEpisode(url: string): Promise<void> {
 
 	const imgs: Buffer[] = []
 	let amountComplete = 0 // number of images done downloading
+
+	// todo: stop downloading image if isStopped becomes true
 	await Promise.all(
 		imgLinks.map(async (imgLink, i) => {
-			if (isStopped) return
-
-			// wait 500ms while isPaused is set to true
-			while (isPaused) await new Promise((r) => setTimeout(r, 500))
+			// wait 100ms while isPaused is set to true
+			while (isPaused) await new Promise((r) => setTimeout(r, 100))
 
 			imgs[i] = await getImageBuffer(imgLink)
+
 			amountComplete += 1
 			updateDownloadCard("amountComplete", amountComplete)
 		})
@@ -150,28 +155,27 @@ async function downloadEpisode(url: string): Promise<void> {
 
 	updateDownloadCard("status", "stitching images")
 
-	const folderPath = `${mochaPath}/${meta.id}/${comicTitle}`
+	await recursiveMkdir(downloadPath)
 
-	recursiveMkdir(folderPath).then(() => {
-		// save image
-		sharp({
-			create: {
-				width: maxWidth,
-				height: heightCount,
-				channels: 3,
-				background: "#ffffff",
-			},
-		})
-			.composite(imgsToStitch)
-			.png({ quality: 100 })
-			.toFile(`${folderPath}/${episodeTitle}.png`)
-
-		/**
-		 * Done!
-		 */
-
-		updateDownloadCard("isDownloadComplete", true)
+	// save image
+	sharp({
+		create: {
+			width: maxWidth,
+			height: heightCount,
+			channels: 3,
+			background: "#ffffff",
+		},
 	})
+		.composite(imgsToStitch)
+		.png({ quality: 100 })
+		.toFile(`${downloadPath}/${episodeTitle}.png`)
+
+	/**
+	 * Done!
+	 */
+
+	updateDownloadCard("isDownloadComplete", true)
+	delete downloadPool[downloadCardID]
 }
 
 /**

@@ -22,7 +22,7 @@ const AboutModal = () => {
 				<br />
 				<br />
 				{t("about.version")}:{" "}
-				<strong>{window.electron.data.appVersion}</strong>
+				<strong>{window.electron.appVersion}</strong>
 				<br />
 				<br />
 				<strong>

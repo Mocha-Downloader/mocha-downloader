@@ -4,9 +4,10 @@ import fs from "fs"
 
 import { B2MB, createDownloadCard, m2r, recursiveMkdir } from "../util"
 
-import { mochaPath, Platform, PlatformMeta } from "../../common/constants"
+import { Platform, PlatformMeta } from "../../common/constants"
 import { DownloadPayload } from "../../common/ipcTypes"
 import { downloadPool } from "../downloading"
+import { mochaPath } from "../constants"
 
 const meta: PlatformMeta = {
 	id: "youtube.com",
@@ -58,6 +59,7 @@ async function downloadVideo(url: string): Promise<void> {
 	const videoInfo = await ytdl.getBasicInfo(url)
 
 	const folderPath = `${mochaPath}/${meta.id}/${videoInfo.videoDetails.ownerChannelName}`
+	updateDownloadCard("downloadPath", folderPath)
 	const filePath = `${folderPath}/${videoInfo.videoDetails.title}.mp4`
 
 	updateDownloadCard("title", videoInfo.videoDetails.title)
@@ -80,9 +82,10 @@ async function downloadVideo(url: string): Promise<void> {
 	})
 
 	// save to file
-	recursiveMkdir(folderPath).then(() => {
-		video.pipe(fs.createWriteStream(filePath))
-	})
+	await recursiveMkdir(folderPath)
+	video.pipe(fs.createWriteStream(filePath))
+
+	delete downloadPool[downloadCardID]
 }
 
 /**

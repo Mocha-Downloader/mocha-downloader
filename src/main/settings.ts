@@ -1,13 +1,10 @@
-import {
-	defaultSettings,
-	Locale,
-	mochaPath,
-	Settings,
-} from "../common/constants"
+import { defaultSettings, Locale, Settings } from "../common/constants"
 import { existsSync, readFileSync, statSync, writeFileSync } from "fs"
 import { m2r, recursiveMkdir } from "./util"
-import { buildTray, isDev } from "./main"
+import { buildTray } from "./main"
 import { changeLanguage } from "i18next"
+
+import { isDev, mochaPath } from "./constants"
 
 const settingsPath = `${mochaPath}/settings.json`
 

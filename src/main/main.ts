@@ -13,13 +13,11 @@ import path from "path"
 
 import locales, { defaultLang } from "../common/locales"
 import { userAgent } from "../common/constants"
+import { isDev } from "./constants" // must come before other `main/` files for the app to work properly
 
 import "./ipc"
 import MenuBuilder from "./menu"
 import { getAssetPath, resolveHtmlPath, m2r } from "./util"
-
-export const isDev =
-	process.env.NODE_ENV !== "production" || process.env.DEBUG_PROD === "true"
 
 i18n.init({
 	resources: locales,

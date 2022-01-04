@@ -1,7 +1,7 @@
 import { forEachPlatform, getPlatformType } from "./platforms"
 
 import { DownloadPayload } from "../common/ipcTypes"
-import { isDev } from "./main"
+import { isDev } from "./constants"
 import { m2r } from "./util"
 
 /**

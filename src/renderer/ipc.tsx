@@ -114,14 +114,16 @@ const reducer = (state = defaultState, action: GlobalAction): IGlobalState => {
 				thumbnail: largeIcons[action.payload.data.platform], // placeholder image
 
 				status: "initializing",
+				errorMessage: "",
 				unit: "",
 				totalAmount: 0,
 				amountComplete: 0,
 
 				isDownloadComplete: false,
 
-				// convert to any to prevent error ts(2783)
-				...(action.payload.data as any),
+				downloadPath: "",
+
+				...action.payload.data,
 			}
 			break
 		case ActionsEnum.UPDATE_DOWNLOAD_CARD:
