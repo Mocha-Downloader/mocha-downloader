@@ -170,7 +170,7 @@ async function downloadEpisode(url: string): Promise<void> {
 		 * Done!
 		 */
 
-		updateDownloadCard("isDownloadComplete", "true")
+		updateDownloadCard("isDownloadComplete", true)
 	})
 }
 
