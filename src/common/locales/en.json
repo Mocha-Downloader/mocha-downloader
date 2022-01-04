@@ -10,7 +10,7 @@
 	},
 	"downloadCard": {
 		"confirmModal": {
-			"deleteCard": "Delete card?",
+			"removeCard": "Remove card?",
 			"stopDownload": "Stop download?",
 			"yes": "Yes",
 			"no": "No"

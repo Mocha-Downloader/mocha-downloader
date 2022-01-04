@@ -85,7 +85,7 @@ const DownloadCard = (props: IDownloadCardProps) => {
 	const getConfirmMessage = (confirmType: ConfirmTypeEnum): string => {
 		switch (confirmType) {
 			case ConfirmTypeEnum.delete:
-				return t("downloadCard.confirmModal.deleteCard")
+				return t("downloadCard.confirmModal.removeCard")
 			case ConfirmTypeEnum.stop:
 				return t("downloadCard.confirmModal.stopDownload")
 		}
