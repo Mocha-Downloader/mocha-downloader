@@ -18,72 +18,64 @@ const client = new webtorrent()
 /**
  * Download from a torrent file or a [magnet link](https://en.wikipedia.org/wiki/Magnet_URI_scheme).
  *
- * @param {unknown} torrentID - either a magnet link or a .torrent file content
+ * @param {string | Buffer} torrentID - either a magnet link or a .torrent file content
  * @returns {Promise<void>}
  */
-async function DownloadTorrent(torrentID: unknown): Promise<void> {
+export async function downloadTorrent(
+	torrentID: string | Buffer
+): Promise<void> {
 	const [updateDownloadCard, downloadCardID] = createDownloadCard({
 		platform: meta.id,
 		unit: "MB",
 	})
 
-	console.log(typeof torrentID)
-	const stringID = String(torrentID)
-	const parsedTorrentID = stringID.startsWith("magnet:")
-		? stringID // use as string if torrentID starts with "magnet:"
-		: arrayBufferToBuffer(torrentID as ArrayBuffer) // convert it to buffer otherwise
+	client.add(torrentID, { path: `${mochaPath}/${meta.id}` }, (torrent) => {
+		let lastUpdated = new Date().getTime()
 
-	client.add(
-		parsedTorrentID,
-		{ path: `${mochaPath}/${meta.id}` },
-		(torrent) => {
-			let lastUpdated = new Date().getTime()
-
-			downloadPool[downloadCardID] = {
-				pause() {
-					torrent.pause()
-				},
-				resume() {
-					torrent.resume()
-				},
-				stop() {
-					torrent.destroy()
-				},
-			}
-
-			updateDownloadCard("title", torrent.name)
-			updateDownloadCard("totalAmount", B2MB(torrent.length))
-
-			// torrent.files.every((file) => {
-			// 	if (
-			// 		file.name.endsWith(".png") ||
-			// 		file.name.endsWith(".jpg") ||
-			// 		file.name.endsWith(".jpeg")
-			// 	) {
-			// 		// todo: update thumbnail
-
-			// 		return false // break the loop
-			// 	}
-
-			// 	return true // continue to the next file
-			// })
-
-			torrent.on("download", () => {
-				// stop if there was an update 200ms ago
-				if (new Date().getTime() - lastUpdated <= 200) return
-
-				updateDownloadCard("amountComplete", B2MB(torrent.downloaded))
-			})
-
-			torrent.on("done", () => {
-				updateDownloadCard("isDownloadComplete", true)
-			})
+		downloadPool[downloadCardID] = {
+			pause() {
+				torrent.pause()
+			},
+			resume() {
+				torrent.resume()
+			},
+			stop() {
+				torrent.destroy()
+			},
 		}
-	)
+
+		updateDownloadCard("title", torrent.name)
+		updateDownloadCard("totalAmount", B2MB(torrent.length))
+
+		// torrent.files.every((file) => {
+		// 	if (
+		// 		file.name.endsWith(".png") ||
+		// 		file.name.endsWith(".jpg") ||
+		// 		file.name.endsWith(".jpeg")
+		// 	) {
+		// 		// todo: update thumbnail
+
+		// 		return false // break the loop
+		// 	}
+
+		// 	return true // continue to the next file
+		// })
+
+		torrent.on("download", () => {
+			// stop if there was an update 200ms ago
+			if (new Date().getTime() - lastUpdated <= 200) return
+
+			updateDownloadCard("amountComplete", B2MB(torrent.downloaded))
+		})
+
+		torrent.on("done", () => {
+			updateDownloadCard("isDownloadComplete", true)
+		})
+	})
 }
 
 async function logic(data: DownloadPayload) {
-	DownloadTorrent(data.data)
+	downloadTorrent(data.data)
 }
 
 // m: magnet link
@@ -105,7 +97,7 @@ async function test(actionType: ActionType) {
 				responseType: "arraybuffer",
 			}).then((res) => {
 				logic({
-					data: res.data,
+					data: arrayBufferToBuffer(res.data),
 				})
 			})
 

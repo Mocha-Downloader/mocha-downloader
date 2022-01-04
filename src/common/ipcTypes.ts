@@ -133,7 +133,7 @@ export type DownloadPayload = {
 
 export type FileDropPayload = {
 	name: string
-	content: string
+	content: string | ArrayBuffer
 }
 
 export type downloadControlPayload = {

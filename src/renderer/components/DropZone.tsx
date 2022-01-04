@@ -24,6 +24,7 @@ const baseStyle: CSSProperties = {
 	transition: "border .24s ease-in-out",
 }
 
+// todo: user feedback for invalid file, empty file, and unreadable file
 const DropZone = () => {
 	const { t } = useTranslation()
 
@@ -31,30 +32,21 @@ const DropZone = () => {
 		acceptedFiles.forEach((file) => {
 			const reader = new FileReader()
 
-			reader.onabort = () => {
-				console.log("file reading was aborted")
-			}
-
-			reader.onerror = () => {
-				console.log("file reading has failed")
-			}
-
 			reader.onload = () => {
-				const fileContent: string = reader.result as string
-
-				// todo: user feedback for invalid file, empty file, and unreadable file
-				if (!fileContent) return
+				if (!reader.result) return
 
 				window.electron.ipcRenderer.send({
 					type: "fileDrop",
 					payload: {
 						name: file.name,
-						content: fileContent,
+						content: reader.result,
 					},
 				})
 			}
 
-			reader.readAsText(file)
+			file.name.endsWith(".torrent")
+				? reader.readAsArrayBuffer(file)
+				: reader.readAsText(file)
 		})
 	}, [])
 
@@ -66,9 +58,7 @@ const DropZone = () => {
 		isDragReject,
 	} = useDropzone({
 		onDrop,
-
-		// accept json and commented json files only
-		accept: ".json,.jsonc",
+		accept: ".json,.jsonc,.torrent",
 	})
 
 	// todo: investigate color indication not working properly

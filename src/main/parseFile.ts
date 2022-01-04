@@ -1,9 +1,10 @@
 /**
  * @file parse drag 'n' dropped file(s)
  */
+import arrayBufferToBuffer from "arraybuffer-to-buffer"
 
 import downloadLogic from "./downloadLogic"
-import platforms from "./platforms"
+import { downloadTorrent } from "./platforms/torrent"
 
 import { DownloadPayload, FileDropPayload } from "../common/ipcTypes"
 import { m2r } from "./util"
@@ -17,7 +18,7 @@ export default function parseFile(file: FileDropPayload) {
 	// check if it's a Mocha Downloader batch download file
 	if (file.name.endsWith(".json") || file.name.endsWith(".jsonc")) {
 		try {
-			const parsedData = JSON.parse(file.content) as BatchFile
+			const parsedData = JSON.parse(file.content.toString()) as BatchFile
 
 			parsedData.download.forEach((data) => {
 				downloadLogic(data)
@@ -30,13 +31,7 @@ export default function parseFile(file: FileDropPayload) {
 	}
 
 	if (file.name.endsWith(".torrent")) {
-		platforms.torrent.logic({ data: file.content })
-
-		return
-	}
-
-	if (file.content.startsWith("magnet:")) {
-		platforms.torrent.logic({ data: file.content })
+		downloadTorrent(arrayBufferToBuffer(file.content))
 
 		return
 	}
